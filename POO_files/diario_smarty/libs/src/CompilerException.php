@@ -1,0 +1,2 @@
+<?php
+ namespace Smarty; class CompilerException extends Exception { public function __construct( string $message = "", int $code = 0, ?string $filename = null, ?int $line = null, ?\Throwable $previous = null ) { parent::__construct($message, $code, $previous); if ($filename) { $this->file = $filename; } if ($line) { $this->line = $line; } } public function __toString() { return ' --> Smarty Compiler: ' . $this->message . ' <-- '; } public function setLine($line) { $this->line = $line; } public $source = null; public $desc = null; public $template = null; } 

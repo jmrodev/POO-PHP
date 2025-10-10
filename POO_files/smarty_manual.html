@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Smarty</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; background-color: #f4f4f4; color: #333; }
+        h1, h2, h3 { color: #0056b3; }
+        pre { background-color: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        code { font-family: "Courier New", Courier, monospace; background-color: #e9e9e9; padding: 2px 4px; border-radius: 3px; }
+        .section { margin-bottom: 30px; padding: 15px; background-color: #fff; border-left: 5px solid #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .example { margin-top: 15px; border: 1px solid #ddd; padding: 10px; background-color: #f9f9f9; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Manual de Smarty</h1>
+
+    <div class="section">
+        <h2>1. Asignación de Variables</h2>
+        <p>En Smarty, las variables se asignan desde el script PHP y luego se utilizan en los archivos de plantilla (<code>.tpl</code>). Puedes asignar diferentes tipos de datos, incluyendo cadenas, números, booleanos, arrays y objetos.</p>
+
+        <h3>1.1. Asignación Básica (Cadenas, Números, Booleanos)</h3>
+        <p>Para asignar una variable simple, usa el método <code>assign()</code> de Smarty.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+require_once 'libs/libs/Smarty.class.php';
+$smarty = new Smarty\Smarty();
+
+$smarty->assign('nombre', 'Juan Pérez');
+$smarty->assign('edad', 30);
+$smarty->assign('esActivo', true);
+
+$smarty->display('ejemplo_variables.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_variables.tpl</code>):</h4>
+            <pre><code>&lt;p&gt;Nombre: {$nombre}&lt;/p&gt;
+&lt;p&gt;Edad: {$edad}&lt;/p&gt;
+&lt;p&gt;Usuario activo: {if $esActivo}Sí{else}No{/if}&lt;/p&gt;</code></pre>
+        </div>
+
+        <h3>1.2. Asignación de Arrays</h3>
+        <p>Puedes asignar arrays asociativos o indexados. Smarty permite iterar sobre ellos con la función <code>{foreach}</code>.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+// ... (código Smarty inicial) ...
+
+$usuario = [
+    'id' => 1,
+    'nombre' => 'Ana García',
+    'email' => 'ana.garcia@example.com'
+];
+$smarty->assign('usuario', $usuario);
+
+$productos = [
+    ['nombre' => 'Laptop', 'precio' => 1200],
+    ['nombre' => 'Mouse', 'precio' => 25],
+    ['nombre' => 'Teclado', 'precio' => 75]
+];
+$smarty->assign('productos', $productos);
+
+$smarty->display('ejemplo_arrays.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_arrays.tpl</code>):</h4>
+            <pre><code>&lt;h3&gt;Detalles del Usuario:&lt;/h3&gt;
+&lt;p&gt;ID: {$usuario.id}&lt;/p&gt;
+&lt;p&gt;Nombre: {$usuario.nombre}&lt;/p&gt;
+&lt;p&gt;Email: {$usuario.email}&lt;/p&gt;
+
+&lt;h3&gt;Lista de Productos:&lt;/h3&gt;
+&lt;ul&gt;
+    {foreach $productos as $producto}
+        &lt;li&gt;{$producto.nombre} - ${$producto.precio}&lt;/li&gt;
+    {/foreach}
+&lt;/ul&gt;</code></pre>
+        </div>
+
+        <h3>1.3. Asignación de Objetos</h3>
+        <p>Si asignas un objeto, puedes acceder a sus propiedades y métodos públicos directamente en la plantilla.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+// ... (código Smarty inicial) ...
+
+class Producto {
+    public $nombre;
+    public $precio;
+
+    public function __construct($nombre, $precio) {
+        $this->nombre = $nombre;
+        $this->precio = $precio;
+    }
+
+    public function getPrecioFormateado() {
+        return '$' . number_format($this->precio, 2);
+    }
+}
+
+$miProducto = new Producto('Monitor', 350.50);
+$smarty->assign('miProducto', $miProducto);
+
+$smarty->display('ejemplo_objetos.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_objetos.tpl</code>):</h4>
+            <pre><code>&lt;h3&gt;Detalles del Producto (Objeto):&lt;/h3&gt;
+&lt;p&gt;Nombre: {$miProducto->nombre}&lt;/p&gt;
+&lt;p&gt;Precio: {$miProducto->getPrecioFormateado()}&lt;/p&gt;</code></pre>
+        </div>
+    </div>
+
+    <!-- Placeholder for other sections -->
+    <div class="section">
+        <h2>2. Funciones de Smarty</h2>
+        <p>Smarty incluye varias funciones integradas para controlar la lógica de la plantilla. Aquí cubriremos <code>{include}</code> y <code>{capture}</code>.</p>
+
+        <h3>2.1. <code>{include}</code>: Incluir otras plantillas</h3>
+        <p>La función <code>{include}</code> permite insertar el contenido de otra plantilla Smarty dentro de la plantilla actual. Esto es útil para reutilizar componentes como cabeceras, pies de página o barras laterales.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+// ... (código Smarty inicial) ...
+$smarty->assign('tituloPagina', 'Página Principal');
+$smarty->display('pagina_con_includes.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>header.tpl</code>):</h4>
+            <pre><code>&lt;header&gt;
+    &lt;h1&gt;Mi Sitio - {$tituloPagina}&lt;/h1&gt;
+    &lt;nav&gt;&lt;a href="/"&gt;Inicio&lt;/a&gt; | &lt;a href="/contacto"&gt;Contacto&lt;/a&gt;&lt;/nav&gt;
+&lt;/header&gt;</code></pre>
+            <h4>Smarty Template (<code>footer.tpl</code>):</h4>
+            <pre><code>&lt;footer&gt;
+    &lt;p&gt;&amp;copy; 2025 Mi Empresa. Todos los derechos reservados.&lt;/p&gt;
+&lt;/footer&gt;</code></pre>
+            <h4>Smarty Template (<code>pagina_con_includes.tpl</code>):</h4>
+            <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+    &lt;title&gt;{$tituloPagina}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    {include file="header.tpl"}
+    &lt;main&gt;
+        &lt;h2&gt;Contenido de la página&lt;/h2&gt;
+        &lt;p&gt;Este es el contenido principal de la página.&lt;/p&gt;
+    &lt;/main&gt;
+    {include file="footer.tpl"}
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            <p>Puedes pasar variables adicionales a la plantilla incluida:</p>
+            <pre><code>{include file="componente.tpl" parametro="valor" otro_parametro=$miVariable}</code></pre>
+        </div>
+
+        <h3>2.2. <code>{capture}</code>: Capturar contenido de plantilla</h3>
+        <p>La función <code>{capture}</code> permite capturar el resultado de una sección de la plantilla y almacenarlo en una variable. Esto es útil para manipular o reutilizar bloques de contenido.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+// ... (código Smarty inicial) ...
+$smarty->assign('nombreProducto', 'Smartphone X');
+$smarty->display('ejemplo_capture.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_capture.tpl</code>):</h4>
+            <pre><code>{capture name="sidebar_content"}
+    &lt;div class="sidebar"&gt;
+        &lt;h3&gt;Información Adicional&lt;/h3&gt;
+        &lt;p&gt;Este es un bloque de contenido para la barra lateral.&lt;/p&gt;
+        &lt;p&gt;Producto actual: {$nombreProducto}&lt;/p&gt;
+    &lt;/div&gt;
+{/capture}
+
+&lt;div class="main-layout"&gt;
+    &lt;div class="content"&gt;
+        &lt;h2&gt;Página Principal&lt;/h2&gt;
+        &lt;p&gt;Aquí va el contenido principal de la página.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="sidebar-area"&gt;
+        {$smarty.capture.sidebar_content} &lt;!-- Muestra el contenido capturado --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <p>El contenido capturado se almacena en la variable <code>$smarty.capture.NOMBRE_DE_CAPTURA</code>.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. Modificadores y Funciones Personalizados</h2>
+        <p>Smarty te permite extender su funcionalidad creando tus propios modificadores y funciones para usar en las plantillas.</p>
+
+        <h3>3.1. Modificadores Personalizados</h3>
+        <p>Un modificador personalizado es una función PHP que toma un valor y lo transforma. Se registran con <code>registerPlugin()</code>.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+// ... (código Smarty inicial) ...
+
+// Función PHP para el modificador
+function smarty_modifier_invertir($string) {
+    return strrev($string);
+}
+
+// Registrar el modificador
+$smarty->registerPlugin('modifier', 'invertir', 'smarty_modifier_invertir');
+
+$smarty->assign('mensaje', 'Hola Mundo');
+$smarty->display('ejemplo_modificador.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_modificador.tpl</code>):</h4>
+            <pre><code>&lt;p&gt;Mensaje original: {$mensaje}&lt;/p&gt;
+&lt;p&gt;Mensaje invertido: {$mensaje|invertir}&lt;/p&gt;</code></pre>
+            <p>El nombre de la función PHP debe seguir el formato <code>smarty_modifier_NOMBRE</code>.</p>
+        </div>
+
+        <h3>3.2. Funciones Personalizadas</h3>
+        <p>Una función personalizada es una etiqueta Smarty que ejecuta una función PHP y puede tomar atributos. Se registran también con <code>registerPlugin()</code>.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+// ... (código Smarty inicial) ...
+
+// Función PHP para la función de plantilla
+function smarty_function_saludo($params, $template) {
+    $nombre = isset($params['nombre']) ? $params['nombre'] : 'Invitado';
+    $color = isset($params['color']) ? $params['color'] : 'black';
+    return '&lt;span style="color:' . htmlspecialchars($color) . ';"&gt;¡Hola, ' . htmlspecialchars($nombre) . '!&lt;/span&gt;';
+}
+
+// Registrar la función
+$smarty->registerPlugin('function', 'saludo', 'smarty_function_saludo');
+
+$smarty->display('ejemplo_funcion.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_funcion.tpl</code>):</h4>
+            <pre><code>&lt;p&gt;{saludo nombre="Carlos" color="blue"}&lt;/p&gt;
+&lt;p&gt;{saludo}&lt;/p&gt; &lt;!-- Usará el valor por defecto "Invitado" --&gt;</code></pre>
+            <p>El nombre de la función PHP debe seguir el formato <code>smarty_function_NOMBRE</code>. El primer parámetro es un array asociativo con los atributos pasados desde la plantilla.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. Sistema de Caché de Smarty</h2>
+        <p>El sistema de caché de Smarty permite almacenar el resultado de la compilación y ejecución de una plantilla, evitando que Smarty tenga que procesarla en cada solicitud. Esto mejora significativamente el rendimiento.</p>
+
+        <h3>4.1. Habilitar y Deshabilitar Caché</h3>
+        <p>Para usar el caché, debes habilitarlo y especificar un tiempo de vida para los archivos de caché.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+require_once 'libs/libs/Smarty.class.php';
+$smarty = new Smarty\Smarty();
+
+$smarty->setTemplateDir('/path/to/templates');
+$smarty->setCompileDir('/path/to/templates_c');
+$smarty->setCacheDir('/path/to/cache'); // Asegúrate de que este directorio sea escribible
+
+$smarty->caching = Smarty::CACHING_LIFETIME_CURRENT; // Habilitar caché con tiempo de vida actual
+$smarty->cache_lifetime = 120; // Tiempo de vida del caché en segundos (2 minutos)
+
+// Para deshabilitar el caché temporalmente:
+// $smarty->caching = Smarty::CACHING_OFF;
+
+$smarty->assign('timestamp', time()); // Un valor que cambiará si el caché no funciona
+$smarty->display('ejemplo_cache.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_cache.tpl</code>):</h4>
+            <pre><code>&lt;h3&gt;Página con Caché&lt;/h3&gt;
+&lt;p&gt;Este contenido fue generado en: {$timestamp|date_format:"%H:%M:%S"}&lt;/p&gt;
+&lt;p&gt;Recarga la página varias veces. Si el timestamp no cambia, el caché está funcionando.&lt;/p&gt;</code></pre>
+        </div>
+
+        <h3>4.2. Limpiar Caché</h3>
+        <p>Puedes limpiar el caché de varias maneras:</p>
+        <ul>
+            <li><code>$smarty->clearAllCache();</code>: Limpia todo el caché.</li>
+            <li><code>$smarty->clearCache('nombre_plantilla.tpl');</code>: Limpia el caché de una plantilla específica.</li>
+            <li><code>$smarty->clearCache('nombre_plantilla.tpl', 'id_cache');</code>: Limpia el caché de una plantilla con un ID de caché específico.</li>
+        </ul>
+        <p>Es común limpiar el caché después de actualizar el contenido de la base de datos o las plantillas.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Depuración de Plantillas Smarty</h2>
+        <p>Smarty ofrece herramientas para depurar tus plantillas y ver qué variables están disponibles, qué valores tienen y cómo se están procesando.</p>
+
+        <h3>5.1. Consola de Depuración</h3>
+        <p>La forma más sencilla de depurar es habilitar la consola de depuración de Smarty. Esto abrirá una ventana emergente con información detallada.</p>
+        <div class="example">
+            <h4>PHP (<code>script.php</code>):</h4>
+            <pre><code>&lt;?php
+require_once 'libs/libs/Smarty.class.php';
+$smarty = new Smarty\Smarty();
+
+$smarty->setTemplateDir('/path/to/templates');
+$smarty->setCompileDir('/path/to/templates_c');
+$smarty->setCacheDir('/path/to/cache');
+
+$smarty->debugging = true; // Habilitar la consola de depuración
+
+$smarty->assign('usuarioLogueado', ['nombre' => 'Carlos', 'rol' => 'admin']);
+$smarty->assign('listaItems', ['Item A', 'Item B', 'Item C']);
+
+$smarty->display('ejemplo_depuracion.tpl');
+?&gt;</code></pre>
+            <h4>Smarty Template (<code>ejemplo_depuracion.tpl</code>):</h4>
+            <pre><code>&lt;h3&gt;Página de Ejemplo para Depuración&lt;/h3&gt;
+&lt;p&gt;Bienvenido, {$usuarioLogueado.nombre}.&lt;/p&gt;
+&lt;ul&gt;
+    {foreach $listaItems as $item}
+        &lt;li&gt;{$item}&lt;/li&gt;
+    {/foreach}
+&lt;/ul&gt;</code></pre>
+            <p>Al cargar esta página en el navegador, aparecerá una ventana emergente con la consola de depuración de Smarty, mostrando todas las variables asignadas, los archivos de plantilla incluidos, el estado del caché, etc.</p>
+        </div>
+
+        <h3>5.2. Depuración en Línea (<code>{debug}</code>)</h3>
+        <p>Puedes insertar la función <code>{debug}</code> directamente en tu plantilla para mostrar la consola de depuración en un punto específico.</p>
+        <pre><code>&lt;!-- ... contenido de la plantilla ... --&gt;
+{debug}
+&lt;!-- ... más contenido ... --&gt;</code></pre>
+
+        <h3>5.3. Comentarios en Plantillas</h3>
+        <p>Puedes usar comentarios de Smarty para deshabilitar temporalmente secciones de código o añadir notas sin que aparezcan en la salida HTML.</p>
+        <pre><code>{* Este es un comentario de Smarty y no aparecerá en el HTML final *}
+&lt;p&gt;Contenido visible.&lt;/p&gt;
+{* {foreach $items as $item} ... {/foreach} *} &lt;!-- Deshabilita un bloque de código --&gt;</code></pre>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Manual de Smarty. Creado con Gemini.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+/* --- Estilos Generales --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 1rem 2rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- Contenedor principal del diario (index.php) --- */
+.diario-container {
+    display: grid;
+    /* Crea columnas automáticas que tienen entre 300px y 1fr de ancho */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Tarjeta de cada noticia (index.php) --- */
+.noticia-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden; /* Asegura que la imagen no se salga de los bordes redondeados */
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.noticia-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.noticia-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Hace que la imagen cubra el espacio sin deformarse */
+}
+
+.noticia-card .noticia-content {
+    padding: 1rem;
+}
+
+.noticia-card h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #34495e;
+}
+
+.noticia-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* --- Página de la noticia completa (noticia.php) --- */
+.noticia-full-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.noticia-full-container h1 {
+    color: #2c3e50;
+}
+
+.noticia-full-container img {
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.noticia-full-container .contenido-completo {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    text-align: justify;
+}
+
+.volver-btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.volver-btn:hover {
+    background-color: #2980b9;
+}
