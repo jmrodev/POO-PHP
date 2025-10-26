@@ -8,7 +8,7 @@ class Router
 {
     private $smarty;
     private $newsRepository;
-    private $baseUrl = '/test_jmro/POO/diario_smarty_router_seo_friendly/'; // Define your base URL here
+    private $baseUrl = '/~jmro/practicasPHP/diario_smarty_router_seo_friendly/'; // Define your base URL here
 
     public function __construct()
     {

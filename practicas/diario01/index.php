@@ -6,8 +6,8 @@
 
 
   $smarty = new Smarty\Smarty; 
-  $smarty->setTemplateDir('./templates')
-       ->setCompileDir('./templates_c');
+  $smarty->setTemplateDir(__DIR__ . '/templates')
+       ->setCompileDir(__DIR__ . '/templates_c');
 
   $smarty->assign('noticias', $db);
 

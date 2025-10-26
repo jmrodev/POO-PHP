@@ -8,9 +8,9 @@ require_once 'libs/libs/Smarty.class.php';
 
 $smarty = new Smarty\Smarty();
 
-$smarty->setTemplateDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/diario_smarty/templates');
-$smarty->setCompileDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/diario_smarty/templates_c');
-$smarty->setCacheDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/diario_smarty/cache');
+$smarty->setTemplateDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/POO-PHP/practicas/diario_smarty/templates');
+$smarty->setCompileDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/POO-PHP/practicas/diario_smarty/templates_c');
+$smarty->setCacheDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/POO-PHP/practicas/diario_smarty/cache');
 
 $smarty->assign('noticias', $noticias);
 

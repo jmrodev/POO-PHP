@@ -1,0 +1,15 @@
+{include file="header.html"}
+{include file="menu.html"}
+
+<main class="container mt-5">
+    <section class="noticias">
+      <ul>
+        {foreach from=$nosotros item=persona}
+        <li>{$persona}</li>
+        {/foreach}
+      </ul>
+    </section>          
+  </main>
+
+
+{include file="footer.html"}
