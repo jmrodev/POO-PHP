@@ -8,9 +8,9 @@ require_once 'libs/libs/Smarty.class.php';
 
 $smarty = new Smarty\Smarty();
 
-$smarty->setTemplateDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/POO-PHP/practicas/diario_smarty/templates');
-$smarty->setCompileDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/POO-PHP/practicas/diario_smarty/templates_c');
-$smarty->setCacheDir('/home/jmro/Documentos/TECDA/SEGUNDO/POO/POO-PHP/practicas/diario_smarty/cache');
+$smarty->setTemplateDir(__DIR__ . '/templates');
+$smarty->setCompileDir(__DIR__ . '/templates_c');
+$smarty->setCacheDir(__DIR__ . '/cache');
 
 $id_noticia = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
