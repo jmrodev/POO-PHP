@@ -1,8 +1,19 @@
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteEngine On
+    DirectoryIndex router.php
 
+    # Serve static files directly
     RewriteRule \.(?:css|js|jpe?g|gif|png)$ - [L]
+
+    # If the request is NOT for an existing file or directory,
+    # then rewrite to router.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ router.php?action=$1 [QSA,L]
+
+    # If the request is for the root of the directory (e.g., /),
+    # and it's not a static file, rewrite to router.php
+    # This handles cases where index.php might exist but we want router.php
+    RewriteRule ^(index\.php)?$ router.php [QSA,L]
+
 </IfModule>
