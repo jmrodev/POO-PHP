@@ -8,7 +8,7 @@ class Router
 {
     private $smarty;
     private $newsRepository;
-    private $baseUrl = '/diario_smarty_router/'; // Define your base URL here
+    private $baseUrl;
 
     public function __construct()
     {
@@ -18,6 +18,7 @@ class Router
         $this->smarty->setCacheDir(__DIR__ . '/../cache/');
 
         $this->newsRepository = new NewsRepository();
+        $this->baseUrl = rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/';
         $this->smarty->assign('base_url', $this->baseUrl);
     }
 

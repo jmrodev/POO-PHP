@@ -8,7 +8,7 @@ class Router
 {
     private $smarty;
     private $newsRepository;
-    private $baseUrl = '/~jmro/practicasPHP/diario_smarty_router_seo_friendly/'; // Define your base URL here
+    private $baseUrl;
 
     public function __construct()
     {
@@ -18,13 +18,25 @@ class Router
         $this->smarty->setCacheDir(__DIR__ . '/../cache/');
 
         $this->newsRepository = new NewsRepository();
+
+        // Dynamically determine the base URL for SEO-friendly routing
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $this->baseUrl = rtrim(str_replace(basename($scriptName), '', $scriptName), '/\\') . '/';
         $this->smarty->assign('base_url', $this->baseUrl);
+
+        error_log("Router: Base URL calculated as: " . $this->baseUrl);
     }
 
     public function handleRequest()
     {
         $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $requestUri = str_replace($this->baseUrl, '', $requestUri);
+        error_log("Router: Raw Request URI: " . $requestUri);
+        error_log("Router: Base URL for stripping: " . $this->baseUrl);
+
+        // Remove the base URL from the request URI to get the clean path for routing
+        $requestUri = substr($requestUri, strlen($this->baseUrl));
+        error_log("Router: Cleaned Request URI: " . $requestUri);
+
         $segments = explode('/', trim($requestUri, '/'));
 
         $action = array_shift($segments);
@@ -33,6 +45,8 @@ class Router
         if (isset($segments[0])) {
             $id = (int)$segments[0];
         }
+
+        error_log("Router: Action: " . ($action ?: '' ) . ", ID: " . ($id ?: '' ));
 
         switch ($action) {
             case '':
