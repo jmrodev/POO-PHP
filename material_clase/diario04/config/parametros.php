@@ -1,8 +1,8 @@
 <?php
 
     $config = [
-        'servername' => 'mysqldb', // Normalmente es 'localhost'
+        'servername' => 'localhost', // Normalmente es 'localhost'
         'username' => 'root',
-        'password' => 'tudai', // Normalmente es root o vacio
+        'password' => 'jmro1975', // Normalmente es root o vacio
         'dbname' => 'diario'
     ];

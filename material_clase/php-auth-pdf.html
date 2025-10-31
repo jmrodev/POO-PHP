@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación y Sesiones en PHP</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            border-bottom: 3px solid #2c5aa0;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        h2 {
+            color: #3d7ab8;
+            margin-top: 25px;
+            padding-top: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            page-break-inside: avoid;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        
+        .note {
+            background-color: #d1ecf1;
+            padding: 10px;
+            border-left: 4px solid #0c5460;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        
+        ul {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .download-btn {
+            background-color: #2c5aa0;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        
+        .download-btn:hover {
+            background-color: #1e3f75;
+        }
+        
+        @media print {
+            .download-btn {
+                display: none;
+            }
+            body {
+                background: white;
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            border: none;
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+    <button class="download-btn" onclick="window.print()">📄 Descargar como PDF</button>
+    
+    <div class="header">
+        <h1>Autenticación y Sesiones en PHP</h1>
+        <p><strong>Guía de Referencia</strong></p>
+    </div>
+
+    <div class="section">
+        <h2>1. password_hash()</h2>
+        
+        <p><strong>PHP 5.5+</strong> provee una función que nos ayuda a generar 'hashes' seguros.</p>
+        
+        <p><strong>Algoritmo por default:</strong> bcrypt</p>
+        
+        <h3>Modo de uso:</h3>
+        <div class="code-block">
+$hash = password_hash($password, PASSWORD_DEFAULT);
+        </div>
+        
+        <ul>
+            <li>El contenido de <code>$hash</code> es lo que almaceno en la base de datos.</li>
+            <li><code>PASSWORD_DEFAULT</code> indica que algoritmo debe usar (el por defecto para passwords).</li>
+        </ul>
+        
+        <div class="note">
+            <strong>Nota:</strong> La función password_hash() genera automáticamente un salt aleatorio y lo incluye en el hash resultante, proporcionando una capa adicional de seguridad.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. Logueo al Usuario</h2>
+        
+        <p>Usamos la <strong>SESSION</strong> para mantener al usuario logueado:</p>
+        
+        <div class="code-block">
+public function verifyUser() {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    
+    $user = $this->model->getByUsername($username);
+    
+    // Encontró un user con el username que mandó, y tiene la algo contraseña
+    if (!empty($user) && password_verify($password, $user->password)) {
+        // INICIO LA SESSION Y LOGUEO AL USUARIO
+        session_start();
+        $_SESSION['ID_USER'] = $user->id;
+        $_SESSION['USERNAME'] = $user->username;
+        
+        header('Location: ver');
+    } else {
+        $this->view->showLogin('Login incorrecto');
+    }
+}
+        </div>
+        
+        <h3>Pasos del proceso de login:</h3>
+        <ul>
+            <li>Se reciben las credenciales desde el formulario POST</li>
+            <li>Se busca el usuario en la base de datos por su username</li>
+            <li>Se verifica la contraseña usando <code>password_verify()</code></li>
+            <li>Si es correcto, se inicia la sesión y se guardan los datos del usuario</li>
+            <li>Se redirige a la página principal</li>
+            <li>Si falla, se muestra un mensaje de error</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Usuario denegado</h2>
+        
+        <p>Usamos la <strong>SESSION</strong> para determinar si el usuario ya estaba logueado:</p>
+        
+        <div class="code-block">
+/**
+ * Muestra la lista de tareas.
+ */
+public function showTasks() {
+    // Barrera para usuario no logueado
+    $this->checkLoggedIn();
+    
+    // Obtengo tareas del model
+    $tareas = $this->model->getAll();
+    
+    // Se las paso a la vista
+    $this->view->showTasks($tareas);
+}
+
+private function checkLoggedIn() {
+    session_start();
+    if (!isset($_SESSION['ID_USER'])) {
+        header('Location: ' . LOGIN);
+        die();
+    }
+}
+        </div>
+        
+        <div class="highlight">
+            <strong>⚠️ IMPORTANTE:</strong> QUE LA SESSION ESTÉ INICIADA NO NECESARIAMENTE INDICA QUE EL USUARIO ESTÁ LOGUEADO
+        </div>
+        
+        <p>La función <code>checkLoggedIn()</code> actúa como una barrera de seguridad que:</p>
+        <ul>
+            <li>Inicia la sesión si no está iniciada</li>
+            <li>Verifica que exista la variable <code>$_SESSION['ID_USER']</code></li>
+            <li>Si no existe, redirige al login y detiene la ejecución</li>
+            <li>Si existe, permite continuar con la ejecución normal</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>4. Logout</h2>
+        
+        <p>Al desloguearse lo único que hay que hacer es borrar la información de la sesión.</p>
+        
+        <h3>session_destroy()</h3>
+        <ul>
+            <li>Elimina la sesión borrando todas las variables almacenadas.</li>
+            <li>Para eliminar la sesión siempre hay que iniciarla antes.</li>
+        </ul>
+        
+        <div class="code-block">
+public function logout() {
+    session_start();
+    session_destroy();
+    header('Location: ' . LOGIN);
+}
+        </div>
+        
+        <h3>Proceso de logout:</h3>
+        <ol>
+            <li><code>session_start()</code> - Inicia/recupera la sesión actual</li>
+            <li><code>session_destroy()</code> - Destruye todos los datos asociados a la sesión</li>
+            <li><code>header('Location: ' . LOGIN)</code> - Redirige al usuario a la página de login</li>
+        </ol>
+        
+        <div class="note">
+            <strong>Buena práctica:</strong> Siempre redirigir al usuario después de hacer logout para evitar que intente acceder a páginas protegidas con la sesión destruida.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Resumen de Seguridad</h2>
+        
+        <h3>Mejores prácticas implementadas:</h3>
+        <ul>
+            <li><strong>Hash de contraseñas:</strong> Nunca almacenar contraseñas en texto plano</li>
+            <li><strong>Uso de bcrypt:</strong> Algoritmo robusto y resistente a ataques de fuerza bruta</li>
+            <li><strong>Verificación segura:</strong> Usar password_verify() para comparar contraseñas</li>
+            <li><strong>Sesiones para autenticación:</strong> Mantener el estado de login del usuario</li>
+            <li><strong>Validación en cada petición:</strong> Verificar autenticación antes de mostrar contenido protegido</li>
+            <li><strong>Logout adecuado:</strong> Destruir la sesión completamente al cerrar sesión</li>
+        </ul>
+    </div>
+
+    <script>
+        // Función para imprimir/guardar como PDF
+        document.querySelector('.download-btn').addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>
+</html>
