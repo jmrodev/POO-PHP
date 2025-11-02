@@ -7,7 +7,7 @@
         <p class="message {if $isSuccess}success{else}error{/if}">{$message}</p>
     {/if}
 
-    <form action="{$BASE_URL}{$repuesto ? 'repuestos/update' : 'repuestos/create'}" method="POST">
+    <form action="{$BASE_URL}{$repuesto ? 'repuestos/update' : 'repuestos/store'}" method="POST">
         {if $repuesto}
             <input type="hidden" name="id" value="{$repuesto->getId()}">
         {/if}
