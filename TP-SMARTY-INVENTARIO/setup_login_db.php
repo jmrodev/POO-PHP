@@ -33,9 +33,9 @@ try {
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
-        echo "Default user 'luis' added.\n";
+        echo "Default user added.\n";
     } else {
-        echo "Default user 'luis' already exists.\n";
+        echo "Default user already exists.\n";
     }
 
 } catch (PDOException $e) {

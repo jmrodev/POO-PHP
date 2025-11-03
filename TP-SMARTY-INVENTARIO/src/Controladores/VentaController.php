@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once(SERVER_PATH."/src/Modelos/Venta.php");
 require_once(SERVER_PATH."/src/Modelos/Repuesto.php");
 require_once(SERVER_PATH."/src/Modelos/Cliente.php");
@@ -29,9 +32,9 @@ class VentaController {
     }
 
     public function create() {
-        $repuesto_id = $_POST['repuesto_id'] ?? null;
-        $cliente_id = $_POST['cliente_id'] ?? null;
-        $cantidad = $_POST['cantidad'] ?? null;
+        $repuesto_id = $_POST['repuesto_id'] ;
+        $cliente_id = $_POST['cliente_id'];
+        $cantidad = $_POST['cantidad'];
 
         if (empty($repuesto_id) || empty($cliente_id) || empty($cantidad)) {
             $repuestos = $this->repuestoModel->obtenerTodos();

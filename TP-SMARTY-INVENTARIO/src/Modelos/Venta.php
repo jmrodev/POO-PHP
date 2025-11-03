@@ -51,11 +51,16 @@ class Venta {
             $stmt->bindParam(':cliente_id', $this->cliente->getId(), PDO::PARAM_INT);
             $stmt->bindParam(':cantidad', $this->cantidad, PDO::PARAM_INT);
             $stmt->bindParam(':fecha', $this->fecha);
-            $result = $stmt->execute();
-            if ($result) {
-                $this->id = $db->lastInsertId();
+            try {
+                $result = $stmt->execute();
+                if ($result) {
+                    $this->id = $db->lastInsertId();
+                }
+                return $result;
+            } catch (PDOException $e) {
+                error_log("Error al guardar venta (INSERT): " . $e->getMessage());
+                return false;
             }
-            return $result;
         } else {
             $stmt = $db->prepare("UPDATE ventas SET repuesto_id = :repuesto_id, cliente_id = :cliente_id, cantidad = :cantidad, fecha = :fecha WHERE id = :id");
             $stmt->bindParam(':repuesto_id', $this->repuesto->getId(), PDO::PARAM_INT);
@@ -63,7 +68,12 @@ class Venta {
             $stmt->bindParam(':cantidad', $this->cantidad, PDO::PARAM_INT);
             $stmt->bindParam(':fecha', $this->fecha);
             $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-            return $stmt->execute();
+            try {
+                return $stmt->execute();
+            } catch (PDOException $e) {
+                error_log("Error al guardar venta (UPDATE): " . $e->getMessage());
+                return false;
+            }
         }
     }
 

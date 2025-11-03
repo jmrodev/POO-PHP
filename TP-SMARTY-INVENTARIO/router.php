@@ -1,4 +1,8 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
     define('BASE_URL', '//'.$_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . dirname($_SERVER['PHP_SELF']).'/');
     define('SERVER_PATH', __DIR__);
     
@@ -111,15 +115,15 @@
                 $repuestoController->showAll();
             }
         }; break;
-        case 'ventas': {
-            AuthMiddleware::requireLogin();
+case 'ventas': {
+  AuthMiddleware::requireLogin();
             if (isset($parametros[1])) {
                 switch ($parametros[1]) {
-                    case 'create':
+                case 'create':
                         $ventaController = new VentaController();
                         $ventaController->showFormCreate();
                         break;
-                    case 'store':
+                case 'store':
                         $ventaController = new VentaController();
                         $ventaController->create();
                         break;
