@@ -7,7 +7,7 @@
         <p class="message {if $isSuccess}success{else}error{/if}">{$message}</p>
     {/if}
 
-    <form action="{$BASE_URL}{$repuesto ? 'repuestos/update' : 'repuestos/store'}" method="POST">
+    <form action="{$BASE_URL}{$repuesto ? 'repuestos/update' : 'repuestos/store'}" method="POST" enctype="multipart/form-data">
         {if $repuesto}
             <input type="hidden" name="id" value="{$repuesto->getId()}">
         {/if}
@@ -19,6 +19,12 @@
         </label>
         <label>Cantidad:
             <input type="number" name="cantidad" value="{if $repuesto}{$repuesto->getCantidad()}{else}{/if}" required>
+        </label>
+        <label>Imagen:
+            <input type="file" name="imagen">
+            {if $repuesto && $repuesto->getImagen()}
+                <img src="data:image/jpeg;base64,{$repuesto->getImagen()}" alt="Imagen del Repuesto" width="100">
+            {/if}
         </label>
         <input type="submit" value="{$repuesto ? 'Actualizar' : 'Crear'}">
     </form>

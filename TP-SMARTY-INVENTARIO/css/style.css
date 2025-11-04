@@ -276,3 +276,87 @@ p.message.success {
 .cancel-button:hover {
     background-color: #5a6268;
 }
+
+/* Card Styles for Detail View */
+.card {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: 30px auto;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-body p {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.card-body strong {
+    color: #343a40;
+}
+
+.card-img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+    margin: 0 auto 20px auto;
+    display: block;
+    border: 1px solid #ced4da;
+}
+
+.no-image {
+    color: #6c757d;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.card-footer {
+    background-color: #e9ecef;
+    padding: 15px 20px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+}
+
+.card-footer a {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.card-footer .edit-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.card-footer .edit-button:hover {
+    background-color: #0056b3;
+}
+
+.card-footer .back-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+.card-footer .back-button:hover {
+    background-color: #5a6268;
+}

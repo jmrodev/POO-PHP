@@ -23,14 +23,12 @@ class LoginController {
         $user = $this->userModel->findByUsername($username);
 
         if ($user && password_verify($password, $user->getPassword())) {
-            // Authentication successful
             session_start();
             $_SESSION['user_id'] = $user->getId();
             $_SESSION['username'] = $user->getUsername();
             header('Location: ' . BASE_URL . 'home');
             exit();
         } else {
-            // Authentication failed
             $this->showLoginForm("Usuario o contraseña incorrectos.");
         }
     }

@@ -18,5 +18,10 @@ class RepuestoVista extends Vista {
         $this->smarty->assign('repuesto', $repuesto);
         $this->smarty->display('confirm_delete_repuesto.tpl');
     }
+
+    public function displayDetail($repuesto) {
+        $this->smarty->assign('repuesto', $repuesto);
+        $this->smarty->display('repuesto_detail.tpl');
+    }
 }
 ?>

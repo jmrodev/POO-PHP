@@ -15,7 +15,7 @@
             <select name="repuesto_id" required>
                 <option value="">Seleccione un repuesto</option>
                 {foreach from=$repuestos item=repuesto}
-                    <option value="{$repuesto->getId()}" {if $venta && $venta->getRepuesto() && $venta->getRepuesto()->getId() == $repuesto->getId()}selected{/if}>{$repuesto->getNombre()} (Precio: {$repuesto->getPrecio()})</option>
+                    <option value="{$repuesto->getId()}" {if $venta && $venta->getRepuesto() && $venta->getRepuesto()->getId() == $repuesto->getId()}selected{/if}>{$repuesto->getNombre()} (Precio: {$repuesto->getPrecio()}) (Stock: {$repuesto->getCantidad()})</option>
                 {/foreach}
             </select>
         </label>

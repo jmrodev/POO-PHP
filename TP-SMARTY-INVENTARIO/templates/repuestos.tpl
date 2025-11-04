@@ -14,6 +14,7 @@
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Cantidad</th>
+                <th>Imagen</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -25,8 +26,16 @@
                     <td>{$repuesto->getPrecio()}</td>
                     <td>{$repuesto->getCantidad()}</td>
                     <td>
+                        {if $repuesto->getImagen()}
+                            <img src="data:image/jpeg;base64,{$repuesto->getImagen()}" alt="Imagen" width="50">
+                        {else}
+                            No Image
+                        {/if}
+                    </td>
+                    <td>
                         <div class="action-buttons">
                             <a href="{$BASE_URL}repuestos/edit/{$repuesto->getId()}" class="edit-button">Editar</a>
+                            <a href="{$BASE_URL}repuestos/detail/{$repuesto->getId()}" class="detail-button">Ver Detalle</a>
                             <a href="{$BASE_URL}repuestos/confirmdelete/{$repuesto->getId()}" class="delete-button">Eliminar</a>
                         </div>
                     </td>

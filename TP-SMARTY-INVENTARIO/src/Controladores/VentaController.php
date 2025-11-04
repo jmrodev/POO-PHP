@@ -53,8 +53,19 @@ class VentaController {
             return;
         }
 
+        // Check if there is enough stock
+        $currentStock = $this->repuestoModel->obtenerCantidad($repuesto_id);
+        if ($currentStock < $cantidad) {
+            $repuestos = $this->repuestoModel->obtenerTodos();
+            $clientes = $this->clienteModel->obtenerTodos();
+            $this->ventaVista->displayForm("No hay suficiente stock para el repuesto seleccionado. Stock actual: " . $currentStock, false, null, $repuestos, $clientes);
+            return;
+        }
+
         $newVenta = new Venta(null, $repuesto, $cliente, $cantidad, date('Y-m-d H:i:s'));
         if ($newVenta->guardar()) {
+            // Decrement stock
+            $this->repuestoModel->restarCantidad($repuesto_id, $cantidad);
             header('Location: ' . BASE_URL . 'ventas');
             exit();
         } else {

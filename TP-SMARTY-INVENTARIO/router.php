@@ -105,6 +105,10 @@ error_reporting(E_ALL);
                         $repuestoController = new RepuestoController();
                         $repuestoController->showConfirmDelete($parametros[2]);
                         break;
+                    case 'detail':
+                        $repuestoController = new RepuestoController();
+                        $repuestoController->showDetail($parametros[2]);
+                        break;
                     default:
                         $repuestoController = new RepuestoController();
                         $repuestoController->showAll();
