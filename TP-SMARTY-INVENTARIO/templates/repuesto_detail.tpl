@@ -1,4 +1,3 @@
-{include 'header.tpl' page_title='Detalle del Repuesto'}
 
 <div class="container">
     <h1>Detalle del Repuesto</h1>

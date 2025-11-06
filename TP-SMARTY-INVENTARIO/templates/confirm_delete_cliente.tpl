@@ -1,4 +1,3 @@
-{include 'header.tpl' page_title='Confirmar Eliminación de Cliente'}
 
 <div class="container">
     <h1>Confirmar Eliminación de Cliente</h1>

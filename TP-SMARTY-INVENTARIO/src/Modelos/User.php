@@ -1,7 +1,5 @@
 <?php
 
-include_once __DIR__ . '/Database.php';
-
 class User {
     private $id;
     private $username;

@@ -1,4 +1,3 @@
-{include file='header.tpl' titulo='Inicio del Diario'}
 
 <div class="diario-container">
     {foreach from=$noticias item=noticia}

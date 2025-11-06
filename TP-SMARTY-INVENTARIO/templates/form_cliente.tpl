@@ -1,4 +1,3 @@
-{include 'header.tpl' page_title=$cliente ? 'Editar Cliente' : 'Crear Cliente'}
 
 <div class="container">
     <h1>{$cliente ? 'Editar Cliente' : 'Crear Nuevo Cliente'}</h1>

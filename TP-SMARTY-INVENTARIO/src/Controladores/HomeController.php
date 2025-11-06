@@ -1,5 +1,4 @@
 <?php
-require_once(SERVER_PATH."/src/Vistas/HomeVista.php");
 
 class HomeController {
     private $homeVista;

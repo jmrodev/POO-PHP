@@ -1,4 +1,3 @@
-{include 'header.tpl' page_title='Gestión de Clientes'}
 
 <div class="container">
     <h1>Listado de Clientes</h1>

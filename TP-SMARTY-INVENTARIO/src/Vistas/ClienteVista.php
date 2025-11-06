@@ -1,5 +1,4 @@
 <?php
-require_once(SERVER_PATH."/src/Vistas/Vista.php");
 
 class ClienteVista extends Vista {
     public function showClientes($clientes) {

@@ -1,4 +1,3 @@
-{include 'header.tpl' page_title='Inventario - Menú Principal'}
 
 <div class="container">
     <h1 class="main-title">Bienvenido al Sistema de Inventario</h1>

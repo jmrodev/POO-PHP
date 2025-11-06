@@ -1,5 +1,4 @@
 <?php
-require_once(SERVER_PATH."/src/Vistas/Vista.php");
 
 class RepuestoVista extends Vista {
     public function showRepuestos($repuestos) {

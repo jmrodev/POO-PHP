@@ -1,16 +1,26 @@
 <?php
-require_once(SERVER_PATH."/src/Modelos/Repuesto.php");
-require_once(SERVER_PATH."/src/Vistas/RepuestoVista.php");
 
 class RepuestoController {
-    private $repuestoModel;
+    private $repuestoRepository; // Use repository instead of model directly for DB ops
     private $repuestoVista;
 
-    // No longer needed as images are stored in DB
-    // const IMG_UPLOAD_DIR = SERVER_PATH . "/db/img/";
+    public function __construct()
+    {
+        $config = [
+            'servername' => '127.00.1',
+            'username' => 'root',
+            'password' => 'jmro1975',
+            'dbname' => 'inventarioRepuestos'
+        ];
 
-    public function __construct() {
-        $this->repuestoModel = new Repuesto();
+        try {
+            $pdo = new PDO("mysql:host=" . $config['servername'] . ";dbname=" . $config['dbname'] . ";charset=utf8mb4", $config['username'], $config['password']);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Error de conexión a la base de datos: " . $e->getMessage());
+        }
+
+        $this->repuestoRepository = new RepuestoRepository($pdo); // Pass PDO to repository
         $this->repuestoVista = new RepuestoVista();
     }
 
@@ -26,7 +36,7 @@ class RepuestoController {
     }
 
     public function showAll() {
-        $repuestos = $this->repuestoModel->obtenerTodos();
+        $repuestos = $this->repuestoRepository->obtenerTodos(); // Use repository method
         $this->repuestoVista->showRepuestos($repuestos);
     }
 
@@ -34,28 +44,28 @@ class RepuestoController {
         $this->repuestoVista->displayForm();
     }
 
-    public function create() {
-        $nombre = $_POST['nombre'] ?? '';
-        $precio = $_POST['precio'] ?? '';
-        $cantidad = $_POST['cantidad'] ?? '';
-        $imagen = $this->handleImageUpload();
+            public function create() {
+                require_once(SERVER_PATH . "/src/Validators/RepuestoValidator.php");
+                $validator = new RepuestoValidator();
+                $data = ['nombre' => $_POST['nombre'] ?? '', 'precio' => $_POST['precio'] ?? '', 'cantidad' => $_POST['cantidad'] ?? ''];
 
-        if (empty($nombre) || empty($precio) || empty($cantidad)) {
-            $this->repuestoVista->displayForm("Todos los campos son obligatorios.", false);
-            return;
-        }
+                if (!$validator->validate($data, $_FILES)) {
+                    $this->repuestoVista->displayForm(implode(", ", $validator->getErrors()), false);
+                    return;
+                }
 
-        $newRepuesto = new Repuesto(null, $nombre, $precio, $cantidad, $imagen);
-        if ($newRepuesto->guardar()) {
-            header('Location: ' . BASE_URL . 'repuestos');
-            exit();
-        } else {
-            $this->repuestoVista->displayForm("Error al crear el repuesto.", false);
-        }
-    }
+                $imagen = $this->handleImageUpload();
+                $newRepuesto = new Repuesto(null, $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
+                if ($this->repuestoRepository->guardar($newRepuesto)) { // Use repository method
+                    header('Location: ' . BASE_URL . 'repuestos');
+                    exit();
+                } else {
+                    $this->repuestoVista->displayForm("Error al crear el repuesto.", false);
+                }
+            }
 
     public function showFormEdit($id) {
-        $repuesto = $this->repuestoModel->obtenerPorId($id);
+        $repuesto = $this->repuestoRepository->obtenerPorId($id); // Use repository method
         if ($repuesto) {
             $this->repuestoVista->displayForm("", true, $repuesto);
         } else {
@@ -64,32 +74,35 @@ class RepuestoController {
         }
     }
 
-    public function update() {
-        $id = $_POST['id'] ?? null;
-        $nombre = $_POST['nombre'] ?? '';
-        $precio = $_POST['precio'] ?? '';
-        $cantidad = $_POST['cantidad'] ?? '';
+            public function update() {
+                require_once(SERVER_PATH . "/src/Validators/RepuestoValidator.php");
+                $validator = new RepuestoValidator();
+                $data = ['id' => $_POST['id'] ?? null, 'nombre' => $_POST['nombre'] ?? '', 'precio' => $_POST['precio'] ?? '', 'cantidad' => $_POST['cantidad'] ?? ''];
 
-        if (empty($id) || empty($nombre) || empty($precio) || empty($cantidad)) {
-            $this->repuestoVista->displayForm("Todos los campos son obligatorios.", false);
-            return;
-        }
+                if (!$validator->validate($data, $_FILES, true)) { // Pass true for isUpdate
+                    $existingRepuesto = $this->repuestoRepository->obtenerPorId($data['id']);
+                    $currentImage = $existingRepuesto ? $existingRepuesto->getImagen() : null;
+                    $imagen = $this->handleImageUpload($currentImage); // Re-handle image to pass to form if validation fails
+                    $repuesto = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
+                    $this->repuestoVista->displayForm(implode(", ", $validator->getErrors()), false, $repuesto);
+                    return;
+                }
 
-        $existingRepuesto = $this->repuestoModel->obtenerPorId($id);
-        $currentImage = $existingRepuesto ? $existingRepuesto->getImagen() : null;
-        $imagen = $this->handleImageUpload($currentImage);
+                $existingRepuesto = $this->repuestoRepository->obtenerPorId($data['id']);
+                $currentImage = $existingRepuesto ? $existingRepuesto->getImagen() : null;
+                $imagen = $this->handleImageUpload($currentImage);
 
-        $repuesto = new Repuesto($id, $nombre, $precio, $cantidad, $imagen);
-        if ($repuesto->guardar()) {
-            header('Location: ' . BASE_URL . 'repuestos');
-            exit();
-        } else {
-            $this->repuestoVista->displayForm("Error al actualizar el repuesto.", false, $repuesto);
-        }
-    }
+                $repuesto = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
+                if ($this->repuestoRepository->guardar($repuesto)) { // Use repository method
+                    header('Location: ' . BASE_URL . 'repuestos');
+                    exit();
+                } else {
+                    $this->repuestoVista->displayForm("Error al actualizar el repuesto.", false, $repuesto);
+                }
+            }
 
     public function showConfirmDelete($id) {
-        $repuesto = $this->repuestoModel->obtenerPorId($id);
+        $repuesto = $this->repuestoRepository->obtenerPorId($id); // Use repository method
         if ($repuesto) {
             $this->repuestoVista->displayConfirmDelete($repuesto);
         } else {
@@ -99,19 +112,17 @@ class RepuestoController {
     }
 
     public function delete($id) {
-        $repuesto = new Repuesto($id);
-        if ($repuesto->eliminar()) {
+        if ($this->repuestoRepository->eliminar($id)) { // Use repository method
             header('Location: ' . BASE_URL . 'repuestos');
             exit();
         } else {
-            // Optionally display an error message on the repuestos list page
             header('Location: ' . BASE_URL . 'repuestos');
             exit();
         }
     }
 
     public function showDetail($id) {
-        $repuesto = $this->repuestoModel->obtenerPorId($id);
+        $repuesto = $this->repuestoRepository->obtenerPorId($id); // Use repository method
         if ($repuesto) {
             $this->repuestoVista->displayDetail($repuesto);
         } else {
@@ -120,4 +131,3 @@ class RepuestoController {
         }
     }
 }
-?>

@@ -1,4 +1,3 @@
-{include 'header.tpl' page_title='Login'}
 
 <div class="container">
     <h1>Iniciar Sesión</h1>
@@ -14,6 +13,8 @@
         <br>
         <input type="submit" value="Entrar">
     </form>
+
+    <p>¿No tienes cuenta? <a href="{$BASE_URL}register">Regístrate aquí</a></p>
 </div>
 
 {include 'footer.tpl'}
