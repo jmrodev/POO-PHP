@@ -219,7 +219,7 @@ class Template extends BaseCompiler
      *
      * @var array
      */
-    public $_cache = array();
+    public $_cache = [];
 
     /**
      * Lexer preg pattern for left delimiter
@@ -1190,7 +1190,7 @@ class Template extends BaseCompiler
                 return (new \Smarty\Compile\PrintExpressionCompiler())->compile(
                     ['nofilter'], // functions are never auto-escaped
                     $this,
-                    ['value' =>	$this->compileFunctionCall($tag, $args, $parameter)]
+                    ['value' => $this->compileFunctionCall($tag, $args, $parameter)]
                 );
             }
         }

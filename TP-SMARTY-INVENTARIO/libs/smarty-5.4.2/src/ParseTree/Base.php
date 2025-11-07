@@ -31,7 +31,7 @@ abstract class Base
      *
      * @var array
      */
-    public $subtrees = array();
+    public $subtrees = [];
 
     /**
      * Return buffer

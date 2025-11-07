@@ -198,7 +198,7 @@ class BCPluginsAdapter extends Base
             'postfilter',
             'outputfilter',
         ] as $type) {
-            foreach (glob($path  . $type . '.?*.php') as $filename) {
+            foreach (glob($path . $type . '.?*.php') as $filename) {
                 $pluginName = $this->getPluginNameFromFilename($filename);
                 if ($pluginName !== null) {
                     require_once $filename;
@@ -211,7 +211,7 @@ class BCPluginsAdapter extends Base
         }
 
         $type = 'resource';
-        foreach (glob($path  . $type . '.?*.php') as $filename) {
+        foreach (glob($path . $type . '.?*.php') as $filename) {
             $pluginName = $this->getPluginNameFromFilename($filename);
             if ($pluginName !== null) {
                 require_once $filename;
@@ -222,7 +222,7 @@ class BCPluginsAdapter extends Base
         }
 
         $type = 'cacheresource';
-        foreach (glob($path  . $type . '.?*.php') as $filename) {
+        foreach (glob($path . $type . '.?*.php') as $filename) {
             $pluginName = $this->getPluginNameFromFilename($filename);
             if ($pluginName !== null) {
                 require_once $filename;

@@ -213,7 +213,7 @@ use Smarty\Template\Config;
     } public function configLoad($config_file, $sections = null)
     {
         $confObj = parent::configLoad($config_file, $sections);
-        $this->getCompiled()->file_dependency[ $confObj->getSource()->uid ] = array($confObj->getSource()->getResourceName(), $confObj->getSource()->getTimeStamp(), $confObj->getSource()->type);
+        $this->getCompiled()->file_dependency[ $confObj->getSource()->uid ] = [$confObj->getSource()->getResourceName(), $confObj->getSource()->getTimeStamp(), $confObj->getSource()->type];
         return $confObj;
     } public function fetch()
     {

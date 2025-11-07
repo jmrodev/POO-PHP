@@ -117,50 +117,50 @@ class TemplateLexer
      *
      * @var array
      */
-    public $state_name = array(1 => 'TEXT', 2 => 'TAG', 3 => 'TAGBODY', 4 => 'LITERAL', 5 => 'DOUBLEQUOTEDSTRING',);
+    public $state_name = [1 => 'TEXT', 2 => 'TAG', 3 => 'TAGBODY', 4 => 'LITERAL', 5 => 'DOUBLEQUOTEDSTRING',];
 
     /**
      * token names
      *
      * @var array
      */
-    public $smarty_token_names = array(        // Text for parser error messages
-                                               'NOT'         => '(!,not)',
-                                               'OPENP'       => '(',
-                                               'CLOSEP'      => ')',
-                                               'OPENB'       => '[',
-                                               'CLOSEB'      => ']',
-                                               'PTR'         => '->',
-                                               'APTR'        => '=>',
-                                               'EQUAL'       => '=',
-                                               'NUMBER'      => 'number',
-                                               'UNIMATH'     => '+" , "-',
-                                               'MATH'        => '*" , "/" , "%',
-                                               'INCDEC'      => '++" , "--',
-                                               'SPACE'       => ' ',
-                                               'DOLLAR'      => '$',
-                                               'SEMICOLON'   => ';',
-                                               'COLON'       => ':',
+    public $smarty_token_names = [        // Text for parser error messages
+                                               'NOT' => '(!,not)',
+                                               'OPENP' => '(',
+                                               'CLOSEP' => ')',
+                                               'OPENB' => '[',
+                                               'CLOSEB' => ']',
+                                               'PTR' => '->',
+                                               'APTR' => '=>',
+                                               'EQUAL' => '=',
+                                               'NUMBER' => 'number',
+                                               'UNIMATH' => '+" , "-',
+                                               'MATH' => '*" , "/" , "%',
+                                               'INCDEC' => '++" , "--',
+                                               'SPACE' => ' ',
+                                               'DOLLAR' => '$',
+                                               'SEMICOLON' => ';',
+                                               'COLON' => ':',
                                                'DOUBLECOLON' => '::',
-                                               'AT'          => '@',
-                                               'HATCH'       => '#',
-                                               'QUOTE'       => '"',
-                                               'BACKTICK'    => '`',
-                                               'VERT'        => '"|" modifier',
-                                               'DOT'         => '.',
-                                               'COMMA'       => '","',
-                                               'QMARK'       => '"?"',
-                                               'ID'          => 'id, name',
-                                               'TEXT'        => 'text',
-                                               'LDELSLASH'   => '{/..} closing tag',
-                                               'LDEL'        => '{...} Smarty tag',
-                                               'COMMENT'     => 'comment',
-                                               'AS'          => 'as',
-                                               'TO'          => 'to',
-                                               'LOGOP'       => '"<", "==" ... logical operator',
-                                               'TLOGOP'      => '"lt", "eq" ... logical operator; "is div by" ... if condition',
-                                               'SCOND'       => '"is even" ... if condition',
-    );
+                                               'AT' => '@',
+                                               'HATCH' => '#',
+                                               'QUOTE' => '"',
+                                               'BACKTICK' => '`',
+                                               'VERT' => '"|" modifier',
+                                               'DOT' => '.',
+                                               'COMMA' => '","',
+                                               'QMARK' => '"?"',
+                                               'ID' => 'id, name',
+                                               'TEXT' => 'text',
+                                               'LDELSLASH' => '{/..} closing tag',
+                                               'LDEL' => '{...} Smarty tag',
+                                               'COMMENT' => 'comment',
+                                               'AS' => 'as',
+                                               'TO' => 'to',
+                                               'LOGOP' => '"<", "==" ... logical operator',
+                                               'TLOGOP' => '"lt", "eq" ... logical operator; "is div by" ... if condition',
+                                               'SCOND' => '"is even" ... if condition',
+    ];
 
     /**
      * literal tag nesting level
@@ -275,7 +275,7 @@ class TemplateLexer
 
 
     private $_yy_state = 1;
-    private $_yy_stack = array();
+    private $_yy_stack = [];
 
     public function yylex()
     {
@@ -324,7 +324,7 @@ class TemplateLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -359,7 +359,7 @@ class TemplateLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -441,7 +441,7 @@ class TemplateLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -476,7 +476,7 @@ class TemplateLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -580,7 +580,7 @@ class TemplateLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -615,7 +615,7 @@ class TemplateLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -880,7 +880,7 @@ class TemplateLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -915,7 +915,7 @@ class TemplateLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -975,7 +975,7 @@ class TemplateLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -1010,7 +1010,7 @@ class TemplateLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token

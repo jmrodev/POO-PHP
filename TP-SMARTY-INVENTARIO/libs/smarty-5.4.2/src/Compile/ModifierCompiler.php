@@ -69,7 +69,7 @@ class ModifierCompiler extends Base
                         $output = "{$function}({$params})";
                     } else {
                         $operator = is_object($function[0]) ? '->' : '::';
-                        $output =  $function[0] . $operator . $function[1] . '(' . $params . ')';
+                        $output = $function[0] . $operator . $function[1] . '(' . $params . ')';
                     }
                 } else {
                     $compiler->trigger_template_error("unknown modifier '{$modifier}'", null, true);

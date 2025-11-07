@@ -45,7 +45,7 @@ class CodeFrame
     ) {
         // build property code
         $properties[ 'version' ] = \Smarty\Smarty::SMARTY_VERSION;
-        $properties[ 'unifunc' ] = 'content_' . str_replace(array('.', ','), '_', uniqid('', true));
+        $properties[ 'unifunc' ] = 'content_' . str_replace(['.', ','], '_', uniqid('', true));
         if (!$cache) {
             $properties[ 'has_nocache_code' ] = $this->_template->getCompiled()->getNocacheCode();
             $properties[ 'file_dependency' ] = $this->_template->getCompiled()->file_dependency;

@@ -62,7 +62,7 @@ function smarty_ucfirst_ascii($string): string
             $subject = mb_convert_encoding($subject, $current_charset, \Smarty\Smarty::$_CHARSET);
             $search = mb_convert_encoding($search, $current_charset, \Smarty\Smarty::$_CHARSET);
             $replace = mb_convert_encoding($replace, $current_charset, \Smarty\Smarty::$_CHARSET);
-        } $parts = mb_split(preg_quote($search), $subject ?? "") ?: array();
+        } $parts = mb_split(preg_quote($search), $subject ?? "") ?: [];
         if (!$reg_is_unicode) {
             mb_regex_encoding($mb_reg_charset);
         } if ($parts === false) {
@@ -87,7 +87,7 @@ function smarty_ucfirst_ascii($string): string
     $_space = false;
     foreach ($tokens as $_token) {
         $token_length = mb_strlen($_token, \Smarty\Smarty::$_CHARSET);
-        $_tokens = array($_token);
+        $_tokens = [$_token];
         if ($token_length > $width) {
             if ($cut) {
                 $_tokens = preg_split('!(.{' . $width . '})!S' . \Smarty\Smarty::$_UTF8_MODIFIER, $_token, -1, PREG_SPLIT_NO_EMPTY + PREG_SPLIT_DELIM_CAPTURE);

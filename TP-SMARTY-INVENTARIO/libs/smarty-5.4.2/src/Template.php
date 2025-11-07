@@ -516,7 +516,7 @@ class Template extends TemplateBase
         return $this->smarty->force_compile
             || $this->getSource()->handler->recompiled
             || !$this->getCompiled()->exists
-            || ($this->compile_check &&	$this->getCompiled()->getTimeStamp() < $this->getSource()->getTimeStamp());
+            || ($this->compile_check && $this->getCompiled()->getTimeStamp() < $this->getSource()->getTimeStamp());
     }
 
     private function getCodeFrameCompiler(): Compiler\CodeFrame
@@ -601,7 +601,7 @@ class Template extends TemplateBase
         $confObj = parent::configLoad($config_file, $sections);
 
         $this->getCompiled()->file_dependency[ $confObj->getSource()->uid ] =
-            array($confObj->getSource()->getResourceName(), $confObj->getSource()->getTimeStamp(), $confObj->getSource()->type);
+            [$confObj->getSource()->getResourceName(), $confObj->getSource()->getTimeStamp(), $confObj->getSource()->type];
 
         return $confObj;
     }

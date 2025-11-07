@@ -8,8 +8,8 @@ $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('templates_c');
 $smarty->setCacheDir('cache');
 
-define('BASE_URL', rtrim('http://'.$_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . dirname($_SERVER['PHP_SELF']), '/') . '/');
-define('SERVER_PATH', $_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']));
+define('BASE_URL', rtrim('http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . dirname($_SERVER['PHP_SELF']), '/') . '/');
+define('SERVER_PATH', $_SERVER['DOCUMENT_ROOT'] . dirname($_SERVER['PHP_SELF']));
 
 $smarty->assign('BASE_URL', BASE_URL);
 $smarty->assign('SERVER_PATH', SERVER_PATH);

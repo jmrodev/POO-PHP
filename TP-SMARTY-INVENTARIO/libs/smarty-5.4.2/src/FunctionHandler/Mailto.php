@@ -51,7 +51,7 @@ class Mailto extends Base
             'javascript' => true,
             'javascript_charcode' => true,
             'hex' => true,
-            'none' => true
+            'none' => true,
         ];
 
         $extra = '';

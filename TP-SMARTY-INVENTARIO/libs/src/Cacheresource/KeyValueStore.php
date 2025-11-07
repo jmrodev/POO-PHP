@@ -42,14 +42,14 @@ abstract class KeyValueStore extends Base
      *
      * @var array
      */
-    protected $contents = array();
+    protected $contents = [];
 
     /**
      * cache for timestamps
      *
      * @var array
      */
-    protected $timestamps = array();
+    protected $timestamps = [];
 
     /**
      * populate Cached Object with meta data from Resource
@@ -143,7 +143,7 @@ abstract class KeyValueStore extends Base
     public function storeCachedContent(Template $_template, $content)
     {
         $this->addMetaTimestamp($content);
-        return $this->write(array($_template->getCached()->filepath => $content), $_template->cache_lifetime);
+        return $this->write([$_template->getCached()->filepath => $content], $_template->cache_lifetime);
     }
 
     /**
@@ -217,7 +217,7 @@ abstract class KeyValueStore extends Base
         $uid = $this->getTemplateUid($smarty, $resource_name);
         $cid = $uid . '#' . $this->sanitize($resource_name) . '#' . $this->sanitize($cache_id) . '#' .
                $this->sanitize($compile_id);
-        $this->delete(array($cid));
+        $this->delete([$cid]);
         $this->invalidate($cid, $resource_name, $cache_id, $compile_id, $uid);
         return -1;
     }
@@ -280,7 +280,7 @@ abstract class KeyValueStore extends Base
         &$timestamp = null,
         $resource_uid = null
     ) {
-        $t = $this->read(array($cid));
+        $t = $this->read([$cid]);
         $content = !empty($t[ $cid ]) ? $t[ $cid ] : null;
         $timestamp = null;
         if ($content && ($timestamp = $this->getMetaTimestamp($content))) {
@@ -366,7 +366,7 @@ abstract class KeyValueStore extends Base
                 }
             }
         }
-        $this->write(array($key => $now));
+        $this->write([$key => $now]);
     }
 
     /**
@@ -420,7 +420,7 @@ abstract class KeyValueStore extends Base
         $compile_id = null,
         $resource_uid = null
     ) {
-        $t = array('IVK#ALL');
+        $t = ['IVK#ALL'];
         $_name = $_compile = '#';
         if ($resource_name) {
             $_name .= $resource_uid . '#' . $this->sanitize($resource_name);
@@ -467,7 +467,7 @@ abstract class KeyValueStore extends Base
     public function hasLock(Smarty $smarty, Cached $cached)
     {
         $key = 'LOCK#' . $cached->filepath;
-        $data = $this->read(array($key));
+        $data = $this->read([$key]);
         return $data && time() - $data[ $key ] < $smarty->locking_timeout;
     }
 
@@ -483,7 +483,7 @@ abstract class KeyValueStore extends Base
     {
         $cached->is_locked = true;
         $key = 'LOCK#' . $cached->filepath;
-        $this->write(array($key => time()), $smarty->locking_timeout);
+        $this->write([$key => time()], $smarty->locking_timeout);
     }
 
     /**
@@ -498,7 +498,7 @@ abstract class KeyValueStore extends Base
     {
         $cached->is_locked = false;
         $key = 'LOCK#' . $cached->filepath;
-        $this->delete(array($key));
+        $this->delete([$key]);
     }
 
     /**

@@ -25,7 +25,7 @@ class ExtendsPlugin extends BasePlugin
     public function populate(Source $source, ?Template $_template = null)
     {
         $uid = '';
-        $sources = array();
+        $sources = [];
         $components = explode('|', $source->name);
         $smarty = $source->getSmarty();
         $exists = true;
@@ -92,9 +92,9 @@ class ExtendsPlugin extends BasePlugin
      */
     public function getBasename(Source $source)
     {
-        $search = array(':');
+        $search = [':'];
         if (\Smarty\Smarty::$_IS_WINDOWS) {
-            $search = array(':', '|');
+            $search = [':', '|'];
         }
         return str_replace($search, '.', basename($source->getResourceName()));
     }

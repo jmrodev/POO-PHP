@@ -22,7 +22,7 @@ class Debug extends Data
         $this->template_data[ $this->index ][ $key ][ 'total_time' ] += microtime(true) - $this->template_data[ $this->index ][ $key ][ 'start_template_time' ];
     } public function start_compile(Template $template)
     {
-        static $_is_stringy = array('string' => true, 'eval' => true);
+        static $_is_stringy = ['string' => true, 'eval' => true];
         if (!empty($template->getCompiler()->trace_uid)) {
             $key = $template->getCompiler()->trace_uid;
             if (!isset($this->template_data[ $this->index ][ $key ])) {
@@ -77,7 +77,7 @@ class Debug extends Data
         $debObj->debugging_ctrl = 'NONE';
         $debObj->error_reporting = E_ALL & ~E_NOTICE;
         $debObj->debug_tpl = $smarty->debug_tpl ?? 'file:' . __DIR__ . '/debug.tpl';
-        $debObj->registered_resources = array();
+        $debObj->registered_resources = [];
         $debObj->escape_html = true;
         $debObj->caching = Smarty::CACHING_OFF;
         $ptr = $this->get_debug_vars($obj);
@@ -109,11 +109,11 @@ class Debug extends Data
         }
     } private function get_debug_vars($obj)
     {
-        $config_vars = array();
+        $config_vars = [];
         foreach ($obj->config_vars as $key => $var) {
             $config_vars[$key]['value'] = $var;
             $config_vars[$key]['scope'] = get_class($obj) . ':' . spl_object_id($obj);
-        } $tpl_vars = array();
+        } $tpl_vars = [];
         foreach ($obj->tpl_vars as $key => $var) {
             foreach ($var as $varkey => $varvalue) {
                 if ($varkey === 'value') {
@@ -142,10 +142,10 @@ class Debug extends Data
                     $config_vars[ $name ][ 'scope' ] = $pvar[ 'scope' ];
                 }
             } $config_vars = array_merge($parent->config_vars, $config_vars);
-        } return (object)array('tpl_vars' => $tpl_vars, 'config_vars' => $config_vars);
+        } return (object)['tpl_vars' => $tpl_vars, 'config_vars' => $config_vars];
     } private function get_key(Template $template)
     {
-        static $_is_stringy = array('string' => true, 'eval' => true);
+        static $_is_stringy = ['string' => true, 'eval' => true];
         $key = $template->getSource()->uid;
         if (isset($this->template_data[ $this->index ][ $key ])) {
             return $key;

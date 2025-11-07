@@ -13,7 +13,7 @@ class LoginController
             'servername' => '127.0.0.1',
             'username' => 'root',
             'password' => 'jmro1975',
-            'dbname' => 'inventarioRepuestos'
+            'dbname' => 'inventarioRepuestos',
         ];
 
         try {

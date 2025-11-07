@@ -76,14 +76,14 @@ class TextFormat implements BlockHandlerInterface
             // convert mult. spaces & special chars to single space
             $_paragraph =
                 preg_replace(
-                    array(
+                    [
                         '!\s+!' . Smarty::$_UTF8_MODIFIER,
-                        '!(^\s+)|(\s+$)!' . Smarty::$_UTF8_MODIFIER
-                    ),
-                    array(
+                        '!(^\s+)|(\s+$)!' . Smarty::$_UTF8_MODIFIER,
+                    ],
+                    [
                         ' ',
-                        ''
-                    ),
+                        '',
+                    ],
                     $_paragraph
                 );
             // indent first line

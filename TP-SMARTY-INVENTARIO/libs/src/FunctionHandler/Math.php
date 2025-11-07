@@ -51,7 +51,7 @@ class Math extends Base
                 'atan' => true,
                 'atanh' => true,
                 'tan' => true,
-                'tanh' => true
+                'tanh' => true,
             ];
 
         // be sure equation parameter is present

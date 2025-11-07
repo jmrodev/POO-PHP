@@ -40,14 +40,14 @@ class File extends Base
         $cached->filepath = $smarty->getCacheDir();
         if (isset($_template->cache_id)) {
             $cached->filepath .= preg_replace(
-                array(
+                [
                                          '![^\w|]+!',
-                                         '![|]+!'
-                                     ),
-                array(
+                                         '![|]+!',
+                                     ],
+                [
                                          '_',
-                                         $_compile_dir_sep
-                                     ),
+                                         $_compile_dir_sep,
+                                     ],
                 $_template->cache_id
             ) . $_compile_dir_sep;
         }

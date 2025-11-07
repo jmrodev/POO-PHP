@@ -308,24 +308,24 @@ class DefaultExtension extends Base
         }
         if ($formatter === 'strftime' || ($formatter === 'auto' && strpos($format, '%') !== false)) {
             if (\Smarty\Smarty::$_IS_WINDOWS) {
-                $_win_from = array(
+                $_win_from = [
                     '%D',
                     '%h',
                     '%n',
                     '%r',
                     '%R',
                     '%t',
-                    '%T'
-                );
-                $_win_to = array(
+                    '%T',
+                ];
+                $_win_to = [
                     '%m/%d/%y',
                     '%b',
                     "\n",
                     '%I:%M:%S %p',
                     '%H:%M',
                     "\t",
-                    '%H:%M:%S'
-                );
+                    '%H:%M:%S',
+                ];
                 if (strpos($format, '%e') !== false) {
                     $_win_from[] = '%e';
                     $_win_to[] = sprintf('%\' 2d', date('j', $timestamp));
@@ -359,9 +359,9 @@ class DefaultExtension extends Base
      *
      * @return string
      */
-    public function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth = 0, $objects = array())
+    public function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth = 0, $objects = [])
     {
-        $_replace = array("\n" => '\n', "\r" => '\r', "\t" => '\t');
+        $_replace = ["\n" => '\n', "\r" => '\r', "\t" => '\t'];
         switch (gettype($var)) {
             case 'array':
                 $results = '<b>Array (' . count($var) . ')</b>';
@@ -489,31 +489,31 @@ class DefaultExtension extends Base
                 // escape quotes and backslashes, newlines, etc.
                 return strtr(
                     $string,
-                    array(
+                    [
                         '\\' => '\\\\',
-                        "'"  => "\\'",
-                        '"'  => '\\"',
+                        "'" => "\\'",
+                        '"' => '\\"',
                         "\r" => '\\r',
                         "\n" => '\\n',
                         '</' => '<\/',
                         // see https://html.spec.whatwg.org/multipage/scripting.html#restrictions-for-contents-of-script-elements
                         '<!--' => '<\!--',
-                        '<s'   => '<\s',
-                        '<S'   => '<\S',
+                        '<s' => '<\s',
+                        '<S' => '<\S',
                         "`" => "\\\\`",
-                        "\${" => "\\\\\\$\\{"
-                    )
+                        "\${" => "\\\\\\$\\{",
+                    ]
                 );
             case 'mail':
                 return smarty_mb_str_replace(
-                    array(
+                    [
                         '@',
-                        '.'
-                    ),
-                    array(
+                        '.',
+                    ],
+                    [
                         ' [AT] ',
-                        ' [DOT] '
-                    ),
+                        ' [DOT] ',
+                    ],
                     $string
                 );
             case 'nonstd':

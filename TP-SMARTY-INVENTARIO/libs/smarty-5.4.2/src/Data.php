@@ -11,12 +11,12 @@ class Data
     /**
      * define variable scopes
      */
-    public const SCOPE_LOCAL    = 1;
-    public const SCOPE_PARENT   = 2;
+    public const SCOPE_LOCAL = 1;
+    public const SCOPE_PARENT = 2;
     public const SCOPE_TPL_ROOT = 4;
-    public const SCOPE_ROOT     = 8;
-    public const SCOPE_SMARTY   = 16;
-    public const SCOPE_GLOBAL   = 32;
+    public const SCOPE_ROOT = 8;
+    public const SCOPE_SMARTY = 16;
+    public const SCOPE_GLOBAL = 32;
 
     /**
      * Global smarty instance
@@ -30,7 +30,7 @@ class Data
      *
      * @var Variable[]
      */
-    public $tpl_vars = array();
+    public $tpl_vars = [];
 
     /**
      * parent data container (if any)
@@ -44,7 +44,7 @@ class Data
      *
      * @var string[]
      */
-    public $config_vars = array();
+    public $config_vars = [];
 
     /**
      * This variable will hold a stack of template variables.
@@ -381,7 +381,7 @@ class Data
      */
     public function clearAllAssign()
     {
-        $this->tpl_vars = array();
+        $this->tpl_vars = [];
         return $this;
     }
 
@@ -399,7 +399,7 @@ class Data
         if (isset($name)) {
             unset($this->config_vars[ $name ]);
         } else {
-            $this->config_vars = array();
+            $this->config_vars = [];
         }
         return $this;
     }

@@ -77,8 +77,8 @@ class ConfigfileParser
      *
      * @var array
      */
-    private static $escapes_single = array('\\' => '\\',
-                                           '\'' => '\'');
+    private static $escapes_single = ['\\' => '\\',
+                                           '\'' => '\''];
 
     /**
      * constructor
@@ -105,7 +105,7 @@ class ConfigfileParser
     private function parse_bool($str)
     {
         $str = strtolower($str);
-        if (in_array($str, array('on', 'yes', 'true'))) {
+        if (in_array($str, ['on', 'yes', 'true'])) {
             $res = true;
         } else {
             $res = false;
@@ -192,7 +192,7 @@ class ConfigfileParser
     private function add_global_vars(array $vars)
     {
         if (!isset($this->compiler->config_data['vars'])) {
-            $this->compiler->config_data['vars'] = array();
+            $this->compiler->config_data['vars'] = [];
         }
         foreach ($vars as $var) {
             $this->set_var($var, $this->compiler->config_data);
@@ -208,104 +208,104 @@ class ConfigfileParser
     private function add_section_vars($section_name, array $vars)
     {
         if (!isset($this->compiler->config_data['sections'][$section_name]['vars'])) {
-            $this->compiler->config_data['sections'][$section_name]['vars'] = array();
+            $this->compiler->config_data['sections'][$section_name]['vars'] = [];
         }
         foreach ($vars as $var) {
             $this->set_var($var, $this->compiler->config_data['sections'][$section_name]);
         }
     }
 
-    public const TPC_OPENB                          =  1;
-    public const TPC_SECTION                        =  2;
-    public const TPC_CLOSEB                         =  3;
-    public const TPC_DOT                            =  4;
-    public const TPC_ID                             =  5;
-    public const TPC_EQUAL                          =  6;
-    public const TPC_FLOAT                          =  7;
-    public const TPC_INT                            =  8;
-    public const TPC_BOOL                           =  9;
-    public const TPC_SINGLE_QUOTED_STRING           = 10;
-    public const TPC_DOUBLE_QUOTED_STRING           = 11;
-    public const TPC_TRIPPLE_QUOTES                 = 12;
-    public const TPC_TRIPPLE_TEXT                   = 13;
-    public const TPC_TRIPPLE_QUOTES_END             = 14;
-    public const TPC_NAKED_STRING                   = 15;
-    public const TPC_OTHER                          = 16;
-    public const TPC_NEWLINE                        = 17;
-    public const TPC_COMMENTSTART                   = 18;
+    public const TPC_OPENB = 1;
+    public const TPC_SECTION = 2;
+    public const TPC_CLOSEB = 3;
+    public const TPC_DOT = 4;
+    public const TPC_ID = 5;
+    public const TPC_EQUAL = 6;
+    public const TPC_FLOAT = 7;
+    public const TPC_INT = 8;
+    public const TPC_BOOL = 9;
+    public const TPC_SINGLE_QUOTED_STRING = 10;
+    public const TPC_DOUBLE_QUOTED_STRING = 11;
+    public const TPC_TRIPPLE_QUOTES = 12;
+    public const TPC_TRIPPLE_TEXT = 13;
+    public const TPC_TRIPPLE_QUOTES_END = 14;
+    public const TPC_NAKED_STRING = 15;
+    public const TPC_OTHER = 16;
+    public const TPC_NEWLINE = 17;
+    public const TPC_COMMENTSTART = 18;
     public const YY_NO_ACTION = 60;
     public const YY_ACCEPT_ACTION = 59;
     public const YY_ERROR_ACTION = 58;
 
     public const YY_SZ_ACTTAB = 39;
-    public static $yy_action = array(
+    public static $yy_action = [
          24,   25,   26,   27,   28,   12,   15,   23,   31,   32,
          59,    8,    9,    3,   21,   22,   33,   13,   33,   13,
          14,   10,   18,   16,   30,   11,   17,   20,   34,    7,
           5,    1,    2,   29,    4,   19,   52,   35,    6,
-        );
-    public static $yy_lookahead = array(
+        ];
+    public static $yy_lookahead = [
       7,    8,    9,   10,   11,   12,    5,   27,   15,   16,
      20,   21,   25,   23,   25,   26,   17,   18,   17,   18,
       2,   25,    4,   13,   14,    1,   15,   24,   17,   22,
       3,   23,   23,   14,    6,    2,   28,   17,    3,
-);
+];
     public const YY_SHIFT_USE_DFLT = -8;
     public const YY_SHIFT_MAX = 19;
-    public static $yy_shift_ofst = array(
+    public static $yy_shift_ofst = [
      -8,    1,    1,    1,   -7,   -1,   -1,   24,   -8,   -8,
      -8,   18,   10,   11,   27,   28,   19,   20,   33,   35,
-);
+];
     public const YY_REDUCE_USE_DFLT = -21;
     public const YY_REDUCE_MAX = 10;
-    public static $yy_reduce_ofst = array(
+    public static $yy_reduce_ofst = [
     -10,  -11,  -11,  -11,  -20,  -13,   -4,    3,    7,    8,
       9,
-);
-    public static $yyExpectedTokens = array(
-         array(),
-         array(5, 17, 18, ),
-         array(5, 17, 18, ),
-         array(5, 17, 18, ),
-         array(7, 8, 9, 10, 11, 12, 15, 16, ),
-         array(17, 18, ),
-         array(17, 18, ),
-         array(1, ),
-         array(),
-         array(),
-         array(),
-         array(2, 4, ),
-         array(13, 14, ),
-         array(15, 17, ),
-         array(3, ),
-         array(6, ),
-         array(14, ),
-         array(17, ),
-         array(2, ),
-         array(3, ),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-         array(),
-);
-    public static $yy_default = array(
+];
+    public static $yyExpectedTokens = [
+         [],
+         [5, 17, 18, ],
+         [5, 17, 18, ],
+         [5, 17, 18, ],
+         [7, 8, 9, 10, 11, 12, 15, 16, ],
+         [17, 18, ],
+         [17, 18, ],
+         [1, ],
+         [],
+         [],
+         [],
+         [2, 4, ],
+         [13, 14, ],
+         [15, 17, ],
+         [3, ],
+         [6, ],
+         [14, ],
+         [17, ],
+         [2, ],
+         [3, ],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+         [],
+];
+    public static $yy_default = [
      44,   40,   41,   37,   58,   58,   58,   36,   39,   44,
      44,   58,   58,   58,   58,   58,   58,   58,   58,   58,
      38,   42,   43,   45,   46,   47,   48,   49,   50,   51,
      52,   53,   54,   55,   56,   57,
-);
+];
     public const YYNOCODE = 29;
     public const YYSTACKDEPTH = 100;
     public const YYNSTATE = 36;
@@ -313,8 +313,8 @@ class ConfigfileParser
     public const YYERRORSYMBOL = 19;
     public const YYERRSYMDT = 'yy0';
     public const YYFALLBACK = 0;
-    public static $yyFallback = array(
-    );
+    public static $yyFallback = [
+    ];
     public function Trace($TraceFILE, $zTracePrompt)
     {
         if (!$TraceFILE) {
@@ -336,9 +336,9 @@ class ConfigfileParser
     public $yyTracePrompt;
     public $yyidx;                    /* Index of top element in stack */
     public $yyerrcnt;                 /* Shifts left before out of the error */
-    public $yystack = array();  /* The parser's stack */
+    public $yystack = [];  /* The parser's stack */
 
-    public $yyTokenName = array(
+    public $yyTokenName = [
   '$',             'OPENB',         'SECTION',       'CLOSEB',
   'DOT',           'ID',            'EQUAL',         'FLOAT',
   'INT',           'BOOL',          'SINGLE_QUOTED_STRING',  'DOUBLE_QUOTED_STRING',
@@ -346,9 +346,9 @@ class ConfigfileParser
   'OTHER',         'NEWLINE',       'COMMENTSTART',  'error',
   'start',         'global_vars',   'sections',      'var_list',
   'section',       'newline',       'var',           'value',
-    );
+    ];
 
-    public static $yyRuleName = array(
+    public static $yyRuleName = [
   'start ::= global_vars sections',
   'global_vars ::= var_list',
   'sections ::= sections section',
@@ -371,7 +371,7 @@ class ConfigfileParser
   'newline ::= NEWLINE',
   'newline ::= COMMENTSTART NEWLINE',
   'newline ::= COMMENTSTART NAKED_STRING NEWLINE',
-    );
+    ];
 
     public function tokenName($tokenType)
     {
@@ -414,7 +414,7 @@ class ConfigfileParser
 
     public function __destruct()
     {
-        while ($this->yystack !== array()) {
+        while ($this->yystack !== []) {
             $this->yy_pop_parser_stack();
         }
         if (is_resource($this->yyTraceFILE)) {
@@ -424,8 +424,8 @@ class ConfigfileParser
 
     public function yy_get_expected_tokens($token)
     {
-        static $res3 = array();
-        static $res4 = array();
+        static $res3 = [];
+        static $res4 = [];
         $state = $this->yystack[$this->yyidx]->stateno;
         $expected = self::$yyExpectedTokens[$state];
         if (isset($res3[$state][$token])) {
@@ -509,8 +509,8 @@ class ConfigfileParser
 
     public function yy_is_expected_token($token)
     {
-        static $res = array();
-        static $res2 = array();
+        static $res = [];
+        static $res2 = [];
         if ($token === 0) {
             return true; // 0 is not part of this
         }
@@ -696,32 +696,32 @@ class ConfigfileParser
         }
     }
 
-    public static $yyRuleInfo = array(
-  array( 0 => 20, 1 => 2 ),
-  array( 0 => 21, 1 => 1 ),
-  array( 0 => 22, 1 => 2 ),
-  array( 0 => 22, 1 => 0 ),
-  array( 0 => 24, 1 => 5 ),
-  array( 0 => 24, 1 => 6 ),
-  array( 0 => 23, 1 => 2 ),
-  array( 0 => 23, 1 => 2 ),
-  array( 0 => 23, 1 => 0 ),
-  array( 0 => 26, 1 => 3 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 27, 1 => 3 ),
-  array( 0 => 27, 1 => 2 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 27, 1 => 1 ),
-  array( 0 => 25, 1 => 1 ),
-  array( 0 => 25, 1 => 2 ),
-  array( 0 => 25, 1 => 3 ),
-    );
+    public static $yyRuleInfo = [
+  [ 0 => 20, 1 => 2 ],
+  [ 0 => 21, 1 => 1 ],
+  [ 0 => 22, 1 => 2 ],
+  [ 0 => 22, 1 => 0 ],
+  [ 0 => 24, 1 => 5 ],
+  [ 0 => 24, 1 => 6 ],
+  [ 0 => 23, 1 => 2 ],
+  [ 0 => 23, 1 => 2 ],
+  [ 0 => 23, 1 => 0 ],
+  [ 0 => 26, 1 => 3 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 27, 1 => 3 ],
+  [ 0 => 27, 1 => 2 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 27, 1 => 1 ],
+  [ 0 => 25, 1 => 1 ],
+  [ 0 => 25, 1 => 2 ],
+  [ 0 => 25, 1 => 3 ],
+    ];
 
-    public static $yyReduceMap = array(
+    public static $yyReduceMap = [
         0 => 0,
         2 => 0,
         3 => 0,
@@ -744,7 +744,7 @@ class ConfigfileParser
         16 => 16,
         17 => 17,
         18 => 17,
-    );
+    ];
     // line 251 "src/Parser/ConfigfileParser.y"
     public function yy_r0()
     {
@@ -778,17 +778,17 @@ class ConfigfileParser
     // line 287 "src/Parser/ConfigfileParser.y"
     public function yy_r7()
     {
-        $this->_retvalue = array_merge($this->yystack[$this->yyidx + -1]->minor, array($this->yystack[$this->yyidx + 0]->minor));
+        $this->_retvalue = array_merge($this->yystack[$this->yyidx + -1]->minor, [$this->yystack[$this->yyidx + 0]->minor]);
     }
     // line 291 "src/Parser/ConfigfileParser.y"
     public function yy_r8()
     {
-        $this->_retvalue = array();
+        $this->_retvalue = [];
     }
     // line 297 "src/Parser/ConfigfileParser.y"
     public function yy_r9()
     {
-        $this->_retvalue = array('key' => $this->yystack[$this->yyidx + -2]->minor, 'value' => $this->yystack[$this->yyidx + 0]->minor);
+        $this->_retvalue = ['key' => $this->yystack[$this->yyidx + -2]->minor, 'value' => $this->yystack[$this->yyidx + 0]->minor];
     }
     // line 302 "src/Parser/ConfigfileParser.y"
     public function yy_r10()
@@ -919,7 +919,7 @@ class ConfigfileParser
             $x = (object) ['stateno' => null, 'major' => null, 'minor' => null];
             $x->stateno = 0;
             $x->major = 0;
-            $this->yystack = array();
+            $this->yystack = [];
             $this->yystack[] = $x;
         }
         $yyendofinput = ($yymajor == 0);

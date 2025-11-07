@@ -11,9 +11,9 @@ class Data
     public const SCOPE_SMARTY = 16;
     public const SCOPE_GLOBAL = 32;
     protected $smarty = null;
-    public $tpl_vars = array();
+    public $tpl_vars = [];
     public $parent = null;
-    public $config_vars = array();
+    public $config_vars = [];
     private $_var_stack = [];
     private $_config_stack = [];
     protected $defaultScope = self::SCOPE_LOCAL;
@@ -145,14 +145,14 @@ class Data
         } return $this;
     } public function clearAllAssign()
     {
-        $this->tpl_vars = array();
+        $this->tpl_vars = [];
         return $this;
     } public function clearConfig($name = null)
     {
         if (isset($name)) {
             unset($this->config_vars[ $name ]);
         } else {
-            $this->config_vars = array();
+            $this->config_vars = [];
         } return $this;
     } public function getConfigVariable($varName)
     {

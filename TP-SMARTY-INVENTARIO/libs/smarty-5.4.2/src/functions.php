@@ -150,7 +150,7 @@ function smarty_mb_str_replace($search, $replace, $subject, &$count = 0)
             $replace = mb_convert_encoding($replace, $current_charset, \Smarty\Smarty::$_CHARSET);
         }
 
-        $parts = mb_split(preg_quote($search), $subject ?? "") ?: array();
+        $parts = mb_split(preg_quote($search), $subject ?? "") ?: [];
         // If original regex encoding was not unicode...
         if (!$reg_is_unicode) {
             // ...restore original regex encoding to avoid breaking the system.
@@ -217,7 +217,7 @@ function smarty_mb_wordwrap($str, $width = 75, $break = "\n", $cut = false)
     $_space = false;
     foreach ($tokens as $_token) {
         $token_length = mb_strlen($_token, \Smarty\Smarty::$_CHARSET);
-        $_tokens = array($_token);
+        $_tokens = [$_token];
         if ($token_length > $width) {
             if ($cut) {
                 $_tokens = preg_split(

@@ -43,8 +43,8 @@ abstract class Inheritance extends Base
     {
         if ($initChildSequence || !isset($compiler->_cache[ 'inheritanceInit' ])) {
             $compiler->registerPostCompileCallback(
-                array(self::class, 'postCompile'),
-                array($initChildSequence),
+                [self::class, 'postCompile'],
+                [$initChildSequence],
                 'inheritanceInit',
                 $initChildSequence
             );

@@ -36,7 +36,7 @@ class VentaController extends BaseController
         $data = [
             'repuesto_id' => $_POST['repuesto_id'] ?? null,
             'cliente_id' => $_POST['cliente_id'] ?? null,
-            'cantidad' => $_POST['cantidad'] ?? null
+            'cantidad' => $_POST['cantidad'] ?? null,
         ];
 
         if (!$validator->validate($data)) {
@@ -80,7 +80,7 @@ class VentaController extends BaseController
             'id' => $_POST['id'] ?? null,
             'repuesto_id' => $_POST['repuesto_id'] ?? null,
             'cliente_id' => $_POST['cliente_id'] ?? null,
-            'cantidad' => $_POST['cantidad'] ?? null
+            'cantidad' => $_POST['cantidad'] ?? null,
         ];
 
         if (!$validator->validate($data, true)) { // Pass true for isUpdate

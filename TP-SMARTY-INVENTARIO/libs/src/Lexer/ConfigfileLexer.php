@@ -99,7 +99,7 @@ class ConfigfileLexer
      *
      * @var array
      */
-    public $state_name = array(1 => 'START', 2 => 'VALUE', 3 => 'NAKED_STRING_VALUE', 4 => 'COMMENT', 5 => 'SECTION', 6 => 'TRIPPLE');
+    public $state_name = [1 => 'START', 2 => 'VALUE', 3 => 'NAKED_STRING_VALUE', 4 => 'COMMENT', 5 => 'SECTION', 6 => 'TRIPPLE'];
 
     /**
      * storage for assembled token patterns
@@ -118,8 +118,8 @@ class ConfigfileLexer
      *
      * @var array
      */
-    public $smarty_token_names = array(        // Text for parser error messages
-    );
+    public $smarty_token_names = [        // Text for parser error messages
+    ];
 
     /**
      * constructor
@@ -155,7 +155,7 @@ class ConfigfileLexer
 
 
     private $_yy_state = 1;
-    private $_yy_stack = array();
+    private $_yy_stack = [];
 
     public function yylex()
     {
@@ -205,7 +205,7 @@ class ConfigfileLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -240,7 +240,7 @@ class ConfigfileLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -311,7 +311,7 @@ class ConfigfileLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -346,7 +346,7 @@ class ConfigfileLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -401,7 +401,7 @@ class ConfigfileLexer
     public function yy_r2_7()
     {
 
-        if (!$this->configBooleanize || !in_array(strtolower($this->value), array('true', 'false', 'on', 'off', 'yes', 'no'))) {
+        if (!$this->configBooleanize || !in_array(strtolower($this->value), ['true', 'false', 'on', 'off', 'yes', 'no'])) {
             $this->yypopstate();
             $this->yypushstate(self::NAKED_STRING_VALUE);
             return true; //reprocess in new state
@@ -434,7 +434,7 @@ class ConfigfileLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -469,7 +469,7 @@ class ConfigfileLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -503,7 +503,7 @@ class ConfigfileLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -538,7 +538,7 @@ class ConfigfileLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -582,7 +582,7 @@ class ConfigfileLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -617,7 +617,7 @@ class ConfigfileLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token
@@ -655,7 +655,7 @@ class ConfigfileLexer
         if (!isset($this->dataLength)) {
             $this->dataLength = strlen($this->data);
         }
-        if ($this->counter >=  $this->dataLength) {
+        if ($this->counter >= $this->dataLength) {
             return false; // end of input
         }
 
@@ -690,7 +690,7 @@ class ConfigfileLexer
                 } elseif ($r === false) {
                     $this->counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >=  $this->dataLength) {
+                    if ($this->counter >= $this->dataLength) {
                         return false; // end of input
                     }
                     // skip this token

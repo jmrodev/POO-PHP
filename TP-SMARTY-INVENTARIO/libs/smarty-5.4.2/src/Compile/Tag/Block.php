@@ -59,7 +59,7 @@ class Block extends Inheritance
      * @param \Smarty\Compiler\Template $compiler compiler object
      * @param array $parameter array with compilation parameter
      */
-    public function compile($args, \Smarty\Compiler\Template $compiler, $parameter = array(), $tag = null, $function = null): string
+    public function compile($args, \Smarty\Compiler\Template $compiler, $parameter = [], $tag = null, $function = null): string
     {
         if (!isset($compiler->_cache['blockNesting'])) {
             $compiler->_cache['blockNesting'] = 0;
@@ -81,7 +81,7 @@ class Block extends Inheritance
             'block',
             [
                 $_attr, $compiler->tag_nocache, $compiler->getParser()->current_buffer,
-                $compiler->getTemplate()->getCompiled()->getNocacheCode(), $_className
+                $compiler->getTemplate()->getCompiled()->getNocacheCode(), $_className,
             ]
         );
 

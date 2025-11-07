@@ -20,11 +20,11 @@ abstract class BasePlugin
      * @var array
      */
     public static $sysplugins = [
-        'file'    => FilePlugin::class,
-        'string'  => StringPlugin::class,
+        'file' => FilePlugin::class,
+        'string' => StringPlugin::class,
         'extends' => ExtendsPlugin::class,
-        'stream'  => StreamPlugin::class,
-        'eval'    => StringEval::class,
+        'stream' => StreamPlugin::class,
+        'eval' => StringEval::class,
     ];
 
     /**

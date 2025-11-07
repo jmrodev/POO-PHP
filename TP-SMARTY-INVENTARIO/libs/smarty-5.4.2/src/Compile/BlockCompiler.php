@@ -182,7 +182,7 @@ class BlockCompiler extends Base
 
         // compile code
         $output = "<?php \$_block_repeat=true;
-if (!" . $this->getIsCallableCode($tag, $function) .") {\nthrow new \\Smarty\\Exception('block tag \'{$tag}\' not callable or registered');\n}\n
+if (!" . $this->getIsCallableCode($tag, $function) . ") {\nthrow new \\Smarty\\Exception('block tag \'{$tag}\' not callable or registered');\n}\n
 echo " . $this->getFullCallbackCode($tag, $function) . "({$_params}, null, \$_smarty_tpl, \$_block_repeat);
 while (\$_block_repeat) {
   ob_start();

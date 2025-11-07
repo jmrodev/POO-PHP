@@ -205,10 +205,10 @@ abstract class Base implements CompilerInterface
     {
 
         static $scopes = [
-            'local'    => Data::SCOPE_LOCAL,    // current scope
+            'local' => Data::SCOPE_LOCAL,    // current scope
             'parent' => Data::SCOPE_PARENT,     // parent scope (definition unclear)
             'tpl_root' => Data::SCOPE_TPL_ROOT, // highest template (keep going up until parent is not a template)
-            'root'     => Data::SCOPE_ROOT,     // highest scope (definition unclear)
+            'root' => Data::SCOPE_ROOT,     // highest scope (definition unclear)
             'global' => Data::SCOPE_GLOBAL,     // smarty object
 
             'smarty' => Data::SCOPE_SMARTY,     // @deprecated alias of 'global'
@@ -237,5 +237,5 @@ abstract class Base implements CompilerInterface
      * @return string compiled code as a string
      * @throws \Smarty\CompilerException
      */
-    abstract public function compile($args, Template $compiler, $parameter = array(), $tag = null, $function = null): string;
+    abstract public function compile($args, Template $compiler, $parameter = [], $tag = null, $function = null): string;
 }

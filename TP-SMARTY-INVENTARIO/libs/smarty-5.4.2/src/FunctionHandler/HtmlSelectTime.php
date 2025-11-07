@@ -127,7 +127,7 @@ class HtmlSelectTime extends Base
                 foreach ([
                              'H' => 'Hour',
                              'i' => 'Minute',
-                             's' => 'Second'
+                             's' => 'Second',
                          ] as $_elementKey => $_elementName) {
                     $_variableName = '_' . strtolower($_elementName);
                     $$_variableName =
@@ -143,7 +143,7 @@ class HtmlSelectTime extends Base
                 foreach ([
                              'H' => 'Hour',
                              'i' => 'Minute',
-                             's' => 'Second'
+                             's' => 'Second',
                          ] as $_elementKey => $_elementName) {
                     $_variableName = '_' . strtolower($_elementName);
                     $$_variableName = $params['time'][$field_array][$prefix . $_elementName] ?? date($_elementKey);
@@ -322,7 +322,7 @@ class HtmlSelectTime extends Base
                      '_html_hours',
                      '_html_minutes',
                      '_html_seconds',
-                     '_html_meridian'
+                     '_html_meridian',
                  ] as $k) {
             if (isset($$k)) {
                 if ($_html) {

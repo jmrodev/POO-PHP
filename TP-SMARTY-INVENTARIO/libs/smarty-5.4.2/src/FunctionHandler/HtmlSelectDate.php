@@ -167,7 +167,7 @@ class HtmlSelectDate extends Base
                 foreach ([
                              'Y' => 'Year',
                              'm' => 'Month',
-                             'd' => 'Day'
+                             'd' => 'Day',
                          ] as $_elementKey => $_elementName) {
                     $_variableName = '_' . strtolower($_elementName);
                     $$_variableName =
@@ -178,7 +178,7 @@ class HtmlSelectDate extends Base
                 foreach ([
                              'Y' => 'Year',
                              'm' => 'Month',
-                             'd' => 'Day'
+                             'd' => 'Day',
                          ] as $_elementKey => $_elementName) {
                     $_variableName = '_' . strtolower($_elementName);
                     $$_variableName = $time[$field_array][$prefix . $_elementName] ?? date($_elementKey);
@@ -213,7 +213,7 @@ class HtmlSelectDate extends Base
         // Note preg_match('!^(\+|\-)\s*(\d+)$!', $end_year, $match) is slower than trim+substr
         foreach ([
                      'start',
-                     'end'
+                     'end',
                  ] as $key) {
             $key .= '_year';
             $t = $$key;
