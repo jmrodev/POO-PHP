@@ -1,6 +1,7 @@
 <?php
 
 namespace Smarty\Compile\Modifier;
+
 /**
  * Smarty nl2br modifier plugin
  * Type:     modifier
@@ -9,9 +10,10 @@ namespace Smarty\Compile\Modifier;
  *
  */
 
-class Nl2brModifierCompiler extends Base {
-
-	public function compile($params, \Smarty\Compiler\Template $compiler) {
-		return 'nl2br((string) ' . $params[0] . ', (bool) ' . ($params[1] ?? true) . ')';
-	}
+class Nl2brModifierCompiler extends Base
+{
+    public function compile($params, \Smarty\Compiler\Template $compiler)
+    {
+        return 'nl2br((string) ' . $params[0] . ', (bool) ' . ($params[1] ?? true) . ')';
+    }
 }

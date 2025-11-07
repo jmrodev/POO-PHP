@@ -1,5 +1,7 @@
 <?php
+
 namespace Smarty\Compile\Modifier;
+
 /**
  * Smarty str_repeat modifier plugin
  * Type:     modifier
@@ -8,10 +10,11 @@ namespace Smarty\Compile\Modifier;
  *
  */
 
-class StrRepeatModifierCompiler extends Base {
-
-	public function compile($params, \Smarty\Compiler\Template $compiler) {
-		return 'str_repeat((string) ' . $params[0] . ', (int) ' . $params[1] . ')';
-	}
+class StrRepeatModifierCompiler extends Base
+{
+    public function compile($params, \Smarty\Compiler\Template $compiler)
+    {
+        return 'str_repeat((string) ' . $params[0] . ', (int) ' . $params[1] . ')';
+    }
 
 }

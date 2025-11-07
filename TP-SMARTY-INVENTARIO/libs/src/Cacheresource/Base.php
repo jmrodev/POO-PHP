@@ -13,7 +13,6 @@ use Smarty\Template\Cached;
  */
 abstract class Base
 {
-
     /**
      * populate Cached Object with metadata from Resource
      *
@@ -33,19 +32,19 @@ abstract class Base
      */
     abstract public function populateTimestamp(Cached $cached);
 
-	/**
-	 * Read the cached template and process header
-	 *
-	 * @param Template $_template template object
-	 * @param Cached|null $cached cached object
-	 * @param boolean $update flag if called because cache update
-	 *
-	 * @return boolean true or false if the cached content does not exist
-	 */
+    /**
+     * Read the cached template and process header
+     *
+     * @param Template $_template template object
+     * @param Cached|null $cached cached object
+     * @param boolean $update flag if called because cache update
+     *
+     * @return boolean true or false if the cached content does not exist
+     */
     abstract public function process(
-	    Template $_template,
-	    ?Cached  $cached = null,
-	             $update = false
+        Template $_template,
+        ?Cached  $cached = null,
+        $update = false
     );
 
     /**

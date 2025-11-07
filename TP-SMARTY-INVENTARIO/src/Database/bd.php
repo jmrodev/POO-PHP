@@ -1,6 +1,7 @@
 <?php
 
-class Database {
+class Database
+{
     private static $instance = null;
     private $connection;
 
@@ -9,7 +10,8 @@ class Database {
     private $password = "jmro1975";
     private $dbname = "inventarioRepuestos";
 
-    private function __construct() {
+    private function __construct()
+    {
         try {
             $this->connection = new PDO(
                 "mysql:host={$this->servername};dbname={$this->dbname};charset=utf8mb4",
@@ -22,16 +24,16 @@ class Database {
         }
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!self::$instance) {
             self::$instance = new Database();
         }
         return self::$instance;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->connection;
     }
 }
-
-?>

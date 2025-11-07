@@ -14,12 +14,11 @@ namespace Smarty\Compile\Modifier;
  * @author Uwe Tews
  */
 
-class CatModifierCompiler extends Base {
-
-	public function compile($params, \Smarty\Compiler\Template $compiler) {
-		return '(' . implode(').(', $params) . ')';
-	}
+class CatModifierCompiler extends Base
+{
+    public function compile($params, \Smarty\Compiler\Template $compiler)
+    {
+        return '(' . implode(').(', $params) . ')';
+    }
 
 }
-
-

@@ -1,5 +1,7 @@
 <?php
+
 namespace Smarty\Compile\Modifier;
+
 /**
  * Smarty strip modifier plugin
  * Type:     modifier
@@ -12,13 +14,14 @@ namespace Smarty\Compile\Modifier;
  * @author Uwe Tews
  */
 
-class StripModifierCompiler extends Base {
-
-	public function compile($params, \Smarty\Compiler\Template $compiler) {
-		if (!isset($params[ 1 ])) {
-			$params[ 1 ] = "' '";
-		}
-		return "preg_replace('!\s+!" . \Smarty\Smarty::$_UTF8_MODIFIER . "', {$params[1]},{$params[0]})";
-	}
+class StripModifierCompiler extends Base
+{
+    public function compile($params, \Smarty\Compiler\Template $compiler)
+    {
+        if (!isset($params[ 1 ])) {
+            $params[ 1 ] = "' '";
+        }
+        return "preg_replace('!\s+!" . \Smarty\Smarty::$_UTF8_MODIFIER . "', {$params[1]},{$params[0]})";
+    }
 
 }

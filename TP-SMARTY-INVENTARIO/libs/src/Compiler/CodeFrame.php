@@ -16,26 +16,26 @@ use Smarty\Exception;
  */
 class CodeFrame
 {
+    /**
+     * @var \Smarty\Template
+     */
+    private $_template;
 
-	/**
-	 * @var \Smarty\Template
-	 */
-	private $_template;
+    public function __construct(\Smarty\Template $_template)
+    {
+        $this->_template = $_template;
+    }
 
-	public function __construct(\Smarty\Template $_template) {
-		$this->_template = $_template;
-	}
-
-	/**
-	 * Create code frame for compiled and cached templates
-	 *
-	 * @param string $content optional template content
-	 * @param string $functions compiled template function and block code
-	 * @param bool $cache flag for cache file
-	 * @param Template|null $compiler
-	 *
-	 * @return string
-	 * @throws Exception
+    /**
+     * Create code frame for compiled and cached templates
+     *
+     * @param string $content optional template content
+     * @param string $functions compiled template function and block code
+     * @param bool $cache flag for cache file
+     * @param Template|null $compiler
+     *
+     * @return string
+     * @throws Exception
 */
     public function create(
         $content = '',
@@ -56,18 +56,18 @@ class CodeFrame
             $properties[ 'cache_lifetime' ] = $this->_template->cache_lifetime;
         }
         $output = sprintf(
-			"<?php\n/* Smarty version %s, created on %s\n  from '%s' */\n\n",
+            "<?php\n/* Smarty version %s, created on %s\n  from '%s' */\n\n",
             $properties[ 'version' ],
-	        date("Y-m-d H:i:s"),
-	        str_replace('*/', '* /', $this->_template->getSource()->getFullResourceName())
+            date("Y-m-d H:i:s"),
+            str_replace('*/', '* /', $this->_template->getSource()->getFullResourceName())
         );
         $output .= "/* @var \\Smarty\\Template \$_smarty_tpl */\n";
         $dec = "\$_smarty_tpl->" . ($cache ? "getCached()" : "getCompiled()");
-		$dec .= "->isFresh(\$_smarty_tpl, " . var_export($properties, true) . ')';
+        $dec .= "->isFresh(\$_smarty_tpl, " . var_export($properties, true) . ')';
         $output .= "if ({$dec}) {\n";
         $output .= "function {$properties['unifunc']} (\\Smarty\\Template \$_smarty_tpl) {\n";
 
-		$output .= $this->insertLocalVariables();
+        $output .= $this->insertLocalVariables();
 
         if (!$cache && !empty($compiler->tpl_function)) {
             $output .= '$_smarty_tpl->getSmarty()->getRuntime(\'TplFunction\')->registerTplFunctions($_smarty_tpl, ';
@@ -75,10 +75,10 @@ class CodeFrame
             $output .= ");\n";
         }
         if ($cache && $this->_template->getSmarty()->hasRuntime('TplFunction')) {
-			if ($tplfunctions = $this->_template->getSmarty()->getRuntime('TplFunction')->getTplFunction($this->_template)) {
-				$output .= "\$_smarty_tpl->getSmarty()->getRuntime('TplFunction')->registerTplFunctions(\$_smarty_tpl, " .
-					var_export($tplfunctions, true) . ");\n";
-			}
+            if ($tplfunctions = $this->_template->getSmarty()->getRuntime('TplFunction')->getTplFunction($this->_template)) {
+                $output .= "\$_smarty_tpl->getSmarty()->getRuntime('TplFunction')->registerTplFunctions(\$_smarty_tpl, " .
+                    var_export($tplfunctions, true) . ");\n";
+            }
         }
         $output .= "?>";
         $output .= $content;
@@ -117,10 +117,11 @@ class CodeFrame
         return $output;
     }
 
-	/**
-	 * @return string
-	 */
-	public function insertLocalVariables(): string {
-		return '$_smarty_current_dir = ' . var_export(dirname($this->_template->getSource()->getFilepath() ?? '.'), true) . ";\n";
-	}
+    /**
+     * @return string
+     */
+    public function insertLocalVariables(): string
+    {
+        return '$_smarty_current_dir = ' . var_export(dirname($this->_template->getSource()->getFilepath() ?? '.'), true) . ";\n";
+    }
 }

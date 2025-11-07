@@ -19,17 +19,25 @@ class Variable
      */
     public $value = null;
 
-	/**
-	 * Other r/w properties for foreach, for, while, etc.
-	 */
-	public $step, $total, $first, $last, $key, $show, $iteration, $index = null;
+    /**
+     * Other r/w properties for foreach, for, while, etc.
+     */
+    public $step;
+    public $total;
+    public $first;
+    public $last;
+    public $key;
+    public $show;
+    public $iteration;
+    public $index = null;
 
-	/**
-	 * @param mixed|null $value
-	 */
-	public function setValue($value): void {
-		$this->value = $value;
-	}
+    /**
+     * @param mixed|null $value
+     */
+    public function setValue($value): void
+    {
+        $this->value = $value;
+    }
 
     /**
      * if true any output of this variable will be not cached
@@ -38,12 +46,13 @@ class Variable
      */
     private $nocache = false;
 
-	/**
-	 * @param bool $nocache
-	 */
-	public function setNocache(bool $nocache): void {
-		$this->nocache = $nocache;
-	}
+    /**
+     * @param bool $nocache
+     */
+    public function setNocache(bool $nocache): void
+    {
+        $this->nocache = $nocache;
+    }
 
     /**
      * create Smarty variable object
@@ -57,9 +66,10 @@ class Variable
         $this->nocache = $nocache;
     }
 
-	public function getValue() {
-		return $this->value;
-	}
+    public function getValue()
+    {
+        return $this->value;
+    }
 
     /**
      * <<magic>> String conversion
@@ -71,48 +81,51 @@ class Variable
         return (string)$this->value;
     }
 
-	/**
-	 * Handles ++$a and --$a in templates.
-	 *
-	 * @param $operator '++' or '--', defaults to '++'
-	 *
-	 * @return int|mixed
-	 * @throws Exception
-	 */
-	public function preIncDec($operator = '++') {
-		if ($operator == '--') {
-			return --$this->value;
-		} elseif ($operator == '++') {
-			return ++$this->value;
-		} else {
-			throw new Exception("Invalid incdec operator. Use '--' or '++'.");
-		}
-		return $this->value;
-	}
+    /**
+     * Handles ++$a and --$a in templates.
+     *
+     * @param $operator '++' or '--', defaults to '++'
+     *
+     * @return int|mixed
+     * @throws Exception
+     */
+    public function preIncDec($operator = '++')
+    {
+        if ($operator == '--') {
+            return --$this->value;
+        } elseif ($operator == '++') {
+            return ++$this->value;
+        } else {
+            throw new Exception("Invalid incdec operator. Use '--' or '++'.");
+        }
+        return $this->value;
+    }
 
-	/**
-	 * Handles $a++ and $a-- in templates.
-	 *
-	 * @param $operator '++' or '--', defaults to '++'
-	 *
-	 * @return int|mixed
-	 * @throws Exception
-	 */
-	public function postIncDec($operator = '++') {
-		if ($operator == '--') {
-			return $this->value--;
-		} elseif ($operator == '++') {
-			return $this->value++;
-		} else {
-			throw new Exception("Invalid incdec operator. Use '--' or '++'.");
-		}
-	}
+    /**
+     * Handles $a++ and $a-- in templates.
+     *
+     * @param $operator '++' or '--', defaults to '++'
+     *
+     * @return int|mixed
+     * @throws Exception
+     */
+    public function postIncDec($operator = '++')
+    {
+        if ($operator == '--') {
+            return $this->value--;
+        } elseif ($operator == '++') {
+            return $this->value++;
+        } else {
+            throw new Exception("Invalid incdec operator. Use '--' or '++'.");
+        }
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isNocache(): bool {
-		return $this->nocache;
-	}
+    /**
+     * @return bool
+     */
+    public function isNocache(): bool
+    {
+        return $this->nocache;
+    }
 
 }

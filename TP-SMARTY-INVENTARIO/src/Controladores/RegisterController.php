@@ -1,4 +1,5 @@
 <?php
+
 class RegisterController
 {
     private PersonaRepository $personaRepository;
@@ -78,9 +79,7 @@ class RegisterController
                 $errors[] = "Error al registrar el cliente. Inténtelo de nuevo.";
             }
         }
-        
+
         $this->showRegistrationForm($errors);
     }
 }
-
-?>

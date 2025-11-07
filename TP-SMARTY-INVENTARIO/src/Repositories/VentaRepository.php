@@ -1,13 +1,16 @@
 <?php
 
-class VentaRepository {
+class VentaRepository
+{
     private $db;
 
-    public function __construct(\PDO $pdo) {
+    public function __construct(\PDO $pdo)
+    {
         $this->db = $pdo;
     }
 
-    public function guardar(Venta $venta): bool {
+    public function guardar(Venta $venta): bool
+    {
         if ($venta->getId() === null) {
             $stmt = $this->db->prepare("INSERT INTO ventas (repuesto_id, cliente_id, cantidad, fecha) VALUES (:repuesto_id, :cliente_id, :cantidad, :fecha)");
             $stmt->bindParam(':repuesto_id', $venta->getRepuesto()->getId(), PDO::PARAM_INT);
@@ -40,13 +43,15 @@ class VentaRepository {
         }
     }
 
-    public function eliminar(int $id): bool {
+    public function eliminar(int $id): bool
+    {
         $stmt = $this->db->prepare("DELETE FROM ventas WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function obtenerTodos(): array {
+    public function obtenerTodos(): array
+    {
         $stmt = $this->db->query("SELECT v.id, v.repuesto_id, v.cliente_id, v.cantidad, v.fecha, r.nombre as repuesto_nombre, r.precio, r.cantidad as repuesto_cantidad, c.nombre as cliente_nombre, c.dni FROM ventas v JOIN repuestos r ON v.repuesto_id = r.id JOIN personas c ON v.cliente_id = c.id WHERE c.role = 'client'");
         $ventasData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $ventas = [];
@@ -58,7 +63,8 @@ class VentaRepository {
         return $ventas;
     }
 
-    public function obtenerPorId(int $id): ?Venta {
+    public function obtenerPorId(int $id): ?Venta
+    {
         $stmt = $this->db->prepare("SELECT v.id, v.repuesto_id, v.cliente_id, v.cantidad, v.fecha, r.nombre as repuesto_nombre, r.precio, r.cantidad as repuesto_cantidad, c.nombre as cliente_nombre, c.dni FROM ventas v JOIN repuestos r ON v.repuesto_id = r.id JOIN personas c ON v.cliente_id = c.id WHERE v.id = :id AND c.role = 'client'");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

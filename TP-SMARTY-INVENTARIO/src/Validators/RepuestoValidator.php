@@ -1,9 +1,11 @@
 <?php
 
-class RepuestoValidator {
+class RepuestoValidator
+{
     private $errors = [];
 
-    public function validate(array $data, array $files, bool $isUpdate = false) {
+    public function validate(array $data, array $files, bool $isUpdate = false)
+    {
         if ($isUpdate && (!isset($data['id']) || empty($data['id']))) {
             $this->errors[] = "ID del repuesto es obligatorio para actualizar.";
         }
@@ -35,9 +37,8 @@ class RepuestoValidator {
         return empty($this->errors);
     }
 
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 }
-
-?>

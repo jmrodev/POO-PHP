@@ -1,16 +1,19 @@
 <?php
 
-class VentaValidator {
+class VentaValidator
+{
     private $errors = [];
     private $repuestoRepository;
     private $clienteRepository;
 
-    public function __construct(RepuestoRepository $repuestoRepository, ClienteRepository $clienteRepository) {
+    public function __construct(RepuestoRepository $repuestoRepository, ClienteRepository $clienteRepository)
+    {
         $this->repuestoRepository = $repuestoRepository;
         $this->clienteRepository = $clienteRepository;
     }
 
-    public function validate(array $data, bool $isUpdate = false) {
+    public function validate(array $data, bool $isUpdate = false)
+    {
         if ($isUpdate && (!isset($data['id']) || empty($data['id']))) {
             $this->errors[] = "ID de la venta es obligatorio para actualizar.";
         }
@@ -55,9 +58,8 @@ class VentaValidator {
         return empty($this->errors);
     }
 
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 }
-
-?>

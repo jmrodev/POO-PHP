@@ -4,20 +4,21 @@ namespace Smarty\Compiler;
 
 use Smarty\Smarty;
 
-abstract class BaseCompiler {
+abstract class BaseCompiler
+{
+    /**
+     * Smarty object
+     *
+     * @var Smarty
+     */
+    protected $smarty = null;
 
-	/**
-	 * Smarty object
-	 *
-	 * @var Smarty
-	 */
-	protected $smarty = null;
-
-	/**
-	 * @return Smarty|null
-	 */
-	public function getSmarty(): Smarty {
-		return $this->smarty;
-	}
+    /**
+     * @return Smarty|null
+     */
+    public function getSmarty(): Smarty
+    {
+        return $this->smarty;
+    }
 
 }

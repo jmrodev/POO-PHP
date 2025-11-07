@@ -31,7 +31,8 @@ class ErrorHandler
     /**
      * Enable error handler to intercept errors
      */
-    public function activate() {
+    public function activate()
+    {
         /*
             Error muting is done because some people implemented custom error_handlers using
             https://php.net/set_error_handler and for some reason did not understand the following paragraph:
@@ -49,7 +50,8 @@ class ErrorHandler
     /**
      * Disable error handler
      */
-    public function deactivate() {
+    public function deactivate()
+    {
         restore_error_handler();
         $this->previousErrorHandler = null;
     }
@@ -70,9 +72,9 @@ class ErrorHandler
     public function handleError($errno, $errstr, $errfile, $errline, $errcontext = [])
     {
         if ($this->allowUndefinedProperties && preg_match(
-                '/^(Undefined property)/',
-                $errstr
-            )) {
+            '/^(Undefined property)/',
+            $errstr
+        )) {
             return; // suppresses this error
         }
 
@@ -84,9 +86,9 @@ class ErrorHandler
         }
 
         if ($this->allowDereferencingNonObjects && preg_match(
-                '/^Attempt to read property ".+?" on/',
-                $errstr
-            )) {
+            '/^Attempt to read property ".+?" on/',
+            $errstr
+        )) {
             return; // suppresses this error
         }
 

@@ -129,7 +129,8 @@ class Template extends Base
         return $code;
     }
 
-    private function getChunkedSubtrees() {
+    private function getChunkedSubtrees()
+    {
         $chunks = array();
         $currentMode = null;
         $currentChunk = array();

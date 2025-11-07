@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Smarty Internal Plugin Compile Continue
  * Compiles the {continue} tag
@@ -16,12 +17,12 @@ namespace Smarty\Compile\Tag;
 
 
  */
-class ContinueTag extends BreakTag {
-
-	/**
-	 * Tag name
-	 *
-	 * @var string
-	 */
-	protected $tag = 'continue';
+class ContinueTag extends BreakTag
+{
+    /**
+     * Tag name
+     *
+     * @var string
+     */
+    protected $tag = 'continue';
 }

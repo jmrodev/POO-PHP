@@ -1,16 +1,18 @@
 <?php
 
-class ClienteRepository {
-
+class ClienteRepository
+{
     private $db;
     private \App\Repositories\PersonaRepository $personaRepository;
 
-    public function __construct(\PDO $pdo) {
+    public function __construct(\PDO $pdo)
+    {
         $this->db = $pdo;
         $this->personaRepository = new \App\Repositories\PersonaRepository($this->db);
     }
 
-    public function obtenerTodos() {
+    public function obtenerTodos()
+    {
         $stmt = $this->db->query("SELECT id, nombre, username, password, dni FROM personas WHERE role = 'client'");
         $clientesData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $clientes = [];
@@ -20,7 +22,8 @@ class ClienteRepository {
         return $clientes;
     }
 
-    public function obtenerPorId($id): ?\App\Modelos\Cliente {
+    public function obtenerPorId($id): ?\App\Modelos\Cliente
+    {
         $stmt = $this->db->prepare("SELECT id, nombre, username, password, dni FROM personas WHERE id = :id AND role = 'client'");
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -31,7 +34,8 @@ class ClienteRepository {
         return null;
     }
 
-    public function guardar(\App\Modelos\Cliente $cliente) {
+    public function guardar(\App\Modelos\Cliente $cliente)
+    {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         try {
@@ -44,7 +48,8 @@ class ClienteRepository {
         }
     }
 
-    public function eliminar($id) {
+    public function eliminar($id)
+    {
         $stmt = $this->db->prepare("DELETE FROM personas WHERE id = :id AND role = 'client'");
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         return $stmt->execute();

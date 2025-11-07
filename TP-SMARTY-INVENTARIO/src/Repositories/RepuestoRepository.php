@@ -1,14 +1,16 @@
 <?php
 
-class RepuestoRepository {
-
+class RepuestoRepository
+{
     private $db;
 
-    public function __construct(\PDO $pdo) {
+    public function __construct(\PDO $pdo)
+    {
         $this->db = $pdo;
     }
 
-    public function obtenerTodos() {
+    public function obtenerTodos()
+    {
         $stmt = $this->db->query("SELECT id, nombre, precio, cantidad, imagen FROM repuestos");
         $repuestosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $repuestos = [];
@@ -18,7 +20,8 @@ class RepuestoRepository {
         return $repuestos;
     }
 
-    public function obtenerPorId($id) {
+    public function obtenerPorId($id)
+    {
         $stmt = $this->db->prepare("SELECT id, nombre, precio, cantidad, imagen FROM repuestos WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -29,7 +32,8 @@ class RepuestoRepository {
         return null;
     }
 
-    public function guardar(Repuesto $repuesto) {
+    public function guardar(Repuesto $repuesto)
+    {
         if ($repuesto->getId() === null) {
             $stmt = $this->db->prepare("INSERT INTO repuestos (nombre, precio, cantidad, imagen) VALUES (:nombre, :precio, :cantidad, :imagen)");
             $stmt->bindParam(':nombre', $repuesto->getNombre());
@@ -52,20 +56,23 @@ class RepuestoRepository {
         }
     }
 
-    public function eliminar($id) {
+    public function eliminar($id)
+    {
         $stmt = $this->db->prepare("DELETE FROM repuestos WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function restarCantidad($id, $cantidad) {
+    public function restarCantidad($id, $cantidad)
+    {
         $stmt = $this->db->prepare("UPDATE repuestos SET cantidad = cantidad - :cantidad WHERE id = :id AND cantidad >= :cantidad");
         $stmt->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function obtenerCantidad($id) {
+    public function obtenerCantidad($id)
+    {
         $stmt = $this->db->prepare("SELECT cantidad FROM repuestos WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

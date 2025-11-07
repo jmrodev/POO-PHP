@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Smarty Resource Plugin
  *
@@ -18,33 +19,35 @@ use Smarty\Template;
 
 
  */
-abstract class RecompiledPlugin extends BasePlugin {
+abstract class RecompiledPlugin extends BasePlugin
+{
+    /**
+     * Flag that it's an recompiled resource
+     *
+     * @var bool
+     */
+    public $recompiled = true;
 
-	/**
-	 * Flag that it's an recompiled resource
-	 *
-	 * @var bool
-	 */
-	public $recompiled = true;
+    /**
+     * Flag if resource does allow compilation
+     *
+     * @return bool
+     */
+    public function supportsCompiledTemplates(): bool
+    {
+        return false;
+    }
 
-	/**
-	 * Flag if resource does allow compilation
-	 *
-	 * @return bool
-	 */
-	public function supportsCompiledTemplates(): bool {
-		return false;
-	}
-
-	/*
-	   * Disable timestamp checks for recompiled resource.
-	   *
-	   * @return bool
-	   */
-	/**
-	 * @return bool
-	 */
-	public function checkTimestamps() {
-		return false;
-	}
+    /*
+       * Disable timestamp checks for recompiled resource.
+       *
+       * @return bool
+       */
+    /**
+     * @return bool
+     */
+    public function checkTimestamps()
+    {
+        return false;
+    }
 }

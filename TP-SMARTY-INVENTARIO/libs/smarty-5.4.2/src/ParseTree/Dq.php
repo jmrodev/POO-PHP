@@ -1,6 +1,7 @@
 <?php
 
 namespace Smarty\ParseTree;
+
 /**
  * Double-quoted string inside a tag.
  *

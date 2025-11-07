@@ -14,7 +14,6 @@ use Smarty\Template\Source;
  */
 class ExtendsPlugin extends BasePlugin
 {
-
     /**
      * populate Source Object with metadata from Resource
      *

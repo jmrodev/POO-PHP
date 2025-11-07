@@ -1,39 +1,30 @@
 <?php
 
-class ClienteController {
-    private $clienteRepository; // Use repository instead of model directly for DB ops
+class ClienteController extends BaseController
+{
+    private $clienteRepository;
     private $clienteVista;
 
     public function __construct()
     {
-        $config = [
-            'servername' => '127.0.0.1',
-            'username' => 'root',
-            'password' => 'jmro1975',
-            'dbname' => 'inventarioRepuestos'
-        ];
-
-        try {
-            $pdo = new PDO("mysql:host=" . $config['servername'] . ";dbname=" . $config['dbname'] . ";charset=utf8mb4", $config['username'], $config['password']);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Error de conexión a la base de datos: " . $e->getMessage());
-        }
-
-        $this->clienteRepository = new ClienteRepository($pdo); // Pass PDO to repository
-        $this->clienteVista = new ClienteVista();
+        parent::__construct();
+        $this->clienteRepository = new ClienteRepository($this->db);
+        $this->clienteVista = $this->loadView('ClienteVista');
     }
 
-    public function showAll() {
+    public function showAll()
+    {
         $clientes = $this->clienteRepository->obtenerTodos(); // Use repository method
         $this->clienteVista->showClientes($clientes);
     }
 
-    public function showFormCreate() {
+    public function showFormCreate()
+    {
         $this->clienteVista->displayForm();
     }
 
-    public function create() {
+    public function create()
+    {
         $validator = new ClienteValidator();
         $data = ['nombre' => $_POST['nombre'] ?? '', 'dni' => $_POST['dni'] ?? ''];
 
@@ -46,28 +37,29 @@ class ClienteController {
         if (empty($generatedUsername)) {
             $generatedUsername = 'cliente_' . uniqid(); // Generate a unique username
         }
-        $temporaryPassword = 'password'; 
+        $temporaryPassword = 'password';
         $hashed_password = password_hash($temporaryPassword, PASSWORD_DEFAULT);
 
         $newCliente = new Cliente(null, $data['nombre'], $generatedUsername, $hashed_password, $data['dni']);
-            header('Location: /clientes');
-            exit();
+        if ($this->clienteRepository->guardar($newCliente)) { // Assuming this was the missing condition
+            $this->redirect('/clientes');
         } else {
             $this->clienteVista->displayForm("Error al crear el cliente.", false);
         }
     }
 
-    public function showFormEdit($id) {
+    public function showFormEdit($id)
+    {
         $cliente = $this->clienteRepository->obtenerPorId($id); // Use repository method
         if ($cliente) {
             $this->clienteVista->displayForm("", true, $cliente);
         } else {
-            header('Location: ' . BASE_URL . 'clientes');
-            exit();
+            $this->redirect(BASE_URL . 'clientes');
         }
     }
 
-    public function update() {
+    public function update()
+    {
         $validator = new ClienteValidator();
         $data = ['id' => $_POST['id'] ?? null, 'nombre' => $_POST['nombre'] ?? '', 'dni' => $_POST['dni'] ?? ''];
 
@@ -81,31 +73,30 @@ class ClienteController {
         $existingCliente = $this->clienteRepository->obtenerPorId($data['id']);
         $cliente = new Cliente($data['id'], $data['nombre'], $existingCliente->getUsername(), $existingCliente->getPassword(), $data['dni']);
         if ($this->clienteRepository->guardar($cliente)) { // Use repository method
-            header('Location: /clientes');
-            exit();
+            $this->redirect('/clientes');
         } else {
             $this->clienteVista->displayForm("Error al actualizar el cliente.", false, $cliente);
         }
     }
 
-    public function showConfirmDelete($id) {
+    public function showConfirmDelete($id)
+    {
         $cliente = $this->clienteRepository->obtenerPorId($id); // Use repository method
         if ($cliente) {
-            $this->clienteVista->displayConfirmDelete($cliente);
+            // Assuming there's a method to display a confirmation view in ClienteVista
+            $this->clienteVista->showConfirmDelete($cliente);
         } else {
-            header('Location: ' . BASE_URL . 'clientes');
-            exit();
+            $this->redirect(BASE_URL . 'clientes');
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         if ($this->clienteRepository->eliminar($id)) { // Use repository method
             header('Location: ' . BASE_URL . 'clientes');
             exit();
         } else {
-            // Optionally display an error message on the clients list page
-            header('Location: ' . BASE_URL . 'clientes');
-            exit();
+            $this->redirect(BASE_URL . 'clientes');
         }
     }
 }

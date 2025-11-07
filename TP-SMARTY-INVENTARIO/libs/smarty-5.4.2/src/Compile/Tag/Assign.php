@@ -22,20 +22,20 @@ use Smarty\Smarty;
  */
 class Assign extends Base
 {
-	/**
-	 * @inheritdoc
-	 */
-	protected $required_attributes = ['var', 'value'];
+    /**
+     * @inheritdoc
+     */
+    protected $required_attributes = ['var', 'value'];
 
-	/**
-	 * @inheritdoc
-	 */
-	protected $optional_attributes = ['scope'];
+    /**
+     * @inheritdoc
+     */
+    protected $optional_attributes = ['scope'];
 
-	/**
-	 * @inheritdoc
-	 */
-	protected $shorttag_order = ['var', 'value'];
+    /**
+     * @inheritdoc
+     */
+    protected $shorttag_order = ['var', 'value'];
 
     /**
      * Attribute definition: Overwrites base class.
@@ -55,8 +55,8 @@ class Assign extends Base
      * @return string compiled code
      * @throws \Smarty\CompilerException
      */
-	public function compile($args, \Smarty\Compiler\Template $compiler, $parameter = array(), $tag = null, $function = null): string
-	{
+    public function compile($args, \Smarty\Compiler\Template $compiler, $parameter = array(), $tag = null, $function = null): string
+    {
 
         $_nocache = false;
         // check and get attributes

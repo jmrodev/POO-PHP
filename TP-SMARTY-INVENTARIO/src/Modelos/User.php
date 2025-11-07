@@ -1,33 +1,40 @@
 <?php
 
-class User {
+class User
+{
     private $id;
     private $username;
     private $password;
 
-    public function __construct($id = null, $username = null, $password = null) {
+    public function __construct($id = null, $username = null, $password = null)
+    {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = $password;
     }
 
-    public function findByUsername($username) {
+    public function findByUsername($username)
+    {
         $db = Database::getInstance()->getConnection();
         $stmt = $db->prepare("SELECT id, username, password FROM users WHERE username = :username");
         $stmt->bindParam(':username', $username);
@@ -39,7 +46,8 @@ class User {
         return null;
     }
 
-    public function save() {
+    public function save()
+    {
         $db = Database::getInstance()->getConnection();
         if ($this->id === null) {
             $stmt = $db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
@@ -59,5 +67,3 @@ class User {
         }
     }
 }
-
-?>

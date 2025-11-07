@@ -1,14 +1,17 @@
 <?php
 
-class HomeController {
+class HomeController extends BaseController
+{
     private $homeVista;
 
-    public function __construct() {
-        $this->homeVista = new HomeVista();
+    public function __construct()
+    {
+        parent::__construct();
+        $this->homeVista = $this->loadView('HomeVista');
     }
 
-    public function show() {
+    public function show()
+    {
         $this->homeVista->displayHome();
     }
 }
-?>

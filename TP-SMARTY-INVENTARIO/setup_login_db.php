@@ -32,5 +32,3 @@ try {
 } catch (PDOException $e) {
     die("Error setting up database: " . $e->getMessage());
 }
-
-?>

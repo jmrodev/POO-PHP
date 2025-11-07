@@ -1,15 +1,17 @@
 <?php
 
-class DBConnection {
+class DBConnection
+{
     private static $instance = null;
     private $conn;
 
     private $host = 'localhost';
-    private $db_name = 'inventario_db'; // Assuming a database named inventario_db
+    private $db_name = 'inventarioRepuestos';
     private $username = 'root';
-    private $password = ''; // No password for local development
+    private $password = 'jmro1975';
 
-    private function __construct() {
+    private function __construct()
+    {
         try {
             $this->conn = new PDO(
                 'mysql:host=' . $this->host . ';dbname=' . $this->db_name,
@@ -23,14 +25,16 @@ class DBConnection {
         }
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!self::$instance) {
             self::$instance = new DBConnection();
         }
         return self::$instance;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 }
@@ -38,5 +42,3 @@ class DBConnection {
 // Example usage (can be removed later if not needed directly here)
 // $db = DBConnection::getInstance();
 // $pdo = $db->getConnection();
-
-?>

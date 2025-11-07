@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Example Application
  *
 
  */
 
-$smarty = new \Smarty\Smarty;
+$smarty = new \Smarty\Smarty();
 
 $smarty->debugging = true;
 $smarty->caching = true;

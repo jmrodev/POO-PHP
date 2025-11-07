@@ -1,14 +1,15 @@
 <?php
 
-class Repuesto {
-
+class Repuesto
+{
     protected $id;
     protected $nombre;
     protected $precio;
     protected $cantidad;
     protected $imagen;
 
-    public function __construct($id = null, $nombre = null, $precio = null, $cantidad = null, $imagen = null) {
+    public function __construct($id = null, $nombre = null, $precio = null, $cantidad = null, $imagen = null)
+    {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->precio = $precio;
@@ -16,43 +17,53 @@ class Repuesto {
         $this->imagen = $imagen;
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getNombre() {
+    public function getNombre()
+    {
         return $this->nombre;
     }
 
-    public function getPrecio() {
+    public function getPrecio()
+    {
         return $this->precio;
     }
 
-    public function getCantidad() {
+    public function getCantidad()
+    {
         return $this->cantidad;
     }
 
-    public function getImagen() {
+    public function getImagen()
+    {
         return $this->imagen;
     }
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
-    public function setNombre($nombre) {
+    public function setNombre($nombre)
+    {
         $this->nombre = $nombre;
     }
 
-    public function setPrecio($precio) {
+    public function setPrecio($precio)
+    {
         $this->precio = $precio;
     }
 
-    public function setCantidad($cantidad) {
+    public function setCantidad($cantidad)
+    {
         $this->cantidad = $cantidad;
     }
 
-    public function setImagen($imagen) {
+    public function setImagen($imagen)
+    {
         $this->imagen = $imagen;
     }
 }

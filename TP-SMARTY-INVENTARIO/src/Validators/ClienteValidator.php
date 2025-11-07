@@ -1,9 +1,11 @@
 <?php
 
-class ClienteValidator {
+class ClienteValidator
+{
     private $errors = [];
 
-    public function validate(array $data, bool $isUpdate = false) {
+    public function validate(array $data, bool $isUpdate = false)
+    {
         if ($isUpdate && (!isset($data['id']) || empty($data['id']))) {
             $this->errors[] = "ID del cliente es obligatorio para actualizar.";
         }
@@ -18,9 +20,8 @@ class ClienteValidator {
         return empty($this->errors);
     }
 
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 }
-
-?>
