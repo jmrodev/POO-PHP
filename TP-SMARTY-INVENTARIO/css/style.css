@@ -191,6 +191,15 @@ table tbody tr:hover {
     background-color: #0056b3;
 }
 
+.detail-button {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.detail-button:hover {
+    background-color: #138496;
+}
+
 .delete-button {
     background-color: #dc3545;
     color: white;

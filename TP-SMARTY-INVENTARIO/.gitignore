@@ -1,2 +1,6 @@
 vendor/
 .php-cs-fixer.cache
+.env
+cache/
+templates_c/
+*.log

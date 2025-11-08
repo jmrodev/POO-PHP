@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Validators;
+
 class RepuestoValidator
 {
     private $errors = [];
@@ -26,7 +28,7 @@ class RepuestoValidator
         // Image validation (only if a new image is uploaded)
         if (isset($files['imagen']) && $files['imagen']['error'] === UPLOAD_ERR_OK) {
             $allowedTypes = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
-            $detectedType = exif_imagetype($files['imagen']['tmp_name']);
+            $detectedType = \exif_imagetype($files['imagen']['tmp_name']);
 
             if (!in_array($detectedType, $allowedTypes)) {
                 $this->errors[] = "El archivo de imagen debe ser JPG, PNG o GIF.";

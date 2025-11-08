@@ -1,5 +1,15 @@
 <?php
 
+require_once __DIR__ . '/src/Repositories/PersonaRepository.php';
+require_once __DIR__ . '/src/Modelos/Persona.php';
+require_once __DIR__ . '/src/Modelos/Administrador.php';
+
+
+use App\Repositories\PersonaRepository;
+use App\Modelos\Administrador;
+use App\Modelos\Persona;
+use App\Modelos\Usuario;
+
 $config = [
     'servername' => '127.0.0.1',
     'username' => 'root',
@@ -15,14 +25,14 @@ try {
     $pdo->exec($sql);
     echo "Database schema from inventario_db.sql applied successfully.\n";
 
-    $personaRepository = new App\Repositories\PersonaRepository($pdo);
+    $personaRepository = new PersonaRepository($pdo);
 
     $username = 'admin';
     $password = password_hash('Jmro1975', PASSWORD_DEFAULT);
     $nombre = 'Administrador Principal';
 
     if (!$personaRepository->findByUsername($username)) {
-        $admin = new App\Modelos\Administrador(null, $nombre, $username, $password);
+        $admin = new Administrador(null, $nombre, $username, $password);
         $personaRepository->save($admin);
         echo "Default admin user added.\n";
     } else {

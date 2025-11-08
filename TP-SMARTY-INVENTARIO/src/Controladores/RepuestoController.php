@@ -1,18 +1,23 @@
 <?php
 
+namespace App\Controladores;
+
+use App\Modelos\Repuesto;
+use App\Repositories\RepuestoRepository;
+use App\Validators\RepuestoValidator;
+use Smarty;
+
 class RepuestoController extends BaseController
 {
-    private $repuestoRepository;
-    private $repuestoVista;
+    private RepuestoRepository $repuestoRepository;
 
-    public function __construct()
+    public function __construct(\Smarty $smarty, RepuestoRepository $repuestoRepository)
     {
-        parent::__construct();
-        $this->repuestoRepository = new RepuestoRepository($this->db);
-        $this->repuestoVista = $this->loadView('RepuestoVista');
+        parent::__construct($smarty);
+        $this->repuestoRepository = $repuestoRepository;
     }
 
-    private function handleImageUpload($currentImage = null)
+    private function handleImageUpload(?string $currentImage = null): ?string
     {
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['imagen']['tmp_name'];
@@ -24,102 +29,186 @@ class RepuestoController extends BaseController
         return $currentImage; // Return current image if no new one uploaded or upload failed
     }
 
-    public function showAll()
+    public function index(): void
     {
-        $repuestos = $this->repuestoRepository->obtenerTodos(); // Use repository method
-        $this->repuestoVista->showRepuestos($repuestos);
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+
+        $repuestos = $this->repuestoRepository->obtenerTodos();
+        $this->smarty->assign('repuestos', $repuestos);
+        $this->smarty->assign('page_title', 'Gestión de Repuestos');
+        $this->smarty->display('repuestos.tpl');
     }
 
-    public function showFormCreate()
+    public function showFormCreate(): void
     {
-        $this->repuestoVista->displayForm();
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+
+        $this->smarty->assign('page_title', 'Añadir Repuesto');
+        $this->smarty->assign('form_action', BASE_URL . 'repuestos/create');
+        $this->smarty->assign('is_edit', false);
+        $this->smarty->assign('repuesto', new Repuesto(null, '', 0, 0, null)); // Assign an empty Repuesto object
+        $this->smarty->assign('form_data', []); // Always assign empty form_data
+        $this->smarty->display('form_repuesto.tpl');
     }
 
-    public function create()
+    public function create(): void
     {
-        require_once(SERVER_PATH . "/src/Validators/RepuestoValidator.php");
-        $validator = new RepuestoValidator();
-        $data = ['nombre' => $_POST['nombre'] ?? '', 'precio' => $_POST['precio'] ?? '', 'cantidad' => $_POST['cantidad'] ?? ''];
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
 
-        if (!$validator->validate($data, $_FILES)) {
-            $this->repuestoVista->displayForm(implode(", ", $validator->getErrors()), false);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $validator = new RepuestoValidator();
+            $data = [
+                'nombre' => $_POST['nombre'] ?? '',
+                'precio' => $_POST['precio'] ?? '',
+                'cantidad' => $_POST['cantidad'] ?? '',
+            ];
+
+            // Create a Repuesto object with submitted data for re-populating the form
+            $repuestoWithSubmittedData = new Repuesto(null, $data['nombre'], $data['precio'], $data['cantidad'], null);
+
+            if (!$validator->validate($data, $_FILES)) {
+                $this->smarty->assign('error_message', implode(", ", $validator->getErrors()));
+                $this->smarty->assign('form_data', $data);
+                $this->smarty->assign('page_title', 'Añadir Repuesto');
+                $this->smarty->assign('form_action', BASE_URL . 'repuestos/create');
+                $this->smarty->assign('is_edit', false);
+                $this->smarty->assign('repuesto', $repuestoWithSubmittedData);
+                $this->smarty->display('form_repuesto.tpl');
+                return;
+            }
+
+            $imagen = $this->handleImageUpload();
+            $newRepuesto = new Repuesto(null, $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
+
+            if ($this->repuestoRepository->guardar($newRepuesto)) {
+                $this->redirect(BASE_URL . 'repuestos');
+            } else {
+                $this->smarty->assign('error_message', 'Error al crear el repuesto.');
+                $this->smarty->assign('form_data', $data);
+                $this->smarty->assign('page_title', 'Añadir Repuesto');
+                $this->smarty->assign('form_action', BASE_URL . 'repuestos/create');
+                $this->smarty->assign('is_edit', false);
+                $this->smarty->assign('repuesto', $repuestoWithSubmittedData);
+                $this->smarty->display('form_repuesto.tpl');
+            }
+        }
+    }
+
+    public function showFormEdit(int $id): void
+    {
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+
+        $repuesto = $this->repuestoRepository->obtenerPorId($id);
+        if (!$repuesto || !($repuesto instanceof Repuesto)) {
+            $this->redirect(BASE_URL . 'repuestos');
             return;
         }
 
-        $imagen = $this->handleImageUpload();
-        $newRepuesto = new Repuesto(null, $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
-        if ($this->repuestoRepository->guardar($newRepuesto)) { // Use repository method
-            $this->redirect(BASE_URL . 'repuestos');
-        } else {
-            $this->repuestoVista->displayForm("Error al crear el repuesto.", false);
-        }
+        $this->smarty->assign('page_title', 'Editar Repuesto');
+        $this->smarty->assign('form_action', BASE_URL . 'repuestos/update');
+        $this->smarty->assign('is_edit', true);
+        $this->smarty->assign('repuesto', $repuesto);
+        $this->smarty->assign('form_data', []); // Always assign empty form_data
+        $this->smarty->display('form_repuesto.tpl');
     }
 
-    public function showFormEdit($id)
+    public function update(): void
     {
-        $repuesto = $this->repuestoRepository->obtenerPorId($id); // Use repository method
-        if ($repuesto) {
-            $this->repuestoVista->displayForm("", true, $repuesto);
-        } else {
-            $this->redirect(BASE_URL . 'repuestos');
-        }
-    }
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
 
-    public function update()
-    {
-        require_once(SERVER_PATH . "/src/Validators/RepuestoValidator.php");
-        $validator = new RepuestoValidator();
-        $data = ['id' => $_POST['id'] ?? null, 'nombre' => $_POST['nombre'] ?? '', 'precio' => $_POST['precio'] ?? '', 'cantidad' => $_POST['cantidad'] ?? ''];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $validator = new RepuestoValidator();
+            $data = [
+                'id' => $_POST['id'] ?? null,
+                'nombre' => $_POST['nombre'] ?? '',
+                'precio' => $_POST['precio'] ?? '',
+                'cantidad' => $_POST['cantidad'] ?? '',
+            ];
 
-        if (!$validator->validate($data, $_FILES, true)) { // Pass true for isUpdate
             $existingRepuesto = $this->repuestoRepository->obtenerPorId($data['id']);
-            $currentImage = $existingRepuesto ? $existingRepuesto->getImagen() : null;
-            $imagen = $this->handleImageUpload($currentImage); // Re-handle image to pass to form if validation fails
-            $repuesto = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
-            $this->repuestoVista->displayForm(implode(", ", $validator->getErrors()), false, $repuesto);
+            if (!$existingRepuesto || !($existingRepuesto instanceof Repuesto)) {
+                $this->redirect(BASE_URL . 'repuestos');
+                return;
+            }
+
+            // Create a Repuesto object with submitted data for re-populating the form
+            $repuestoWithSubmittedData = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $existingRepuesto->getImagen());
+
+            if (!$validator->validate($data, $_FILES, true)) { // Pass true for isUpdate
+                $this->smarty->assign('error_message', implode(", ", $validator->getErrors()));
+                $this->smarty->assign('form_data', $data);
+                $this->smarty->assign('page_title', 'Editar Repuesto');
+                $this->smarty->assign('form_action', BASE_URL . 'repuestos/update');
+                $this->smarty->assign('is_edit', true);
+                $this->smarty->assign('repuesto', $repuestoWithSubmittedData);
+                $this->smarty->display('form_repuesto.tpl');
+                return;
+            }
+
+            $currentImage = $existingRepuesto->getImagen();
+            $imagen = $this->handleImageUpload($currentImage);
+
+            $repuestoToUpdate = new Repuesto(
+                $data['id'],
+                $data['nombre'],
+                $data['precio'],
+                $data['cantidad'],
+                $imagen
+            );
+
+            if ($this->repuestoRepository->guardar($repuestoToUpdate)) {
+                $this->redirect(BASE_URL . 'repuestos');
+            } else {
+                $this->smarty->assign('error_message', 'Error al actualizar el repuesto.');
+                $this->smarty->assign('form_data', $data);
+                $this->smarty->assign('page_title', 'Editar Repuesto');
+                $this->smarty->assign('form_action', BASE_URL . 'repuestos/update');
+                $this->smarty->assign('is_edit', true);
+                $this->smarty->assign('repuesto', $repuestoWithSubmittedData);
+                $this->smarty->display('form_repuesto.tpl');
+            }
+        }
+    }
+
+    public function showConfirmDelete(int $id): void
+    {
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+
+        $repuesto = $this->repuestoRepository->obtenerPorId($id);
+        if (!$repuesto || !($repuesto instanceof Repuesto)) {
+            $this->redirect(BASE_URL . 'repuestos');
             return;
         }
 
-        $existingRepuesto = $this->repuestoRepository->obtenerPorId($data['id']);
-        $currentImage = $existingRepuesto ? $existingRepuesto->getImagen() : null;
-        $imagen = $this->handleImageUpload($currentImage);
-
-        $repuesto = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $imagen);
-        if ($this->repuestoRepository->guardar($repuesto)) { // Use repository method
-            $this->redirect(BASE_URL . 'repuestos');
-        } else {
-            $this->repuestoVista->displayForm("Error al actualizar el repuesto.", false, $repuesto);
-        }
+        $this->smarty->assign('page_title', 'Confirmar Eliminación de Repuesto');
+        $this->smarty->assign('repuesto', $repuesto);
+        $this->smarty->assign('form_data', []); // Always assign empty form_data
+        $this->smarty->display('confirm_delete_repuesto.tpl');
     }
 
-    public function showConfirmDelete($id)
+    public function delete(int $id): void
     {
-        $repuesto = $this->repuestoRepository->obtenerPorId($id); // Use repository method
-        if ($repuesto) {
-            // Assuming there's a method to display a confirmation view in RepuestoVista
-            $this->repuestoVista->showConfirmDelete($repuesto);
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+
+        if ($this->repuestoRepository->eliminar($id)) {
+            $this->redirect(BASE_URL . 'repuestos');
         } else {
             $this->redirect(BASE_URL . 'repuestos');
         }
     }
 
-    public function delete($id)
+    public function showDetail(int $id): void
     {
-        if ($this->repuestoRepository->eliminar($id)) { // Use repository method
-            $this->redirect(BASE_URL . 'repuestos');
-        } else {
-            header('Location: ' . BASE_URL . 'repuestos');
-            exit();
-        }
-    }
+        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
 
-    public function showDetail($id)
-    {
-        $repuesto = $this->repuestoRepository->obtenerPorId($id); // Use repository method
-        if ($repuesto) {
-            $this->repuestoVista->displayDetail($repuesto);
-        } else {
+        $repuesto = $this->repuestoRepository->obtenerPorId($id);
+        if (!$repuesto || !($repuesto instanceof Repuesto)) {
             $this->redirect(BASE_URL . 'repuestos');
+            return;
         }
+
+        $this->smarty->assign('page_title', 'Detalle de Repuesto');
+        $this->smarty->assign('repuesto', $repuesto);
+        $this->smarty->display('repuesto_detail.tpl');
     }
 }

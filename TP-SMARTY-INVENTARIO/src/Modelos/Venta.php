@@ -1,18 +1,23 @@
 <?php
 
+namespace App\Modelos;
+
+use App\Modelos\Repuesto;
+use App\Modelos\Usuario;
+
 class Venta
 {
     private $id;
     private $repuesto;
-    private $cliente;
+    private $usuario;
     private $cantidad;
     private $fecha;
 
-    public function __construct(?int $id = null, ?Repuesto $repuesto = null, ?Cliente $cliente = null, ?int $cantidad = null, ?string $fecha = null)
+    public function __construct(?int $id = null, ?Repuesto $repuesto = null, ?Usuario $usuario = null, ?int $cantidad = null, ?string $fecha = null)
     {
         $this->id = $id;
         $this->repuesto = $repuesto;
-        $this->cliente = $cliente;
+        $this->usuario = $usuario;
         $this->cantidad = $cantidad;
         $this->fecha = $fecha;
     }
@@ -27,22 +32,22 @@ class Venta
         $this->id = $id;
     }
 
-    public function getRepuesto(): Repuesto
+    public function getRepuesto(): ?Repuesto
     {
         return $this->repuesto;
     }
 
-    public function getCliente(): Cliente
+    public function getUsuario(): ?Usuario
     {
-        return $this->cliente;
+        return $this->usuario;
     }
 
-    public function getCantidad(): int
+    public function getCantidad(): ?int
     {
         return $this->cantidad;
     }
 
-    public function getFecha(): string
+    public function getFecha(): ?string
     {
         return $this->fecha;
     }

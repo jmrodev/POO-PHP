@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Modelos\Persona;
+use App\Modelos\Usuario;
+use App\Modelos\Administrador;
+
 class PersonaRepository
 {
     private \PDO $pdo;
@@ -24,7 +30,7 @@ class PersonaRepository
         $stmt = $this->pdo->prepare($sql);
 
         $dni = null;
-        if ($persona instanceof Cliente) {
+        if ($persona instanceof Usuario) {
             $dni = $persona->getDni();
         }
 
@@ -52,7 +58,7 @@ class PersonaRepository
         $stmt = $this->pdo->prepare($sql);
 
         $dni = null;
-        if ($persona instanceof Cliente) {
+        if ($persona instanceof Usuario) {
             $dni = $persona->getDni();
         }
 
@@ -96,13 +102,14 @@ class PersonaRepository
 
     private function createPersonaFromData(array $data): Persona
     {
-        if ($data['role'] === 'client') {
-            return new Cliente(
+        if ($data['role'] === 'client' || $data['role'] === 'supervisor' || $data['role'] === 'user') { // Handle supervisor and user roles
+            return new Usuario(
                 $data['id'],
                 $data['nombre'],
                 $data['username'],
                 $data['password'],
-                $data['dni']
+                $data['dni'],
+                $data['role'] // Pass the role to the Usuario constructor
             );
         } elseif ($data['role'] === 'admin') {
             return new Administrador(
@@ -132,10 +139,36 @@ class PersonaRepository
         return $stmt->fetchColumn() > 0;
     }
 
+    public function getAllPersonas(): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM personas"); // Removed WHERE role = 'client'
+        $stmt->execute();
+        $personasData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $personas = [];
+        foreach ($personasData as $data) {
+            $personas[] = $this->createPersonaFromData($data);
+        }
+        return $personas;
+    }
+
     public function delete(int $id): bool
     {
         $stmt = $this->pdo->prepare("DELETE FROM personas WHERE id = :id");
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
+    }
+
+    public function getAllUsers(): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM personas WHERE role = 'user' OR role = 'supervisor'");
+        $stmt->execute();
+        $usersData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($usersData as $data) {
+            $users[] = $this->createPersonaFromData($data);
+        }
+        return $users;
     }
 }

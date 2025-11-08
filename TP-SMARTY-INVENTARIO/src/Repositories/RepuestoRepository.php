@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Modelos\Repuesto;
+
 class RepuestoRepository
 {
     private $db;
@@ -12,7 +16,7 @@ class RepuestoRepository
     public function obtenerTodos()
     {
         $stmt = $this->db->query("SELECT id, nombre, precio, cantidad, imagen FROM repuestos");
-        $repuestosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $repuestosData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $repuestos = [];
         foreach ($repuestosData as $data) {
             $repuestos[] = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $data['imagen']);
@@ -23,9 +27,9 @@ class RepuestoRepository
     public function obtenerPorId($id)
     {
         $stmt = $this->db->prepare("SELECT id, nombre, precio, cantidad, imagen FROM repuestos WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($data) {
             return new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $data['imagen']);
         }
@@ -36,10 +40,15 @@ class RepuestoRepository
     {
         if ($repuesto->getId() === null) {
             $stmt = $this->db->prepare("INSERT INTO repuestos (nombre, precio, cantidad, imagen) VALUES (:nombre, :precio, :cantidad, :imagen)");
-            $stmt->bindParam(':nombre', $repuesto->getNombre());
-            $stmt->bindParam(':precio', $repuesto->getPrecio());
-            $stmt->bindParam(':cantidad', $repuesto->getCantidad(), PDO::PARAM_INT);
-            $stmt->bindParam(':imagen', $repuesto->getImagen());
+            $nombre = $repuesto->getNombre();
+            $precio = $repuesto->getPrecio();
+            $cantidad = $repuesto->getCantidad();
+            $imagen = $repuesto->getImagen();
+
+            $stmt->bindParam(':nombre', $nombre);
+            $stmt->bindParam(':precio', $precio);
+            $stmt->bindParam(':cantidad', $cantidad, \PDO::PARAM_INT);
+            $stmt->bindParam(':imagen', $imagen);
             $result = $stmt->execute();
             if ($result) {
                 $repuesto->setId($this->db->lastInsertId());
@@ -47,11 +56,17 @@ class RepuestoRepository
             return $result;
         } else {
             $stmt = $this->db->prepare("UPDATE repuestos SET nombre = :nombre, precio = :precio, cantidad = :cantidad, imagen = :imagen WHERE id = :id");
-            $stmt->bindParam(':nombre', $repuesto->getNombre());
-            $stmt->bindParam(':precio', $repuesto->getPrecio());
-            $stmt->bindParam(':cantidad', $repuesto->getCantidad(), PDO::PARAM_INT);
-            $stmt->bindParam(':imagen', $repuesto->getImagen());
-            $stmt->bindParam(':id', $repuesto->getId(), PDO::PARAM_INT);
+            $nombre = $repuesto->getNombre();
+            $precio = $repuesto->getPrecio();
+            $cantidad = $repuesto->getCantidad();
+            $imagen = $repuesto->getImagen();
+            $id = $repuesto->getId();
+
+            $stmt->bindParam(':nombre', $nombre);
+            $stmt->bindParam(':precio', $precio);
+            $stmt->bindParam(':cantidad', $cantidad, \PDO::PARAM_INT);
+            $stmt->bindParam(':imagen', $imagen);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
             return $stmt->execute();
         }
     }
@@ -59,22 +74,23 @@ class RepuestoRepository
     public function eliminar($id)
     {
         $stmt = $this->db->prepare("DELETE FROM repuestos WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function restarCantidad($id, $cantidad)
     {
-        $stmt = $this->db->prepare("UPDATE repuestos SET cantidad = cantidad - :cantidad WHERE id = :id AND cantidad >= :cantidad");
-        $stmt->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt = $this->db->prepare("UPDATE repuestos SET cantidad = cantidad - :cantidad WHERE id = :id AND cantidad >= :cantidad2");
+        $stmt->bindParam(':cantidad', $cantidad, \PDO::PARAM_INT);
+        $stmt->bindParam(':cantidad2', $cantidad, \PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function obtenerCantidad($id)
     {
         $stmt = $this->db->prepare("SELECT cantidad FROM repuestos WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? $result['cantidad'] : 0;

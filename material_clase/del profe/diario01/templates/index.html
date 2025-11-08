@@ -1,0 +1,24 @@
+{include file="header.html"}
+{include file="menu.html"}
+
+<main class="container mt-5">
+    <section class="noticias">
+          {foreach from=$noticias item=noticia} 
+              <div class=\"card\">
+              <img src="{$noticia['img']}" class="card-img-top" alt="...">
+              
+              <div class="card-body">
+              <h5 class="card-title">{$noticia['title']}</h5>
+              <p class="card-text">{$noticia['text']}</p>
+              <a href="noticia.php?id={$noticia['id']}" class="btn btn-outline-primary">Leer más</a>
+              </div>
+              
+              </div>
+           {/foreach}
+      </section>
+      
+  </main>
+
+
+{include file="footer.html"}
+

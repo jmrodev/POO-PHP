@@ -1,85 +1,82 @@
 <?php
 
-class RegisterController
+namespace App\Controladores;
+
+use App\Modelos\Usuario;
+use App\Repositories\PersonaRepository;
+use Smarty;
+
+class RegisterController extends BaseController
 {
     private PersonaRepository $personaRepository;
-    private \Smarty\Smarty $smarty;
-    private PDO $pdo;
 
-    public function __construct()
+    public function __construct(\Smarty $smarty, PersonaRepository $personaRepository)
     {
-        $config = [
-            'servername' => '127.0.0.1',
-            'username' => 'root',
-            'password' => 'jmro1975',
-            'dbname' => 'inventarioRepuestos',
-        ];
-
-        try {
-            $this->pdo = new PDO("mysql:host=" . $config['servername'] . ";dbname=" . $config['dbname'] . ";charset=utf8mb4", $config['username'], $config['password']);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Error de conexión a la base de datos: " . $e->getMessage());
-        }
-
-        $this->personaRepository = new PersonaRepository($this->pdo);
-        $this->smarty = new \Smarty\Smarty();
-        $this->smarty->setTemplateDir(SERVER_PATH . '/templates');
-        $this->smarty->setCompileDir(SERVER_PATH . '/templates_c');
-        $this->smarty->assign('BASE_URL', BASE_URL);
+        parent::__construct($smarty);
+        $this->personaRepository = $personaRepository;
     }
 
-    public function showRegistrationForm($errors = [])
+    public function showRegisterForm(): void
     {
-        $this->smarty->assign('errors', $errors);
+        $this->smarty->assign('page_title', 'Registrarse');
         $this->smarty->display('register.tpl');
     }
 
-    public function registerUser()
+    public function register(): void
     {
-        $errors = [];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nombre = $_POST['nombre'] ?? '';
+            $username = $_POST['username'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $confirm_password = $_POST['confirm_password'] ?? '';
+            $dni = $_POST['dni'] ?? '';
 
-        $nombre = trim($_POST['nombre'] ?? '');
-        $dni = trim($_POST['dni'] ?? '');
-        $username = trim($_POST['username'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $confirm_password = $_POST['confirm_password'] ?? '';
+            // Store form data to re-populate form on error
+            $formData = [
+                'nombre' => $nombre,
+                'username' => $username,
+                'dni' => $dni,
+            ];
+            $this->smarty->assign('form_data', $formData);
 
-        if (empty($nombre)) {
-            $errors[] = "El nombre es obligatorio.";
-        }
-        if (empty($dni)) {
-            $errors[] = "El DNI es obligatorio.";
-        } elseif ($this->personaRepository->dniExists($dni)) {
-            $errors[] = "El DNI ya está registrado.";
-        }
-        if (empty($username)) {
-            $errors[] = "El nombre de usuario es obligatorio.";
-        }
-        if ($this->personaRepository->usernameExists($username)) {
-            $errors[] = "El nombre de usuario ya está en uso.";
-        }
-        if (empty($password)) {
-            $errors[] = "La contraseña es obligatoria.";
-        } elseif (strlen($password) < 6) {
-            $errors[] = "La contraseña debe tener al menos 6 caracteres.";
-        }
-        if ($password !== $confirm_password) {
-            $errors[] = "Las contraseñas no coinciden.";
-        }
-
-        if (empty($errors)) {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $cliente = new Cliente(null, $nombre, $username, $hashed_password, $dni);
-
-            if ($this->personaRepository->save($cliente)) {
-                header('Location: ' . BASE_URL . 'login');
-                exit();
-            } else {
-                $errors[] = "Error al registrar el cliente. Inténtelo de nuevo.";
+            // Basic validation
+            if (empty($nombre) || empty($username) || empty($password) || empty($confirm_password) || empty($dni)) {
+                $this->smarty->assign('error_message', 'Todos los campos son obligatorios.');
+                $this->showRegisterForm();
+                return;
             }
-        }
 
-        $this->showRegistrationForm($errors);
+            if ($password !== $confirm_password) {
+                $this->smarty->assign('error_message', 'Las contraseñas no coinciden.');
+                $this->showRegisterForm();
+                return;
+            }
+
+            if ($this->personaRepository->usernameExists($username)) {
+                $this->smarty->assign('error_message', 'El nombre de usuario ya existe.');
+                $this->showRegisterForm();
+                return;
+            }
+
+            if ($this->personaRepository->dniExists($dni)) {
+                $this->smarty->assign('error_message', 'El DNI ya está registrado.');
+                $this->showRegisterForm();
+                return;
+            }
+
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $usuario = new Usuario(null, $nombre, $username, $hashedPassword, $dni);
+
+        if ($this->personaRepository->save($usuario)) {
+            $_SESSION['message'] = 'Registro exitoso. Por favor, inicia sesión.';
+            $_SESSION['message_type'] = 'success';
+            $this->redirect(BASE_URL . 'login');
+        } else {
+            $_SESSION['message'] = 'Error en el registro. Inténtalo de nuevo.';
+            $_SESSION['message_type'] = 'error';
+            $this->redirect(BASE_URL . 'register');
+        }
+        }
+        $this->showRegisterForm();
     }
 }

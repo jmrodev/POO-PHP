@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Modelos;
+
 class Repuesto
 {
     protected $id;

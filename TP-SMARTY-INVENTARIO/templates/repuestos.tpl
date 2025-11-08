@@ -1,9 +1,10 @@
+{include 'header.tpl'}
 
 <div class="container">
     <h1>Listado de Repuestos</h1>
 
     <div class="menu-options">
-        <a href="{$BASE_URL}repuestos/create" class="menu-button">Crear Nuevo Repuesto</a>
+        <a href="{$BASE_URL}repuestos/add" class="menu-button">Crear Nuevo Repuesto</a>
     </div>
 
     <table>
@@ -35,7 +36,7 @@
                         <div class="action-buttons">
                             <a href="{$BASE_URL}repuestos/edit/{$repuesto->getId()}" class="edit-button">Editar</a>
                             <a href="{$BASE_URL}repuestos/detail/{$repuesto->getId()}" class="detail-button">Ver Detalle</a>
-                            <a href="{$BASE_URL}repuestos/confirmdelete/{$repuesto->getId()}" class="delete-button">Eliminar</a>
+                            <a href="{$BASE_URL}repuestos/delete/{$repuesto->getId()}" class="delete-button">Eliminar</a>
                         </div>
                     </td>
                 </tr>

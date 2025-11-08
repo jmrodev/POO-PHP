@@ -1,31 +1,24 @@
 <?php
 
-require_once SERVER_PATH . '/src/Database/db_connection.php';
-require_once SERVER_PATH . '/src/Vistas/Vista.php';
+namespace App\Controladores;
+
+use Smarty;
+use App\Database\DBConnection;
 
 abstract class BaseController
 {
-    protected $smarty;
-    protected $db;
+    protected \Smarty $smarty;
+    protected \PDO $db;
 
-    public function __construct()
+    public function __construct(\Smarty $smarty)
     {
-        global $smarty; // Access the global Smarty instance
         $this->smarty = $smarty;
         $this->db = DBConnection::getInstance()->getConnection();
     }
-
-    // Common methods can be added here
 
     protected function redirect($url)
     {
         header('Location: ' . $url);
         exit();
-    }
-
-    protected function loadView($viewClassName)
-    {
-        require_once SERVER_PATH . '/src/Vistas/' . $viewClassName . '.php';
-        return new $viewClassName($this->smarty);
     }
 }

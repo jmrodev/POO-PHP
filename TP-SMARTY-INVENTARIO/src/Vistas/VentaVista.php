@@ -8,13 +8,13 @@ class VentaVista extends Vista
         $this->smarty->display('ventas.tpl');
     }
 
-    public function displayForm($message = "", $isSuccess = true, $venta = null, $repuestos = [], $clientes = [])
+    public function displayForm($message = "", $isSuccess = true, $venta = null, $repuestos = [], $usuarios = [])
     {
         $this->smarty->assign('message', $message);
         $this->smarty->assign('isSuccess', $isSuccess);
         $this->smarty->assign('venta', $venta);
         $this->smarty->assign('repuestos', $repuestos);
-        $this->smarty->assign('clientes', $clientes);
+        $this->smarty->assign('usuarios', $usuarios);
         $this->smarty->display('form_venta.tpl');
     }
 

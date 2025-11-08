@@ -1,29 +1,27 @@
+{extends 'layout.tpl'}
 
+{block name="content"}
 <div class="container">
-    <h2>Registro de Cliente</h2>
+    <h2>Registro de Usuario</h2>
 
-    {if $errors}
+    {if isset($error_message)}
         <div class="alert alert-danger">
-            <ul>
-                {foreach $errors as $error}
-                    <li>{$error}</li>
-                {/foreach}
-            </ul>
+            <p>{$error_message}</p>
         </div>
     {/if}
 
     <form action="{$BASE_URL}register" method="post">
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <input type="text" class="form-control" id="nombre" name="nombre" required value="{$form_data.nombre|default:''}">
         </div>
         <div class="form-group">
             <label for="dni">DNI:</label>
-            <input type="text" class="form-control" id="dni" name="dni" required>
+            <input type="text" class="form-control" id="dni" name="dni" required value="{$form_data.dni|default:''}">
         </div>
         <div class="form-group">
             <label for="username">Nombre de Usuario:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+            <input type="text" class="form-control" id="username" name="username" required value="{$form_data.username|default:''}">
         </div>
         <div class="form-group">
             <label for="password">Contraseña:</label>
@@ -37,5 +35,4 @@
     </form>
     <p>¿Ya tienes una cuenta? <a href="{$BASE_URL}login">Inicia sesión aquí</a>.</p>
 </div>
-
-{include file='footer.tpl'}
+{/block}

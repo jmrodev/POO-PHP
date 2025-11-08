@@ -1,13 +1,14 @@
+{include 'header.tpl'}
 
 <div class="container">
-    <h1>{$venta ? 'Editar Venta' : 'Registrar Nueva Venta'}</h1>
+    <h1>{if $is_edit}Editar Venta{else}Registrar Nueva Venta{/if}</h1>
 
-    {if $message}
+    {if isset($message)}
         <p class="message {if $isSuccess}success{else}error{/if}">{$message}</p>
     {/if}
 
-    <form action="{$BASE_URL}{$venta ? 'ventas/update' : 'ventas/store'}" method="POST">
-        {if $venta}
+    <form action="{$form_action}" method="POST">
+        {if $venta && $venta->getId()}
             <input type="hidden" name="id" value="{$venta->getId()}">
         {/if}
         <label>Repuesto:
@@ -18,18 +19,17 @@
                 {/foreach}
             </select>
         </label>
-        <label>Cliente:
-            <select name="cliente_id" required>
-                <option value="">Seleccione un cliente</option>
-                {foreach from=$clientes item=cliente}
-                    <option value="{$cliente->getId()}" {if $venta && $venta->getCliente() && $venta->getCliente()->getId() == $cliente->getId()}selected{/if}>{$cliente->getNombre()} (DNI: {$cliente->getDni()})</option>
-                {/foreach}
+        <label>Usuario:
+        <select name="usuario_id" required>
+        <option value="">Seleccione un usuario</option>
+        {foreach from=$usuarios item=usuario}
+        <option value="{$usuario->getId()}" {if $venta && $venta->getUsuario() && $venta->getUsuario()->getId() == $usuario->getId()}selected{/if}>{$usuario->getNombre()} (DNI: {$usuario->getDni()})</option>                {/foreach}
             </select>
         </label>
         <label>Cantidad:
-            <input type="number" name="cantidad" value="{if $venta}{$venta->getCantidad()}{else}{/if}" required min="1">
+            <input type="number" name="cantidad" value="{if $venta && $venta->getCantidad()}{$venta->getCantidad()}{/if}" required min="1">
         </label>
-        <input type="submit" value="{$venta ? 'Actualizar Venta' : 'Registrar Venta'}">
+        <input type="submit" value="{if $is_edit}Actualizar Venta{else}Registrar Venta{/if}">
     </form>
 
     <div class="back-link">

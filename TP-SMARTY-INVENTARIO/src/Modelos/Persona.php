@@ -1,14 +1,16 @@
 <?php
 
+namespace App\Modelos; // Add this line
+
 abstract class Persona
 {
     protected ?int $id;
     protected string $nombre;
-    protected string $username;
-    protected string $password;
+    protected ?string $username;
+    protected ?string $password;
     protected string $role;
 
-    public function __construct(?int $id, string $nombre, string $username, string $password, string $role)
+    public function __construct(?int $id, string $nombre, ?string $username, ?string $password, string $role)
     {
         $this->id = $id;
         $this->nombre = $nombre;
@@ -37,22 +39,22 @@ abstract class Persona
         $this->nombre = $nombre;
     }
 
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setUsername(string $username): void
+    public function setUsername(?string $username): void
     {
         $this->username = $username;
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }

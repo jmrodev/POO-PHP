@@ -1,67 +1,49 @@
 <?php
 
-class LoginController
+namespace App\Controladores;
+
+use App\Repositories\PersonaRepository;
+use Smarty;
+
+class LoginController extends BaseController
 {
-    private $personaRepository;
-    private $smarty;
-    private $pdo;
+    private PersonaRepository $personaRepository;
 
-    public function __construct()
+    public function __construct(\Smarty $smarty, PersonaRepository $personaRepository)
     {
-        // Database connection setup
-        $config = [
-            'servername' => '127.0.0.1',
-            'username' => 'root',
-            'password' => 'jmro1975',
-            'dbname' => 'inventarioRepuestos',
-        ];
-
-        try {
-            $this->pdo = new PDO("mysql:host=" . $config['servername'] . ";dbname=" . $config['dbname'] . ";charset=utf8mb4", $config['username'], $config['password']);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Error de conexión a la base de datos: " . $e->getMessage());
-        }
-
-        $this->personaRepository = new PersonaRepository($this->pdo);
-
-        // Smarty setup
-        $this->smarty = new \Smarty\Smarty();
-        $this->smarty->setTemplateDir('/templates');
-        $this->smarty->setCompileDir('/templates_c');
+        parent::__construct($smarty);
+        $this->personaRepository = $personaRepository;
     }
 
-    public function showLoginForm($message = null)
+    public function showLoginForm(): void
     {
-        $this->smarty->assign('message', $message);
+        $this->smarty->assign('page_title', 'Iniciar Sesión');
         $this->smarty->display('login.tpl');
     }
 
-    public function authenticate()
+    public function login(): void
     {
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = $_POST['username'] ?? '';
+            $password = $_POST['password'] ?? '';
 
-        $persona = $this->personaRepository->findByUsername($username);
+            $persona = $this->personaRepository->findByUsername($username);
 
-        if ($persona && password_verify($password, $persona->getPassword())) {
-            session_start();
-            $_SESSION['user_id'] = $persona->getId();
-            $_SESSION['username'] = $persona->getUsername();
-            $_SESSION['role'] = $persona->getRole();
-
-            if ($persona->getRole() === 'admin') {
-                header('Location: /home'); // Redirect admin to home or admin dashboard
+            if ($persona && password_verify($password, $persona->getPassword())) {
+                session_start();
+                $_SESSION['user_id'] = $persona->getId();
+                $_SESSION['username'] = $persona->getUsername();
+                $_SESSION['role'] = $persona->getRole();
+                header('Location: /');
+                exit();
             } else {
-                header('Location: /home'); // Redirect client to home or client dashboard
+                $this->smarty->assign('error_message', 'Usuario o contraseña incorrectos.');
             }
-            exit();
-        } else {
-            $this->showLoginForm("Usuario o contraseña incorrectos.");
         }
+        $this->showLoginForm();
     }
 
-    public function logout()
+    public function logout(): void
     {
         session_start();
         session_unset();

@@ -1,15 +1,20 @@
 <?php
 
+namespace App\Validators;
+
+use App\Repositories\RepuestoRepository;
+use App\Repositories\PersonaRepository;
+
 class VentaValidator
 {
     private $errors = [];
-    private $repuestoRepository;
-    private $clienteRepository;
+    private RepuestoRepository $repuestoRepository;
+    private PersonaRepository $personaRepository;
 
-    public function __construct(RepuestoRepository $repuestoRepository, ClienteRepository $clienteRepository)
+    public function __construct(RepuestoRepository $repuestoRepository, PersonaRepository $personaRepository)
     {
         $this->repuestoRepository = $repuestoRepository;
-        $this->clienteRepository = $clienteRepository;
+        $this->personaRepository = $personaRepository;
     }
 
     public function validate(array $data, bool $isUpdate = false)
@@ -20,27 +25,23 @@ class VentaValidator
         if (!isset($data['repuesto_id']) || empty($data['repuesto_id'])) {
             $this->errors[] = "El ID del repuesto es obligatorio.";
         }
-        if (!isset($data['cliente_id']) || empty($data['cliente_id'])) {
-            $this->errors[] = "El ID del cliente es obligatorio.";
+        if (!isset($data['usuario_id']) || empty($data['usuario_id'])) {
+            $this->errors[] = "El ID del usuario es obligatorio.";
         }
-        if (!isset($data['cantidad']) || empty($data['cantidad'])) {
-            $this->errors[] = "La cantidad es obligatoria.";
-        } elseif (!is_numeric($data['cantidad']) || $data['cantidad'] <= 0) {
+        if (!isset($data['cantidad']) || !is_numeric($data['cantidad']) || $data['cantidad'] <= 0) {
             $this->errors[] = "La cantidad debe ser un número positivo.";
         }
 
-        // Validate repuesto and cliente existence
-        if (isset($data['repuesto_id']) && !empty($data['repuesto_id'])) {
-            $repuesto = $this->repuestoRepository->obtenerPorId($data['repuesto_id']);
-            if (!$repuesto) {
-                $this->errors[] = "Repuesto no válido.";
-            }
+        // Validate repuesto and usuario existence
+        $repuesto = $this->repuestoRepository->obtenerPorId($data['repuesto_id']);
+        if (!$repuesto) {
+            $this->errors[] = "Repuesto no válido.";
         }
 
-        if (isset($data['cliente_id']) && !empty($data['cliente_id'])) {
-            $cliente = $this->clienteRepository->obtenerPorId($data['cliente_id']);
-            if (!$cliente) {
-                $this->errors[] = "Cliente no válido.";
+        if (isset($data['usuario_id']) && !empty($data['usuario_id'])) {
+            $usuario = $this->personaRepository->findById($data['usuario_id']); // Changed from clienteRepository->obtenerPorId
+            if (!$usuario) {
+                $this->errors[] = "Usuario no válido.";
             }
         }
 

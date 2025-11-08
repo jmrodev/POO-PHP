@@ -1,4 +1,6 @@
 
+{include 'header.tpl'}
+
 <div class="container">
     <h1>Detalle del Repuesto</h1>
 
