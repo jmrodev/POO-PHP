@@ -35,6 +35,7 @@ class UsuarioController extends BaseController
         // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         $this->smarty->assign('usuario', new Usuario(null, '', '', '', '', 'user')); // Assign an empty Usuario object with default role
         $this->smarty->assign('page_title', 'Crear Usuario');
+        $this->smarty->assign('is_edit', false);
         $this->smarty->display('form_usuario.tpl');
     }
 
@@ -127,6 +128,7 @@ class UsuarioController extends BaseController
         }
         $this->smarty->assign('usuario', $usuario);
         $this->smarty->assign('page_title', 'Editar Usuario');
+        $this->smarty->assign('is_edit', true);
         $this->smarty->display('form_usuario.tpl');
     }
 
