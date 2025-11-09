@@ -27,11 +27,7 @@ class VentaController extends BaseController
 
     public function index(): void
     {
-        if ($_SESSION['role'] === 'user') {
-            $ventas = $this->ventaRepository->obtenerVentasPorUsuarioId($_SESSION['user_id']);
-        } else {
-            $ventas = $this->ventaRepository->obtenerTodos();
-        }
+        AuthMiddleware::requireOnlySupervisor();
         $this->smarty->assign('ventas', $ventas);
         $this->smarty->assign('page_title', 'Gestión de Ventas');
         $this->smarty->display('ventas.tpl');
@@ -39,7 +35,7 @@ class VentaController extends BaseController
 
     public function showFormCreate(): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireOnlySupervisor();
 
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $usuarios = [];
@@ -65,7 +61,7 @@ class VentaController extends BaseController
 
     public function create(): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireOnlySupervisor();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new VentaValidator($this->repuestoRepository, $this->personaRepository);
@@ -118,7 +114,7 @@ class VentaController extends BaseController
 
     public function showFormEdit(int $id): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireOnlySupervisor();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -156,7 +152,7 @@ class VentaController extends BaseController
 
     public function update(): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireOnlySupervisor();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new VentaValidator($this->repuestoRepository, $this->personaRepository);
@@ -228,7 +224,7 @@ class VentaController extends BaseController
 
     public function showConfirmDelete(int $id): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireOnlySupervisor();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -249,7 +245,7 @@ class VentaController extends BaseController
 
     public function delete(int $id): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireOnlySupervisor();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -272,7 +268,7 @@ class VentaController extends BaseController
 
     public function showDetail(int $id): void
     {
-        AuthMiddleware::requireLogin(); // All users must be logged in
+        AuthMiddleware::requireOnlySupervisor();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta || !($venta instanceof Venta)) {

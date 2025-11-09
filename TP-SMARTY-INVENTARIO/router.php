@@ -153,42 +153,42 @@ $routes = [
     '/ventas' => [
         'GET' => ['handler' => function () use ($ventaController) {
             $ventaController->index();
-        }, 'middleware' => ['login']], // All logged-in users can see their sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can see legacy sales
     ],
     '/ventas/add' => [
         'GET' => ['handler' => function () use ($ventaController) {
             $ventaController->showFormCreate();
-        }, 'middleware' => ['login']], // All logged-in users can create sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can create legacy sales
     ],
     '/ventas/create' => [
         'POST' => ['handler' => function () use ($ventaController) {
             $ventaController->create();
-        }, 'middleware' => ['login']], // All logged-in users can create sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can create legacy sales
     ],
     '/ventas/edit/{id}' => [
         'GET' => ['handler' => function ($id) use ($ventaController) {
             $ventaController->showFormEdit($id);
-        }, 'middleware' => ['login']], // All logged-in users can edit their sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can edit legacy sales
     ],
     '/ventas/update' => [
         'POST' => ['handler' => function () use ($ventaController) {
             $ventaController->update();
-        }, 'middleware' => ['login']], // All logged-in users can update their sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can update legacy sales
     ],
     '/ventas/delete/{id}' => [
         'GET' => ['handler' => function ($id) use ($ventaController) {
             $ventaController->showConfirmDelete($id);
-        }, 'middleware' => ['login']], // All logged-in users can delete their sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can delete legacy sales
     ],
     '/ventas/delete_confirm/{id}' => [
         'POST' => ['handler' => function ($id) use ($ventaController) {
             $ventaController->delete($id);
-        }, 'middleware' => ['login']], // All logged-in users can delete their sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can delete legacy sales
     ],
     '/ventas/detail/{id}' => [
         'GET' => ['handler' => function ($id) use ($ventaController) {
             $ventaController->showDetail($id);
-        }, 'middleware' => ['login']], // All logged-in users can view their sales
+        }, 'middleware' => ['onlysupervisor']], // Only supervisors can view legacy sales
     ],
     '/catalog' => [
         'GET' => ['handler' => function () use ($cartController) {
@@ -262,6 +262,9 @@ $middleware = [
     },
     'supervisor' => function () {
         \App\Controladores\AuthMiddleware::requireSupervisor();
+    },
+    'onlysupervisor' => function () {
+        \App\Controladores\AuthMiddleware::requireOnlySupervisor();
     },
 ];
 

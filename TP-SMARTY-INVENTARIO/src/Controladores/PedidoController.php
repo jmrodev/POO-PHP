@@ -24,8 +24,13 @@ class PedidoController extends BaseController
     {
         AuthMiddleware::requireLogin();
 
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect(BASE_URL . 'home'); // Admins should not access order management
+            return;
+        }
+
         $pedidos = [];
-        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'supervisor') {
+        if ($_SESSION['role'] === 'supervisor') {
             $pedidos = $this->pedidoRepository->obtenerTodos();
         } elseif ($_SESSION['role'] === 'user') {
             $pedidos = $this->pedidoRepository->obtenerPedidosPorUsuarioId($_SESSION['user_id']);
@@ -39,6 +44,11 @@ class PedidoController extends BaseController
     public function showDetail(int $id): void
     {
         AuthMiddleware::requireLogin();
+
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect(BASE_URL . 'home'); // Admins should not access order management
+            return;
+        }
 
         $pedido = $this->pedidoRepository->obtenerPorId($id);
 
@@ -61,6 +71,11 @@ class PedidoController extends BaseController
     public function showFormEdit(int $id): void
     {
         AuthMiddleware::requireLogin();
+
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect(BASE_URL . 'home'); // Admins should not access order management
+            return;
+        }
 
         $pedido = $this->pedidoRepository->obtenerPorId($id);
 
@@ -85,6 +100,11 @@ class PedidoController extends BaseController
     public function update(): void
     {
         AuthMiddleware::requireLogin();
+
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect(BASE_URL . 'home'); // Admins should not access order management
+            return;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? null;
@@ -144,6 +164,11 @@ class PedidoController extends BaseController
     {
         AuthMiddleware::requireLogin();
 
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect(BASE_URL . 'home'); // Admins should not access order management
+            return;
+        }
+
         $pedido = $this->pedidoRepository->obtenerPorId($id);
 
         if (!$pedido) {
@@ -165,6 +190,11 @@ class PedidoController extends BaseController
     public function delete(int $id): void
     {
         AuthMiddleware::requireLogin();
+
+        if ($_SESSION['role'] === 'admin') {
+            $this->redirect(BASE_URL . 'home'); // Admins should not access order management
+            return;
+        }
 
         $pedido = $this->pedidoRepository->obtenerPorId($id);
 
