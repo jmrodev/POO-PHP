@@ -95,4 +95,17 @@ class RepuestoRepository
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? $result['cantidad'] : 0;
     }
+
+    public function getOfertaRepuestos(int $limit = 3): array
+    {
+        $stmt = $this->db->prepare("SELECT id, nombre, precio, cantidad, imagen FROM repuestos ORDER BY precio ASC LIMIT :limit");
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        $repuestosData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $repuestos = [];
+        foreach ($repuestosData as $data) {
+            $repuestos[] = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $data['imagen']);
+        }
+        return $repuestos;
+    }
 }
