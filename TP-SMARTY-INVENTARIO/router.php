@@ -20,6 +20,7 @@ $usuarioController = $container['usuarioController'];
 $repuestoController = $container['repuestoController']; // Inject RepuestoController
 $ventaController = $container['ventaController']; // Inject VentaController
 $cartController = $container['cartController']; // Inject CartController
+$pedidoController = $container['pedidoController']; // Inject PedidoController
 
 $request_uri = $_SERVER['REQUEST_URI'];
 $script_name = $_SERVER['SCRIPT_NAME'];
@@ -217,6 +218,36 @@ $routes = [
     '/cart/checkout' => [
         'GET' => ['handler' => function () use ($cartController) {
             $cartController->checkout();
+        }, 'middleware' => ['login']],
+    ],
+    '/pedidos' => [
+        'GET' => ['handler' => function () use ($pedidoController) {
+            $pedidoController->index();
+        }, 'middleware' => ['login']],
+    ],
+    '/pedidos/detail/{id}' => [
+        'GET' => ['handler' => function ($id) use ($pedidoController) {
+            $pedidoController->showDetail((int)$id);
+        }, 'middleware' => ['login']],
+    ],
+    '/pedidos/edit/{id}' => [
+        'GET' => ['handler' => function ($id) use ($pedidoController) {
+            $pedidoController->showFormEdit((int)$id);
+        }, 'middleware' => ['login']],
+    ],
+    '/pedidos/update' => [
+        'POST' => ['handler' => function () use ($pedidoController) {
+            $pedidoController->update();
+        }, 'middleware' => ['login']],
+    ],
+    '/pedidos/delete/{id}' => [
+        'GET' => ['handler' => function ($id) use ($pedidoController) {
+            $pedidoController->showConfirmDelete((int)$id);
+        }, 'middleware' => ['login']],
+    ],
+    '/pedidos/delete_confirm/{id}' => [
+        'POST' => ['handler' => function ($id) use ($pedidoController) {
+            $pedidoController->delete((int)$id);
         }, 'middleware' => ['login']],
     ],
 ];

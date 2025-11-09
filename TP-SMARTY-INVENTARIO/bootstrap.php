@@ -20,6 +20,7 @@ use App\Controladores\UsuarioController;
 use App\Controladores\RepuestoController;
 use App\Controladores\VentaController;
 use App\Controladores\CartController;
+use App\Controladores\PedidoController;
 use App\Repositories\RepuestoRepository;
 use App\Repositories\VentaRepository;
 use App\Repositories\PedidoRepository;
@@ -68,6 +69,7 @@ try {
     $repuestoController = new RepuestoController($smarty, $repuestoRepository);
     $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository);
     $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository);
+    $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository);
 
     // Return container with instantiated objects
     return [
@@ -85,6 +87,7 @@ try {
         'repuestoController' => $repuestoController,
         'ventaController' => $ventaController,
         'cartController' => $cartController,
+        'pedidoController' => $pedidoController,
     ];
 } catch (Exception $e) {
     error_log("Bootstrap Error: " . $e->getMessage());

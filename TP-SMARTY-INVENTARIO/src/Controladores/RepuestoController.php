@@ -31,7 +31,7 @@ class RepuestoController extends BaseController
 
     public function index(): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $this->smarty->assign('repuestos', $repuestos);
@@ -41,7 +41,7 @@ class RepuestoController extends BaseController
 
     public function showFormCreate(): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         $this->smarty->assign('page_title', 'Añadir Repuesto');
         $this->smarty->assign('form_action', BASE_URL . 'repuestos/create');
@@ -53,7 +53,7 @@ class RepuestoController extends BaseController
 
     public function create(): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new RepuestoValidator();
@@ -96,7 +96,7 @@ class RepuestoController extends BaseController
 
     public function showFormEdit(int $id): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         $repuesto = $this->repuestoRepository->obtenerPorId($id);
         if (!$repuesto || !($repuesto instanceof Repuesto)) {
@@ -114,7 +114,7 @@ class RepuestoController extends BaseController
 
     public function update(): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new RepuestoValidator();
@@ -172,7 +172,7 @@ class RepuestoController extends BaseController
 
     public function showConfirmDelete(int $id): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         $repuesto = $this->repuestoRepository->obtenerPorId($id);
         if (!$repuesto || !($repuesto instanceof Repuesto)) {
@@ -188,7 +188,7 @@ class RepuestoController extends BaseController
 
     public function delete(int $id): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         if ($this->repuestoRepository->eliminar($id)) {
             $this->redirect(BASE_URL . 'repuestos');
@@ -199,7 +199,7 @@ class RepuestoController extends BaseController
 
     public function showDetail(int $id): void
     {
-        AuthMiddleware::requireSupervisor(); // Require supervisor or admin role
+        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
 
         $repuesto = $this->repuestoRepository->obtenerPorId($id);
         if (!$repuesto || !($repuesto instanceof Repuesto)) {

@@ -12,8 +12,13 @@
             <a href="{$BASE_URL}repuestos" class="menu-button">Gestión de Repuestos</a>
         {/if}
         {if $smarty.session.user_id} {* All logged-in users can access sales, though with different permissions *}
-            <a href="{$BASE_URL}ventas" class="menu-button">Gestión de Ventas</a>
+            <a href="{$BASE_URL}ventas" class="menu-button">Gestión de Ventas (Legacy)</a> {* Renamed for clarity *}
+        {/if}
+        {if $smarty.session.role == 'user'}
             <a href="{$BASE_URL}catalog" class="menu-button">Catálogo de Productos</a>
+        {/if}
+        {if $smarty.session.user_id} {* All logged-in users can access orders *}
+            <a href="{$BASE_URL}pedidos" class="menu-button">Gestión de Pedidos</a>
         {/if}
     </div>
 </div>

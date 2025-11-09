@@ -44,4 +44,22 @@ class AuthMiddleware
             exit();
         }
     }
+
+    public static function requireOnlySupervisor()
+    {
+        self::requireLogin();
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'supervisor') {
+            header('Location: ' . BASE_URL);
+            exit();
+        }
+    }
+
+    public static function requireUserOnly()
+    {
+        self::requireLogin();
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'user') {
+            header('Location: ' . BASE_URL);
+            exit();
+        }
+    }
 }

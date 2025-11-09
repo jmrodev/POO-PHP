@@ -30,7 +30,7 @@ class CartController extends BaseController
 
     public function showCatalog(): void
     {
-        AuthMiddleware::requireLogin();
+        AuthMiddleware::requireUserOnly();
 
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $this->smarty->assign('repuestos', $repuestos);
