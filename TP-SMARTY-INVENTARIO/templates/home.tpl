@@ -8,7 +8,7 @@
         {if $smarty.session.role == 'admin'}
             <a href="{$BASE_URL}usuarios" class="menu-button">Gestión de Usuarios</a>
         {/if}
-        {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+        {if $smarty.session.role == 'supervisor'}
             <a href="{$BASE_URL}repuestos" class="menu-button">Gestión de Repuestos</a>
         {/if}
         {if $smarty.session.role == 'supervisor'} {* Only supervisors can access legacy sales *}
@@ -17,7 +17,7 @@
         {if $smarty.session.role == 'user'}
             <a href="{$BASE_URL}catalog" class="menu-button">Catálogo de Productos</a>
         {/if}
-        {if $smarty.session.user_id} {* All logged-in users can access orders *}
+        {if $smarty.session.role == 'user' || $smarty.session.role == 'supervisor'}
             <a href="{$BASE_URL}pedidos" class="menu-button">Gestión de Pedidos</a>
         {/if}
     </div>

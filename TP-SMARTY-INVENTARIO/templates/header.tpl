@@ -13,8 +13,12 @@
             <ul>
                 {if isset($smarty.session.user_id)}
                     <li>Bienvenido, {$smarty.session.username}</li>
-                    <li><a href="{$BASE_URL}cart">Ver Carrito</a></li>
-                    <li><a href="{$BASE_URL}pedidos">Mis Pedidos</a></li>
+                    {if $smarty.session.role === 'admin'}
+                        <li><a href="{$BASE_URL}usuarios">Gestionar Usuarios</a></li>
+                    {else}
+                        <li><a href="{$BASE_URL}cart">Ver Carrito</a></li>
+                        <li><a href="{$BASE_URL}pedidos">Mis Pedidos</a></li>
+                    {/if}
                     <li><a href="{$BASE_URL}logout">Cerrar Sesión</a></li>
                 {else}
                     <li><a href="{$BASE_URL}login">Iniciar Sesión</a></li>
