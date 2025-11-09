@@ -37,8 +37,8 @@
             <div class="form-group">
                 <label for="role">Rol:</label>
                 <select class="form-control" id="role" name="role" required>
-                    <option value="user" {if $usuario->getRole() == 'user'}selected{/if}>Usuario</option>
-                    <option value="supervisor" {if $usuario->getRole() == 'supervisor'}selected{/if}>Supervisor</option>
+                    <option value="user" {if $usuario && $usuario->getRole() == 'user'}selected{/if}>Usuario</option>
+                    <option value="supervisor" {if $usuario && $usuario->getRole() == 'supervisor'}selected{/if}>Supervisor</option>
                 </select>
             </div>
         {/if}
