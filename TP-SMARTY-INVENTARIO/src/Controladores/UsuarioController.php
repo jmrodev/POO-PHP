@@ -143,6 +143,15 @@ class UsuarioController extends BaseController
                 return;
             }
 
+            $data = [
+                'id' => (int)$id, // Cast to int
+                'nombre' => $_POST['nombre'] ?? '',
+                'username' => $_POST['username'] ?? '',
+                'password' => $_POST['password'] ?? '',
+                'dni' => $_POST['dni'] ?? '',
+                'role' => $_POST['role'] ?? 'user',
+            ];
+
 
             // Fetch existing usuario to get password if not updated
             $existingUsuario = $this->personaRepository->findById($data['id']);
