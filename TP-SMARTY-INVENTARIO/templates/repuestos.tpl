@@ -1,11 +1,14 @@
-{include 'header.tpl'}
+{extends 'layout.tpl'}
 
+{block name="content"}
 <div class="container">
     <h1>Listado de Repuestos</h1>
 
-    <div class="menu-options">
-        <a href="{$BASE_URL}repuestos/add" class="menu-button">Crear Nuevo Repuesto</a>
-    </div>
+    {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+        <div class="menu-options">
+            <a href="{$BASE_URL}repuestos/add" class="menu-button">Crear Nuevo Repuesto</a>
+        </div>
+    {/if}
 
     <table>
         <thead>
@@ -15,7 +18,9 @@
                 <th>Precio</th>
                 <th>Cantidad</th>
                 <th>Imagen</th>
-                <th>Acciones</th>
+                {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+                    <th>Acciones</th>
+                {/if}
             </tr>
         </thead>
         <tbody>
@@ -32,13 +37,15 @@
                             No Image
                         {/if}
                     </td>
-                    <td>
-                        <div class="action-buttons">
-                            <a href="{$BASE_URL}repuestos/edit/{$repuesto->getId()}" class="edit-button">Editar</a>
-                            <a href="{$BASE_URL}repuestos/detail/{$repuesto->getId()}" class="detail-button">Ver Detalle</a>
-                            <a href="{$BASE_URL}repuestos/delete/{$repuesto->getId()}" class="delete-button">Eliminar</a>
-                        </div>
-                    </td>
+                    {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{$BASE_URL}repuestos/edit/{$repuesto->getId()}" class="edit-button">Editar</a>
+                                <a href="{$BASE_URL}repuestos/detail/{$repuesto->getId()}" class="detail-button">Ver Detalle</a>
+                                <a href="{$BASE_URL}repuestos/delete/{$repuesto->getId()}" class="delete-button">Eliminar</a>
+                            </div>
+                        </td>
+                    {/if}
                 </tr>
             {foreachelse}
                 <tr>
@@ -51,5 +58,4 @@
         <a href="{$BASE_URL}home">Volver al Inicio</a>
     </div>
 </div>
-
-{include 'footer.tpl'}
+{/block}

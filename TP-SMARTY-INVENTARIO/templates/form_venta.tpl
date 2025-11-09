@@ -1,5 +1,6 @@
-{include 'header.tpl'}
+{extends 'layout.tpl'}
 
+{block name="content"}
 <div class="container">
     <h1>{if $is_edit}Editar Venta{else}Registrar Nueva Venta{/if}</h1>
 
@@ -19,13 +20,19 @@
                 {/foreach}
             </select>
         </label>
-        <label>Usuario:
-        <select name="usuario_id" required>
-        <option value="">Seleccione un usuario</option>
-        {foreach from=$usuarios item=usuario}
-        <option value="{$usuario->getId()}" {if $venta && $venta->getUsuario() && $venta->getUsuario()->getId() == $usuario->getId()}selected{/if}>{$usuario->getNombre()} (DNI: {$usuario->getDni()})</option>                {/foreach}
-            </select>
-        </label>
+        {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+            <label>Usuario:
+                <select name="usuario_id" required>
+                    <option value="">Seleccione un usuario</option>
+                    {foreach from=$usuarios item=usuario}
+                        <option value="{$usuario->getId()}" {if $venta && $venta->getUsuario() && $venta->getUsuario()->getId() == $usuario->getId()}selected{/if}>{$usuario->getNombre()} (DNI: {$usuario->getDni()})</option>
+                    {/foreach}
+                </select>
+            </label>
+        {else}
+            {* For 'user' role, the usuario_id is automatically set in the controller, so we just need a hidden input *}
+            <input type="hidden" name="usuario_id" value="{$smarty.session.user_id}">
+        {/if}
         <label>Cantidad:
             <input type="number" name="cantidad" value="{if $venta && $venta->getCantidad()}{$venta->getCantidad()}{/if}" required min="1">
         </label>
@@ -36,5 +43,4 @@
         <a href="{$BASE_URL}ventas">Volver al Listado de Ventas</a>
     </div>
 </div>
-
-{include 'footer.tpl'}
+{/block}

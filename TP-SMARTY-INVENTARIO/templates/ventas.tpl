@@ -1,11 +1,14 @@
-{include 'header.tpl'}
+{extends 'layout.tpl'}
 
+{block name="content"}
 <div class="container">
     <h1>Listado de Ventas</h1>
 
-    <div class="menu-options">
-        <a href="{$BASE_URL}ventas/add" class="menu-button">Registrar Nueva Venta</a>
-    </div>
+    {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+        <div class="menu-options">
+            <a href="{$BASE_URL}ventas/add" class="menu-button">Registrar Nueva Venta</a>
+        </div>
+    {/if}
 
     <table>
         <thead>
@@ -28,9 +31,13 @@
                     <td>{$venta->getFecha()}</td>
                     <td>
                         <div class="action-buttons">
-                            <a href="{$BASE_URL}ventas/edit/{$venta->getId()}" class="edit-button">Editar</a>
+                            {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+                                <a href="{$BASE_URL}ventas/edit/{$venta->getId()}" class="edit-button">Editar</a>
+                            {/if}
                             <a href="{$BASE_URL}ventas/detail/{$venta->getId()}" class="detail-button">Ver Detalle</a>
-                            <a href="{$BASE_URL}ventas/delete/{$venta->getId()}" class="delete-button">Eliminar</a>
+                            {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+                                <a href="{$BASE_URL}ventas/delete/{$venta->getId()}" class="delete-button">Eliminar</a>
+                            {/if}
                         </div>
                     </td>
                 </tr>
@@ -45,5 +52,4 @@
         <a href="{$BASE_URL}home">Volver al Inicio</a>
     </div>
 </div>
-
-{include 'footer.tpl'}
+{/block}

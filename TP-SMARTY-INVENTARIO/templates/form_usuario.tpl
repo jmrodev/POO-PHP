@@ -33,13 +33,15 @@
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
         {/if}
-        <div class="form-group">
-            <label for="role">Rol:</label>
-            <select class="form-control" id="role" name="role" required>
-                <option value="user" {if $usuario->getRole() == 'user'}selected{/if}>Usuario</option>
-                <option value="supervisor" {if $usuario->getRole() == 'supervisor'}selected{/if}>Supervisor</option>
-            </select>
-        </div>
+        {if $smarty.session.role == 'admin'}
+            <div class="form-group">
+                <label for="role">Rol:</label>
+                <select class="form-control" id="role" name="role" required>
+                    <option value="user" {if $usuario->getRole() == 'user'}selected{/if}>Usuario</option>
+                    <option value="supervisor" {if $usuario->getRole() == 'supervisor'}selected{/if}>Supervisor</option>
+                </select>
+            </div>
+        {/if}
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="{$BASE_URL}usuarios" class="btn btn-secondary">Cancelar</a>
     </form>
