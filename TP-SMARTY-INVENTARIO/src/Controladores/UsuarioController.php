@@ -7,49 +7,48 @@ use App\Repositories\PersonaRepository;
 use App\Validators\UsuarioValidator;
 use Smarty;
 
+use App
+	Services
+	AuthService; // Add this use statement
+
 class UsuarioController extends BaseController
 {
     private PersonaRepository $personaRepository;
+    private AuthService $authService; // Add this property
 
-    public function __construct(\Smarty $smarty, PersonaRepository $personaRepository)
+    public function __construct(Smarty $smarty, PersonaRepository $personaRepository, AuthService $authService)
     {
         parent::__construct($smarty);
         $this->personaRepository = $personaRepository;
+        $this->authService = $authService; // Assign the service
     }
 
     public function index(): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
-
-        $personas = $this->personaRepository->getAllPersonas(); // Call getAllPersonas
-        $this->smarty->assign('personas', $personas); // Assign to 'personas'
-        $this->smarty->assign('page_title', 'Gestión de Usuarios'); // Changed title
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
+        $usuarios = $this->personaRepository->getAllPersonas(); // Changed to getAllPersonas
+        $this->smarty->assign('usuarios', $usuarios);
+        $this->smarty->assign('page_title', 'Gestión de Usuarios');
         $this->smarty->display('usuarios.tpl');
     }
 
     public function showFormCreate(): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
-
-        $this->smarty->assign('page_title', 'Añadir Usuario');
-        $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
-        $this->smarty->assign('is_edit', false);
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         $this->smarty->assign('usuario', new Usuario(null, '', '', '', '', 'user')); // Assign an empty Usuario object with default role
-        $this->smarty->assign('form_data', []); // Always assign empty form_data
-        $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
+        $this->smarty->assign('page_title', 'Crear Usuario');
+        $this->smarty->display('form_usuario.tpl');
     }
 
     public function create(): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
-
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $validator = new UsuarioValidator();
             $data = [
                 'nombre' => $_POST['nombre'] ?? '',
-                'dni' => $_POST['dni'] ?? '',
                 'username' => $_POST['username'] ?? '',
                 'password' => $_POST['password'] ?? '',
+                'dni' => $_POST['dni'] ?? '',
                 'role' => $_POST['role'] ?? 'user', // Default to 'user' if not provided
             ];
 
@@ -121,35 +120,29 @@ class UsuarioController extends BaseController
 
     public function showFormEdit(int $id): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
-
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         $usuario = $this->personaRepository->findById($id);
-        if (!$usuario || !($usuario instanceof Usuario)) {
+        if (!$usuario) {
+            $_SESSION['error_message'] = 'Usuario no encontrado.';
             $this->redirect(BASE_URL . 'usuarios');
             return;
         }
-
-        $this->smarty->assign('page_title', 'Editar Usuario');
-        $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
-        $this->smarty->assign('is_edit', true);
         $this->smarty->assign('usuario', $usuario);
-        $this->smarty->assign('form_data', []); // Always assign empty form_data
-        $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
+        $this->smarty->assign('page_title', 'Editar Usuario');
+        $this->smarty->display('form_usuario.tpl');
     }
 
     public function update(): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
-
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $validator = new UsuarioValidator();
-            $data = [
-                'id' => $_POST['id'] ?? null,
-                'nombre' => $_POST['nombre'] ?? '',
-                'dni' => $_POST['dni'] ?? '',
-                'username' => $_POST['username'] ?? '',
-                'role' => $_POST['role'] ?? 'user', // Default to 'user' if not provided
-            ];
+            $id = $_POST['id'] ?? null;
+            if (!$id) {
+                $_SESSION['error_message'] = 'ID de usuario no proporcionado.';
+                $this->redirect(BASE_URL . 'usuarios');
+                return;
+            }
+
 
             // Fetch existing usuario to get password if not updated
             $existingUsuario = $this->personaRepository->findById($data['id']);
@@ -244,23 +237,21 @@ class UsuarioController extends BaseController
 
     public function showConfirmDelete(int $id): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
-
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         $usuario = $this->personaRepository->findById($id);
-        if (!$usuario || !($usuario instanceof Usuario)) {
+        if (!$usuario) {
+            $_SESSION['error_message'] = 'Usuario no encontrado.';
             $this->redirect(BASE_URL . 'usuarios');
             return;
         }
-
-        $this->smarty->assign('page_title', 'Confirmar Eliminación');
         $this->smarty->assign('usuario', $usuario);
-        $this->smarty->assign('form_data', []); // Always assign empty form_data
-        $this->smarty->display('confirm_delete_usuario.tpl'); // Changed from confirm_delete_cliente.tpl
+        $this->smarty->assign('page_title', 'Confirmar Eliminación de Usuario');
+        $this->smarty->display('confirm_delete_usuario.tpl');
     }
 
     public function delete(int $id): void
     {
-        AuthMiddleware::requireAdmin(); // Require admin role
+        // AuthMiddleware::requireAdmin(); // Replaced by router middleware
 
         if ($this->personaRepository->delete($id)) {
             $this->redirect(BASE_URL . 'usuarios');

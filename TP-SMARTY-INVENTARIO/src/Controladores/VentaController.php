@@ -11,24 +11,31 @@ use App\Repositories\PersonaRepository;
 use App\Validators\VentaValidator;
 use Smarty;
 
+use App
+Services
+AuthService; // Add this use statement
+
 class VentaController extends BaseController
 {
     private VentaRepository $ventaRepository;
     private RepuestoRepository $repuestoRepository;
     private PersonaRepository $personaRepository;
+    private AuthService $authService; // Add this property
 
-    public function __construct(\Smarty $smarty, VentaRepository $ventaRepository, RepuestoRepository $repuestoRepository, PersonaRepository $personaRepository)
+    public function __construct(\Smarty $smarty, VentaRepository $ventaRepository, RepuestoRepository $repuestoRepository, PersonaRepository $personaRepository, AuthService $authService)
     {
         parent::__construct($smarty);
         $this->ventaRepository = $ventaRepository;
         $this->repuestoRepository = $repuestoRepository;
         $this->personaRepository = $personaRepository;
+        $this->authService = $authService; // Assign the service
     }
 
     public function index(): void
     {
-        AuthMiddleware::requireOnlySupervisor();
-        $ventas = $this->ventaRepository->obtenerTodos(); // Fetch all sales for supervisors
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
+
+        $ventas = $this->ventaRepository->obtenerTodos();
         $this->smarty->assign('ventas', $ventas);
         $this->smarty->assign('page_title', 'Gestión de Ventas');
         $this->smarty->display('ventas.tpl');
@@ -36,15 +43,15 @@ class VentaController extends BaseController
 
     public function showFormCreate(): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $usuarios = [];
 
-        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'supervisor') {
+        if ($this->authService->isAdmin() || $this->authService->isSupervisor()) {
             $usuarios = $this->personaRepository->getAllUsers(); // Get all users for admin/supervisor
         } else {
-            $usuario = $this->personaRepository->findById($_SESSION['user_id']);
+            $usuario = $this->personaRepository->findById($this->authService->getUserId());
             if ($usuario) {
                 $usuarios[] = $usuario;
             }
@@ -62,7 +69,7 @@ class VentaController extends BaseController
 
     public function create(): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new VentaValidator($this->repuestoRepository, $this->personaRepository);
@@ -74,8 +81,8 @@ class VentaController extends BaseController
             ];
 
             // If user role, set usuario_id from session
-            if ($_SESSION['role'] === 'user') {
-                $data['usuario_id'] = $_SESSION['user_id'];
+            if ($this->authService->isUser()) {
+                $data['usuario_id'] = $this->authService->getUserId();
             }
 
             $repuesto = $this->repuestoRepository->obtenerPorId($data['repuesto_id']);
@@ -90,7 +97,7 @@ class VentaController extends BaseController
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('venta', $ventaWithSubmittedData);
                 $this->smarty->assign('repuestos', $this->repuestoRepository->obtenerTodos());
-                $this->smarty->assign('usuarios', ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'supervisor') ? $this->personaRepository->getAllUsers() : [$this->personaRepository->findById($_SESSION['user_id'])]);
+                $this->smarty->assign('usuarios', ($this->authService->isAdmin() || $this->authService->isSupervisor()) ? $this->personaRepository->getAllUsers() : [$this->personaRepository->findById($this->authService->getUserId())]);
                 $this->smarty->display('form_venta.tpl');
                 return;
             }
@@ -115,7 +122,7 @@ class VentaController extends BaseController
 
     public function showFormEdit(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -124,7 +131,7 @@ class VentaController extends BaseController
         }
 
         // If user role, ensure they can only edit their own sales
-        if ($_SESSION['role'] === 'user' && $venta->getUsuario()->getId() !== $_SESSION['user_id']) {
+        if ($this->authService->isUser() && $venta->getUsuario()->getId() !== $this->authService->getUserId()) {
             $this->redirect(BASE_URL . 'ventas');
             return;
         }
@@ -132,10 +139,10 @@ class VentaController extends BaseController
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $usuarios = [];
 
-        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'supervisor') {
+        if ($this->authService->isAdmin() || $this->authService->isSupervisor()) {
             $usuarios = $this->personaRepository->getAllUsers();
         } else {
-            $usuario = $this->personaRepository->findById($_SESSION['user_id']);
+            $usuario = $this->personaRepository->findById($this->authService->getUserId());
             if ($usuario) {
                 $usuarios[] = $usuario;
             }
@@ -153,7 +160,7 @@ class VentaController extends BaseController
 
     public function update(): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new VentaValidator($this->repuestoRepository, $this->personaRepository);
@@ -172,14 +179,14 @@ class VentaController extends BaseController
             }
 
             // If user role, ensure they can only update their own sales
-            if ($_SESSION['role'] === 'user' && $existingVenta->getUsuario()->getId() !== $_SESSION['user_id']) {
+            if ($this->authService->isUser() && $existingVenta->getUsuario()->getId() !== $this->authService->getUserId()) {
                 $this->redirect(BASE_URL . 'ventas');
                 return;
             }
 
             // If user role, set usuario_id from session
-            if ($_SESSION['role'] === 'user') {
-                $data['usuario_id'] = $_SESSION['user_id'];
+            if ($this->authService->isUser()) {
+                $data['usuario_id'] = $this->authService->getUserId();
             }
 
             $repuesto = $this->repuestoRepository->obtenerPorId($data['repuesto_id']);
@@ -194,7 +201,7 @@ class VentaController extends BaseController
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('venta', $ventaWithSubmittedData);
                 $this->smarty->assign('repuestos', $this->repuestoRepository->obtenerTodos());
-                $this->smarty->assign('usuarios', ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'supervisor') ? $this->personaRepository->getAllUsers() : [$this->personaRepository->findById($_SESSION['user_id'])]);
+                $this->smarty->assign('usuarios', ($this->authService->isAdmin() || $this->authService->isSupervisor()) ? $this->personaRepository->getAllUsers() : [$this->personaRepository->findById($this->authService->getUserId())]);
                 $this->smarty->display('form_venta.tpl');
                 return;
             }
@@ -225,7 +232,7 @@ class VentaController extends BaseController
 
     public function showConfirmDelete(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -234,7 +241,7 @@ class VentaController extends BaseController
         }
 
         // If user role, ensure they can only delete their own sales
-        if ($_SESSION['role'] === 'user' && $venta->getUsuario()->getId() !== $_SESSION['user_id']) {
+        if ($this->authService->isUser() && $venta->getUsuario()->getId() !== $this->authService->getUserId()) {
             $this->redirect(BASE_URL . 'ventas');
             return;
         }
@@ -246,7 +253,7 @@ class VentaController extends BaseController
 
     public function delete(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -255,7 +262,7 @@ class VentaController extends BaseController
         }
 
         // If user role, ensure they can only delete their own sales
-        if ($_SESSION['role'] === 'user' && $venta->getUsuario()->getId() !== $_SESSION['user_id']) {
+        if ($this->authService->isUser() && $venta->getUsuario()->getId() !== $this->authService->getUserId()) {
             $this->redirect(BASE_URL . 'ventas');
             return;
         }
@@ -269,7 +276,7 @@ class VentaController extends BaseController
 
     public function showDetail(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor();
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta || !($venta instanceof Venta)) {
@@ -278,7 +285,7 @@ class VentaController extends BaseController
         }
 
         // Authorization check: only admin/supervisor or the owner can view
-        if ($_SESSION['role'] === 'user' && $venta->getUsuario()->getId() !== $_SESSION['user_id']) {
+        if ($this->authService->isUser() && $venta->getUsuario()->getId() !== $this->authService->getUserId()) {
             $this->redirect(BASE_URL . 'ventas'); // Unauthorized
             return;
         }

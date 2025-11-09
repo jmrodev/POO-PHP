@@ -5,14 +5,18 @@ namespace App\Controladores;
 use App\Repositories\PersonaRepository;
 use Smarty;
 
+use App\Services\AuthService; // Add this use statement
+
 class LoginController extends BaseController
 {
     private PersonaRepository $personaRepository;
+    private AuthService $authService; // Add this property
 
-    public function __construct(\Smarty $smarty, PersonaRepository $personaRepository)
+    public function __construct(Smarty $smarty, PersonaRepository $personaRepository, AuthService $authService)
     {
         parent::__construct($smarty);
         $this->personaRepository = $personaRepository;
+        $this->authService = $authService; // Assign the service
     }
 
     public function showLoginForm(): void
@@ -27,28 +31,23 @@ class LoginController extends BaseController
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
 
-            $persona = $this->personaRepository->findByUsername($username);
-
-            if ($persona && password_verify($password, $persona->getPassword())) {
-                session_start();
-                $_SESSION['user_id'] = $persona->getId();
-                $_SESSION['username'] = $persona->getUsername();
-                $_SESSION['role'] = $persona->getRole();
-                header('Location: /');
-                exit();
+            if ($this->authService->login($username, $password)) {
+                $_SESSION['success_message'] = '¡Bienvenido, ' . $this->authService->getUsername() . '!'; // Assuming getUsername() is added to AuthService
+                $this->redirect(BASE_URL);
             } else {
-                $this->smarty->assign('error_message', 'Usuario o contraseña incorrectos.');
+                $_SESSION['error_message'] = 'Usuario o contraseña incorrectos.';
+                $this->showLoginForm();
             }
+        } else {
+            $this->showLoginForm();
         }
-        $this->showLoginForm();
     }
 
     public function logout(): void
     {
-        session_start();
-        session_unset();
-        session_destroy();
-        header('Location: /login');
+        $this->authService->logout();
+        $_SESSION['success_message'] = 'Has cerrado sesión correctamente.';
+        header('Location: ' . BASE_URL . 'login');
         exit();
     }
 }

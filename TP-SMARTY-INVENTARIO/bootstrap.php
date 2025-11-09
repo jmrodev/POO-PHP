@@ -25,7 +25,7 @@ use App\Repositories\RepuestoRepository;
 use App\Repositories\VentaRepository;
 use App\Repositories\PedidoRepository;
 use App\Repositories\DetallePedidoRepository;
-use App\Validators\VentaValidator;
+use App\Services\AuthService;
 
 try {
     // Initialize Smarty
@@ -47,6 +47,7 @@ try {
 
     $smarty->assign('BASE_URL', BASE_URL);
     $smarty->assign('SERVER_PATH', SERVER_PATH);
+    $smarty->assign('authService', $authService); // Assign AuthService to Smarty
 
     // Get PDO connection
     $db = DBConnection::getInstance();
@@ -62,14 +63,17 @@ try {
     // Instantiate validators
     $ventaValidator = new VentaValidator($repuestoRepository, $personaRepository);
 
+    // Instantiate AuthService
+    $authService = new AuthService($personaRepository);
+
     // Instantiate controllers
-    $loginController = new LoginController($smarty, $personaRepository);
-    $registerController = new RegisterController($smarty, $personaRepository);
-    $usuarioController = new UsuarioController($smarty, $personaRepository);
-    $repuestoController = new RepuestoController($smarty, $repuestoRepository);
-    $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository);
-    $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository);
-    $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository);
+    $loginController = new LoginController($smarty, $personaRepository, $authService);
+    $registerController = new RegisterController($smarty, $personaRepository, $authService);
+    $usuarioController = new UsuarioController($smarty, $personaRepository, $authService);
+    $repuestoController = new RepuestoController($smarty, $repuestoRepository); // AuthService not directly needed here yet
+    $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository, $authService);
+    $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository, $authService);
+    $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository, $authService);
 
     // Return container with instantiated objects
     return [
@@ -81,6 +85,7 @@ try {
         'pedidoRepository' => $pedidoRepository,
         'detallePedidoRepository' => $detallePedidoRepository,
         'ventaValidator' => $ventaValidator,
+        'authService' => $authService, // Add AuthService to the container
         'loginController' => $loginController,
         'registerController' => $registerController,
         'usuarioController' => $usuarioController,

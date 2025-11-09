@@ -14,6 +14,7 @@ if (php_sapi_name() === 'cli-server') {
 $container = require_once 'bootstrap.php';
 
 $smarty = $container['smarty'];
+$authService = $container['authService']; // Extract AuthService
 $loginController = $container['loginController'];
 $registerController = $container['registerController'];
 $usuarioController = $container['usuarioController'];
@@ -50,18 +51,18 @@ $http_method = $_SERVER['REQUEST_METHOD'];
 
 // Define routes with HTTP methods and optional middleware
 $routes = [
-    '/' => ['GET' => ['handler' => function () use ($smarty, $loginController, $personaRepository) {
-        if (!isset($_SESSION['user_id'])) {
+    '/' => ['GET' => ['handler' => function () use ($smarty, $loginController, $personaRepository, $authService) {
+        if (!$authService->isLoggedIn()) {
             $loginController->showLoginForm(); // Redirect to login if not logged in
             return;
         }
 
-        if ($_SESSION['role'] === 'user') {
+        if ($authService->isUser()) {
             header('Location: ' . BASE_URL . 'catalog'); // Redirect to catalog for users
             exit();
         } else {
             $userSummary = [];
-            if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+            if ($authService->isAdmin()) {
                 $allPersonas = $personaRepository->getAllPersonas();
                 $userSummary['total_users'] = count($allPersonas);
                 $userSummary['admin_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'admin'));
@@ -72,9 +73,9 @@ $routes = [
             $smarty->display('home.tpl'); // Show home for admin/supervisor
         }
     }]],
-    '/home' => ['GET' => ['handler' => function () use ($smarty, $personaRepository) {
+    '/home' => ['GET' => ['handler' => function () use ($smarty, $personaRepository, $authService) {
         $userSummary = [];
-        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+        if ($authService->isAdmin()) {
             $allPersonas = $personaRepository->getAllPersonas();
             $userSummary['total_users'] = count($allPersonas);
             $userSummary['admin_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'admin'));
@@ -282,17 +283,29 @@ $routes = [
 
 // Middleware definitions
 $middleware = [
-    'admin' => function () {
-        \App\Controladores\AuthMiddleware::requireAdmin();
+    'admin' => function () use ($authService) {
+        if (!$authService->isAdmin()) {
+            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not admin
+            exit();
+        }
     },
-    'login' => function () {
-        \App\Controladores\AuthMiddleware::requireLogin();
+    'login' => function () use ($authService) {
+        if (!$authService->isLoggedIn()) {
+            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not logged in
+            exit();
+        }
     },
-    'supervisor' => function () {
-        \App\Controladores\AuthMiddleware::requireSupervisor();
+    'supervisor' => function () use ($authService) {
+        if (!$authService->isSupervisor()) {
+            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not supervisor
+            exit();
+        }
     },
-    'onlysupervisor' => function () {
-        \App\Controladores\AuthMiddleware::requireOnlySupervisor();
+    'onlysupervisor' => function () use ($authService) {
+        if (!$authService->isSupervisor()) { // Assuming 'onlysupervisor' means supervisor role
+            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not supervisor
+            exit();
+        }
     },
 ];
 

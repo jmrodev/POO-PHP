@@ -11,9 +11,9 @@
     <header>
         <nav>
             <ul>
-                {if isset($smarty.session.user_id)}
-                    <li>Bienvenido, {$smarty.session.username}</li>
-                    {if $smarty.session.role === 'admin'}
+                {if $authService->isLoggedIn()}
+                    <li>Bienvenido, {$authService->getUsername()}</li>
+                    {if $authService->isAdmin()}
                         <li><a href="{$BASE_URL}usuarios">Gestionar Usuarios</a></li>
                     {else}
                         <li><a href="{$BASE_URL}cart">Ver Carrito</a></li>

@@ -9,18 +9,22 @@ use App\Modelos\Pedido;
 use App\Modelos\DetallePedido;
 use Smarty;
 
+use App\Services\AuthService; // Add this use statement
+
 class CartController extends BaseController
 {
     private RepuestoRepository $repuestoRepository;
     private PedidoRepository $pedidoRepository;
     private PersonaRepository $personaRepository;
+    private AuthService $authService; // Add this property
 
-    public function __construct(Smarty $smarty, RepuestoRepository $repuestoRepository, PedidoRepository $pedidoRepository, PersonaRepository $personaRepository)
+    public function __construct(Smarty $smarty, RepuestoRepository $repuestoRepository, PedidoRepository $pedidoRepository, PersonaRepository $personaRepository, AuthService $authService)
     {
         parent::__construct($smarty);
         $this->repuestoRepository = $repuestoRepository;
         $this->pedidoRepository = $pedidoRepository;
         $this->personaRepository = $personaRepository;
+        $this->authService = $authService; // Assign the service
 
         // Initialize cart in session if it doesn't exist
         if (!isset($_SESSION['cart'])) {
@@ -30,7 +34,7 @@ class CartController extends BaseController
 
     public function showCatalog(): void
     {
-        AuthMiddleware::requireUserOnly();
+        // AuthMiddleware::requireUserOnly(); // Replaced by router middleware
 
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $this->smarty->assign('repuestos', $repuestos);
@@ -46,7 +50,7 @@ class CartController extends BaseController
 
     public function addToCart(): void
     {
-        AuthMiddleware::requireLogin();
+        // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $repuestoId = $_POST['repuesto_id'] ?? null;
@@ -93,7 +97,7 @@ class CartController extends BaseController
 
     public function showCart(): void
     {
-        AuthMiddleware::requireLogin();
+        // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
         $cartItems = $_SESSION['cart'];
         $cartTotal = 0;
@@ -109,7 +113,7 @@ class CartController extends BaseController
 
     public function updateCartItem(): void
     {
-        AuthMiddleware::requireLogin();
+        // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $repuestoId = $_POST['repuesto_id'] ?? null;
@@ -141,7 +145,7 @@ class CartController extends BaseController
 
     public function removeFromCart(int $repuestoId): void
     {
-        AuthMiddleware::requireLogin();
+        // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
         if (isset($_SESSION['cart'][$repuestoId])) {
             unset($_SESSION['cart'][$repuestoId]);
@@ -152,7 +156,7 @@ class CartController extends BaseController
 
     public function checkout(): void
     {
-        AuthMiddleware::requireLogin();
+        // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
         if (empty($_SESSION['cart'])) {
             $_SESSION['error_message'] = 'El carrito está vacío.';
@@ -160,7 +164,7 @@ class CartController extends BaseController
             return;
         }
 
-        $userId = $_SESSION['user_id'];
+        $userId = $this->authService->getUserId(); // Use AuthService
         $cartItems = $_SESSION['cart'];
         $totalPedido = 0;
         $detallesPedido = [];
