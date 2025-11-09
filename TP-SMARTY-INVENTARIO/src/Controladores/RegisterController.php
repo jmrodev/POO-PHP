@@ -6,9 +6,7 @@ use App\Modelos\Usuario;
 use App\Repositories\PersonaRepository;
 use Smarty;
 
-use App
-Services
-AuthService; // Add this use statement
+use App\Services\AuthService; // Add this use statement
 
 class RegisterController extends BaseController
 {
