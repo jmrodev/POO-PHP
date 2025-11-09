@@ -7,9 +7,7 @@ use App\Repositories\PersonaRepository;
 use App\Validators\UsuarioValidator;
 use Smarty;
 
-use App
-	Services
-	AuthService; // Add this use statement
+use App\Services\AuthService; // Add this use statement
 
 class UsuarioController extends BaseController
 {
