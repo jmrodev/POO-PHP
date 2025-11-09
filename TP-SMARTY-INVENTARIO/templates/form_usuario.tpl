@@ -33,7 +33,7 @@
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
         {/if}
-        {if $smarty.session.role == 'admin'}
+        {if $is_admin}
             <div class="form-group">
                 <label for="role">Rol:</label>
                 <select class="form-control" id="role" name="role" required>

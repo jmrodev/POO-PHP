@@ -36,6 +36,7 @@ class UsuarioController extends BaseController
         $this->smarty->assign('usuario', new Usuario(null, '', '', '', '', 'user')); // Assign an empty Usuario object with default role
         $this->smarty->assign('page_title', 'Crear Usuario');
         $this->smarty->assign('is_edit', false);
+        $this->smarty->assign('is_admin', $this->authService->isAdmin());
         $this->smarty->display('form_usuario.tpl');
     }
 
@@ -63,6 +64,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -74,6 +76,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -86,6 +89,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -96,6 +100,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -112,6 +117,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
             }
         }
@@ -129,6 +135,7 @@ class UsuarioController extends BaseController
         $this->smarty->assign('usuario', $usuario);
         $this->smarty->assign('page_title', 'Editar Usuario');
         $this->smarty->assign('is_edit', true);
+        $this->smarty->assign('is_admin', $this->authService->isAdmin());
         $this->smarty->display('form_usuario.tpl');
     }
 
@@ -171,6 +178,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -182,6 +190,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -195,6 +204,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -205,6 +215,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -217,6 +228,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -239,6 +251,7 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
+                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
             }
         }
