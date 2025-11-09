@@ -50,8 +50,18 @@ $http_method = $_SERVER['REQUEST_METHOD'];
 
 // Define routes with HTTP methods and optional middleware
 $routes = [
-    '/' => ['GET' => ['handler' => function () use ($smarty) {
-        $smarty->display('home.tpl');
+    '/' => ['GET' => ['handler' => function () use ($smarty, $loginController) {
+        if (!isset($_SESSION['user_id'])) {
+            $loginController->showLoginForm(); // Redirect to login if not logged in
+            return;
+        }
+
+        if ($_SESSION['role'] === 'user') {
+            header('Location: ' . BASE_URL . 'catalog'); // Redirect to catalog for users
+            exit();
+        } else {
+            $smarty->display('home.tpl'); // Show home for admin/supervisor
+        }
     }]],
     '/home' => ['GET' => ['handler' => function () use ($smarty) {
         $smarty->display('home.tpl');
