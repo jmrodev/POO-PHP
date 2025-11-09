@@ -19,6 +19,7 @@ $registerController = $container['registerController'];
 $usuarioController = $container['usuarioController'];
 $repuestoController = $container['repuestoController']; // Inject RepuestoController
 $ventaController = $container['ventaController']; // Inject VentaController
+$cartController = $container['cartController']; // Inject CartController
 
 $request_uri = $_SERVER['REQUEST_URI'];
 $script_name = $_SERVER['SCRIPT_NAME'];
@@ -187,6 +188,36 @@ $routes = [
         'GET' => ['handler' => function ($id) use ($ventaController) {
             $ventaController->showDetail($id);
         }, 'middleware' => ['login']], // All logged-in users can view their sales
+    ],
+    '/catalog' => [
+        'GET' => ['handler' => function () use ($cartController) {
+            $cartController->showCatalog();
+        }, 'middleware' => ['login']],
+    ],
+    '/cart/add' => [
+        'POST' => ['handler' => function () use ($cartController) {
+            $cartController->addToCart();
+        }, 'middleware' => ['login']],
+    ],
+    '/cart' => [
+        'GET' => ['handler' => function () use ($cartController) {
+            $cartController->showCart();
+        }, 'middleware' => ['login']],
+    ],
+    '/cart/update' => [
+        'POST' => ['handler' => function () use ($cartController) {
+            $cartController->updateCartItem();
+        }, 'middleware' => ['login']],
+    ],
+    '/cart/remove/{id}' => [
+        'GET' => ['handler' => function ($id) use ($cartController) {
+            $cartController->removeFromCart((int)$id);
+        }, 'middleware' => ['login']],
+    ],
+    '/cart/checkout' => [
+        'GET' => ['handler' => function () use ($cartController) {
+            $cartController->checkout();
+        }, 'middleware' => ['login']],
     ],
 ];
 

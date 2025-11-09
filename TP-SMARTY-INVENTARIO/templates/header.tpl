@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$page_title|default:"Inventario"}</title>
     <link rel="stylesheet" href="{$BASE_URL}css/style.css">
+    <link rel="stylesheet" href="{$BASE_URL}css/cart_styles.css">
 </head>
 <body>
     <header>
@@ -12,6 +13,7 @@
             <ul>
                 {if isset($smarty.session.user_id)}
                     <li>Bienvenido, {$smarty.session.username}</li>
+                    <li><a href="{$BASE_URL}cart">Ver Carrito</a></li>
                     <li><a href="{$BASE_URL}logout">Cerrar Sesión</a></li>
                 {else}
                     <li><a href="{$BASE_URL}login">Iniciar Sesión</a></li>

@@ -19,8 +19,11 @@ use App\Repositories\PersonaRepository;
 use App\Controladores\UsuarioController;
 use App\Controladores\RepuestoController;
 use App\Controladores\VentaController;
+use App\Controladores\CartController;
 use App\Repositories\RepuestoRepository;
 use App\Repositories\VentaRepository;
+use App\Repositories\PedidoRepository;
+use App\Repositories\DetallePedidoRepository;
 use App\Validators\VentaValidator;
 
 try {
@@ -52,6 +55,8 @@ try {
     $personaRepository = new PersonaRepository($pdo);
     $repuestoRepository = new RepuestoRepository($pdo);
     $ventaRepository = new VentaRepository($pdo);
+    $pedidoRepository = new PedidoRepository($pdo, $repuestoRepository, $personaRepository);
+    $detallePedidoRepository = new DetallePedidoRepository($pdo);
 
     // Instantiate validators
     $ventaValidator = new VentaValidator($repuestoRepository, $personaRepository);
@@ -62,6 +67,7 @@ try {
     $usuarioController = new UsuarioController($smarty, $personaRepository);
     $repuestoController = new RepuestoController($smarty, $repuestoRepository);
     $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository);
+    $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository);
 
     // Return container with instantiated objects
     return [
@@ -70,12 +76,15 @@ try {
         'personaRepository' => $personaRepository,
         'repuestoRepository' => $repuestoRepository,
         'ventaRepository' => $ventaRepository,
+        'pedidoRepository' => $pedidoRepository,
+        'detallePedidoRepository' => $detallePedidoRepository,
         'ventaValidator' => $ventaValidator,
         'loginController' => $loginController,
         'registerController' => $registerController,
         'usuarioController' => $usuarioController,
         'repuestoController' => $repuestoController,
         'ventaController' => $ventaController,
+        'cartController' => $cartController,
     ];
 } catch (Exception $e) {
     error_log("Bootstrap Error: " . $e->getMessage());
