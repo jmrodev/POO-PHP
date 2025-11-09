@@ -28,7 +28,7 @@ try {
     $personaRepository = new PersonaRepository($pdo);
 
     $username = 'admin';
-    $password = password_hash('Jmro1975', PASSWORD_DEFAULT);
+    $password = password_hash('admin', PASSWORD_DEFAULT);
     $nombre = 'Administrador Principal';
 
     if (!$personaRepository->findByUsername($username)) {
