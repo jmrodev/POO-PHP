@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Listado de Ventas</h1>
 
-    {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+    {if $smarty.session.user_id} {* All logged-in users can register new sales *}
         <div class="menu-options">
             <a href="{$BASE_URL}ventas/add" class="menu-button">Registrar Nueva Venta</a>
         </div>
@@ -31,11 +31,11 @@
                     <td>{$venta->getFecha()}</td>
                     <td>
                         <div class="action-buttons">
-                            {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+                            {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor' || ($smarty.session.role == 'user' && $venta->getUsuario()->getId() == $smarty.session.user_id)}
                                 <a href="{$BASE_URL}ventas/edit/{$venta->getId()}" class="edit-button">Editar</a>
                             {/if}
                             <a href="{$BASE_URL}ventas/detail/{$venta->getId()}" class="detail-button">Ver Detalle</a>
-                            {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+                            {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor' || ($smarty.session.role == 'user' && $venta->getUsuario()->getId() == $smarty.session.user_id)}
                                 <a href="{$BASE_URL}ventas/delete/{$venta->getId()}" class="delete-button">Eliminar</a>
                             {/if}
                         </div>

@@ -39,7 +39,7 @@ class VentaController extends BaseController
 
     public function showFormCreate(): void
     {
-        AuthMiddleware::requireAdminOrSupervisor();
+        AuthMiddleware::requireLogin();
 
         $repuestos = $this->repuestoRepository->obtenerTodos();
         $usuarios = [];
@@ -65,7 +65,7 @@ class VentaController extends BaseController
 
     public function create(): void
     {
-        AuthMiddleware::requireAdminOrSupervisor();
+        AuthMiddleware::requireLogin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new VentaValidator($this->repuestoRepository, $this->personaRepository);
@@ -118,7 +118,7 @@ class VentaController extends BaseController
 
     public function showFormEdit(int $id): void
     {
-        AuthMiddleware::requireAdminOrSupervisor();
+        AuthMiddleware::requireLogin();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -156,7 +156,7 @@ class VentaController extends BaseController
 
     public function update(): void
     {
-        AuthMiddleware::requireAdminOrSupervisor();
+        AuthMiddleware::requireLogin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new VentaValidator($this->repuestoRepository, $this->personaRepository);
@@ -228,7 +228,7 @@ class VentaController extends BaseController
 
     public function showConfirmDelete(int $id): void
     {
-        AuthMiddleware::requireAdminOrSupervisor();
+        AuthMiddleware::requireLogin();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
@@ -249,7 +249,7 @@ class VentaController extends BaseController
 
     public function delete(int $id): void
     {
-        AuthMiddleware::requireAdminOrSupervisor();
+        AuthMiddleware::requireLogin();
 
         $venta = $this->ventaRepository->obtenerPorId($id);
         if (!$venta) {
