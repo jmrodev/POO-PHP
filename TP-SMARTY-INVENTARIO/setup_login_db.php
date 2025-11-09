@@ -21,9 +21,9 @@ try {
     $pdo = new PDO("mysql:host={$config['servername']};dbname={$config['dbname']};charset=utf8mb4", $config['username'], $config['password']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $sql = file_get_contents(__DIR__ . '/db/inventario_db.sql');
+    $sql = file_get_contents(__DIR__ . '/db/full_schema.sql');
     $pdo->exec($sql);
-    echo "Database schema from inventario_db.sql applied successfully.\n";
+    echo "Database schema from full_schema.sql applied successfully.\n";
 
     $personaRepository = new PersonaRepository($pdo);
 
