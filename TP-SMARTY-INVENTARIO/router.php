@@ -50,7 +50,7 @@ $http_method = $_SERVER['REQUEST_METHOD'];
 
 // Define routes with HTTP methods and optional middleware
 $routes = [
-    '/' => ['GET' => ['handler' => function () use ($smarty, $loginController) {
+    '/' => ['GET' => ['handler' => function () use ($smarty, $loginController, $personaRepository) {
         if (!isset($_SESSION['user_id'])) {
             $loginController->showLoginForm(); // Redirect to login if not logged in
             return;
@@ -60,10 +60,28 @@ $routes = [
             header('Location: ' . BASE_URL . 'catalog'); // Redirect to catalog for users
             exit();
         } else {
+            $userSummary = [];
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                $allPersonas = $personaRepository->getAllPersonas();
+                $userSummary['total_users'] = count($allPersonas);
+                $userSummary['admin_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'admin'));
+                $userSummary['supervisor_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'supervisor'));
+                $userSummary['client_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'user' || $p->getRole() === 'client'));
+            }
+            $smarty->assign('user_summary', $userSummary);
             $smarty->display('home.tpl'); // Show home for admin/supervisor
         }
     }]],
-    '/home' => ['GET' => ['handler' => function () use ($smarty) {
+    '/home' => ['GET' => ['handler' => function () use ($smarty, $personaRepository) {
+        $userSummary = [];
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+            $allPersonas = $personaRepository->getAllPersonas();
+            $userSummary['total_users'] = count($allPersonas);
+            $userSummary['admin_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'admin'));
+            $userSummary['supervisor_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'supervisor'));
+            $userSummary['client_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'user' || $p->getRole() === 'client'));
+        }
+        $smarty->assign('user_summary', $userSummary);
         $smarty->display('home.tpl');
     }]],
     '/login' => [
