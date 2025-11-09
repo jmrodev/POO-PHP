@@ -26,6 +26,7 @@ use App\Repositories\VentaRepository;
 use App\Repositories\PedidoRepository;
 use App\Repositories\DetallePedidoRepository;
 use App\Services\AuthService;
+use App\Validators\VentaValidator;
 
 try {
     // Initialize Smarty
@@ -45,10 +46,6 @@ try {
         error_log("BASE_URL: " . BASE_URL);
     }
 
-    $smarty->assign('BASE_URL', BASE_URL);
-    $smarty->assign('SERVER_PATH', SERVER_PATH);
-    $smarty->assign('authService', $authService); // Assign AuthService to Smarty
-
     // Get PDO connection
     $db = DBConnection::getInstance();
     $pdo = $db->getConnection();
@@ -60,11 +57,11 @@ try {
     $pedidoRepository = new PedidoRepository($pdo, $repuestoRepository, $personaRepository);
     $detallePedidoRepository = new DetallePedidoRepository($pdo);
 
-    // Instantiate validators
-    $ventaValidator = new VentaValidator($repuestoRepository, $personaRepository);
-
     // Instantiate AuthService
     $authService = new AuthService($personaRepository);
+
+    // Instantiate validators
+    $ventaValidator = new VentaValidator($repuestoRepository, $personaRepository);
 
     // Instantiate controllers
     $loginController = new LoginController($smarty, $personaRepository, $authService);
@@ -74,6 +71,10 @@ try {
     $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository, $authService);
     $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository, $authService);
     $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository, $authService);
+
+    $smarty->assign('BASE_URL', BASE_URL);
+    $smarty->assign('SERVER_PATH', SERVER_PATH);
+    $smarty->assign('authService', $authService); // Assign AuthService to Smarty
 
     // Return container with instantiated objects
     return [
