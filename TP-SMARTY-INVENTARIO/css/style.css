@@ -369,3 +369,229 @@ p.message.success {
 .card-footer .back-button:hover {
     background-color: #5a6268;
 }
+
+/* --- New Styles for Asides and Layouts --- */
+
+/* Home Page Layout (Admin Summary) */
+.main-content-area {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    margin-top: 30px;
+}
+
+.admin-summary-aside {
+    flex: 0 0 300px; /* Fixed width for aside, but can shrink */
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #007bff; /* Accent border */
+}
+
+.admin-summary-aside h2 {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.admin-summary-aside ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-summary-aside li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e9ecef;
+    font-size: 1rem;
+    color: #495057;
+}
+
+.admin-summary-aside li:last-child {
+    border-bottom: none;
+}
+
+/* Product Catalog Layout (Offer Aside) */
+.main-catalog-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+.product-catalog {
+    flex: 1; /* Take remaining space */
+    min-width: 600px; /* Ensure catalog doesn't get too small */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    max-width: 100%;
+    height: 180px; /* Fixed height for consistency */
+    object-fit: cover; /* Cover the area, cropping if necessary */
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+}
+
+.product-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.product-stock {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.add-to-cart-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-button:hover {
+    background-color: #0056b3;
+}
+
+.out-of-stock {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.offer-aside {
+    flex: 0 0 300px; /* Fixed width for aside */
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #28a745; /* Accent border for offers */
+}
+
+.offer-aside h2 {
+    color: #28a745;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.offer-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.offer-card:hover {
+    transform: translateY(-3px);
+}
+
+.offer-image {
+    max-width: 100%;
+    height: 120px; /* Fixed height for consistency */
+    object-fit: cover; /* Cover the area, cropping if necessary */
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
+}
+
+.offer-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 5px;
+}
+
+.offer-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #dc3545; /* Red for offer price */
+    margin-bottom: 10px;
+}
+
+.view-offer-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.view-offer-button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .main-content-area, .main-catalog-area {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .admin-summary-aside, .offer-aside {
+        flex: 0 0 100%; /* Take full width on smaller screens */
+        max-width: 600px; /* Limit width for better readability */
+    }
+
+    .product-catalog {
+        min-width: unset; /* Remove min-width constraint */
+        width: 100%;
+    }
+}
