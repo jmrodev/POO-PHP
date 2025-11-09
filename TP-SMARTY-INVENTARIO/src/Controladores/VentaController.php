@@ -11,9 +11,7 @@ use App\Repositories\PersonaRepository;
 use App\Validators\VentaValidator;
 use Smarty;
 
-use App
-Services
-AuthService; // Add this use statement
+use App\Services\AuthService; // Add this use statement
 
 class VentaController extends BaseController
 {
