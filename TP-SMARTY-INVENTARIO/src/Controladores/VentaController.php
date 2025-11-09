@@ -28,6 +28,7 @@ class VentaController extends BaseController
     public function index(): void
     {
         AuthMiddleware::requireOnlySupervisor();
+        $ventas = $this->ventaRepository->obtenerTodos(); // Fetch all sales for supervisors
         $this->smarty->assign('ventas', $ventas);
         $this->smarty->assign('page_title', 'Gestión de Ventas');
         $this->smarty->display('ventas.tpl');
