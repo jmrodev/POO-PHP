@@ -11,13 +11,11 @@ use App\Services\AuthService; // Add this use statement
 class RegisterController extends BaseController
 {
     private PersonaRepository $personaRepository;
-    private AuthService $authService; // Add this property
 
     public function __construct(Smarty $smarty, PersonaRepository $personaRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService);
         $this->personaRepository = $personaRepository;
-        $this->authService = $authService; // Assign the service
     }
 
     public function showRegisterForm(): void

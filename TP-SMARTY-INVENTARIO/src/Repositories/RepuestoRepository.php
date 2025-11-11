@@ -108,4 +108,25 @@ class RepuestoRepository
         }
         return $repuestos;
     }
+
+    public function obtenerPaginado(int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+        $stmt = $this->db->prepare("SELECT id, nombre, precio, cantidad, imagen FROM repuestos LIMIT :perPage OFFSET :offset");
+        $stmt->bindParam(':perPage', $perPage, \PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        $repuestosData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $repuestos = [];
+        foreach ($repuestosData as $data) {
+            $repuestos[] = new Repuesto($data['id'], $data['nombre'], $data['precio'], $data['cantidad'], $data['imagen']);
+        }
+        return $repuestos;
+    }
+
+    public function contarTodos(): int
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM repuestos");
+        return (int) $stmt->fetchColumn();
+    }
 }

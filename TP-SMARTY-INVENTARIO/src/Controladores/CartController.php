@@ -16,15 +16,13 @@ class CartController extends BaseController
     private RepuestoRepository $repuestoRepository;
     private PedidoRepository $pedidoRepository;
     private PersonaRepository $personaRepository;
-    private AuthService $authService; // Add this property
 
     public function __construct(Smarty $smarty, RepuestoRepository $repuestoRepository, PedidoRepository $pedidoRepository, PersonaRepository $personaRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService);
         $this->repuestoRepository = $repuestoRepository;
         $this->pedidoRepository = $pedidoRepository;
         $this->personaRepository = $personaRepository;
-        $this->authService = $authService; // Assign the service
 
         // Initialize cart in session if it doesn't exist
         if (!isset($_SESSION['cart'])) {

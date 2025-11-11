@@ -1,9 +1,10 @@
 <?php
 
 // routes/home.php
+$router->get('/', function () use ($homeController) {
+    $homeController->showHome();
+});
 
-require_once SERVER_PATH . '/src/Controladores/BaseController.php';
-require_once SERVER_PATH . '/src/Controladores/HomeController.php';
-
-$homeController = new HomeController();
-$homeController->show();
+$router->get('/home', function () use ($homeController) {
+    $homeController->showHome();
+});

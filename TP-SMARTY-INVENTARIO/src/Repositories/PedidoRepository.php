@@ -168,4 +168,55 @@ class PedidoRepository
         }
         return $detalles;
     }
+
+    public function obtenerPaginado(int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+        $stmt = $this->db->prepare("SELECT p.id, p.usuario_id, p.fecha_pedido, p.total, p.estado, u.nombre as usuario_nombre, u.username, u.role, u.dni FROM pedidos p JOIN personas u ON p.usuario_id = u.id ORDER BY p.fecha_pedido DESC LIMIT :perPage OFFSET :offset");
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $pedidosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pedidos = [];
+        foreach ($pedidosData as $data) {
+            $usuario = new Usuario($data['usuario_id'], $data['usuario_nombre'], $data['username'], null, $data['dni'], $data['role']);
+            $pedido = new Pedido($data['id'], $data['usuario_id'], $data['fecha_pedido'], $data['total'], $data['estado'], $usuario);
+            $pedido->setDetalles($this->obtenerDetallesPorPedidoId($pedido->getId()));
+            $pedidos[] = $pedido;
+        }
+        return $pedidos;
+    }
+
+    public function contarTodos(): int
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM pedidos");
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function obtenerPedidosPorUsuarioIdPaginado(int $usuarioId, int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+        $stmt = $this->db->prepare("SELECT p.id, p.usuario_id, p.fecha_pedido, p.total, p.estado, u.nombre as usuario_nombre, u.username, u.role, u.dni FROM pedidos p JOIN personas u ON p.usuario_id = u.id WHERE p.usuario_id = :usuario_id ORDER BY p.fecha_pedido DESC LIMIT :perPage OFFSET :offset");
+        $stmt->bindValue(':usuario_id', $usuarioId, PDO::PARAM_INT);
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $pedidosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pedidos = [];
+        foreach ($pedidosData as $data) {
+            $usuario = new Usuario($data['usuario_id'], $data['usuario_nombre'], $data['username'], null, $data['dni'], $data['role']);
+            $pedido = new Pedido($data['id'], $data['usuario_id'], $data['fecha_pedido'], $data['total'], $data['estado'], $usuario);
+            $pedido->setDetalles($this->obtenerDetallesPorPedidoId($pedido->getId()));
+            $pedidos[] = $pedido;
+        }
+        return $pedidos;
+    }
+
+    public function contarPedidosPorUsuarioId(int $usuarioId): int
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM pedidos WHERE usuario_id = :usuario_id");
+        $stmt->bindValue(':usuario_id', $usuarioId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
 }

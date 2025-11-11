@@ -18,11 +18,11 @@ class VentaController extends BaseController
     private VentaRepository $ventaRepository;
     private RepuestoRepository $repuestoRepository;
     private PersonaRepository $personaRepository;
-    private AuthService $authService; // Add this property
+    protected AuthService $authService; // Add this property
 
     public function __construct(\Smarty $smarty, VentaRepository $ventaRepository, RepuestoRepository $repuestoRepository, PersonaRepository $personaRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService);
         $this->ventaRepository = $ventaRepository;
         $this->repuestoRepository = $repuestoRepository;
         $this->personaRepository = $personaRepository;
@@ -33,9 +33,23 @@ class VentaController extends BaseController
     {
         // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
-        $ventas = $this->ventaRepository->obtenerTodos();
+        $perPage = 10; // Número de ventas por página
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $totalVentas = $this->ventaRepository->contarTodos();
+        $totalPages = ceil($totalVentas / $perPage);
+
+        $ventas = $this->ventaRepository->obtenerPaginado($currentPage, $perPage);
+        
         $this->smarty->assign('ventas', $ventas);
         $this->smarty->assign('page_title', 'Gestión de Ventas');
+        $this->smarty->assign('currentPage', $currentPage);
+        $this->smarty->assign('totalPages', $totalPages);
+        $this->smarty->assign('perPage', $perPage);
+        $this->smarty->assign('baseURL', BASE_URL . 'ventas'); // Base URL for pagination links
         $this->smarty->display('ventas.tpl');
     }
 

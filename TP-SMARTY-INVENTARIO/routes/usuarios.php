@@ -1,37 +1,24 @@
 <?php
 
 // routes/usuarios.php
-
-require_once SERVER_PATH . '/src/Controladores/UsuarioController.php';
-
-$usuarioController = new UsuarioController();
-
-// Parse the URL to get action and ID
-$url_parts = explode('/', trim($route, '/'));
-$action = $url_parts[1] ?? 'index'; // Default to index
-$id = $url_parts[2] ?? null;
-
-switch ($action) {
-    case 'index':
-        $usuarioController->index();
-        break;
-    case 'create':
-        $usuarioController->create();
-        break;
-    case 'store':
-        $usuarioController->store();
-        break;
-    case 'edit':
-        $usuarioController->edit($id);
-        break;
-    case 'update':
-        $usuarioController->update($id);
-        break;
-    case 'delete':
-        $usuarioController->delete($id);
-        break;
-    default:
-        // Handle 404 or redirect to index
-        header('Location: ' . BASE_URL . 'usuarios');
-        exit();
-}
+$router->get('/usuarios', function () use ($usuarioController) {
+    $usuarioController->index();
+}, ['admin']);
+$router->get('/usuarios/add', function () use ($usuarioController) {
+    $usuarioController->showFormCreate();
+}, ['admin']);
+$router->post('/usuarios/create', function () use ($usuarioController) {
+    $usuarioController->create();
+}, ['admin']);
+$router->get('/usuarios/edit/{id}', function ($id) use ($usuarioController) {
+    $usuarioController->showFormEdit($id);
+}, ['admin']);
+$router->post('/usuarios/update', function () use ($usuarioController) {
+    $usuarioController->update();
+}, ['admin']);
+$router->get('/usuarios/delete/{id}', function ($id) use ($usuarioController) {
+    $usuarioController->showConfirmDelete($id);
+}, ['admin']);
+$router->post('/usuarios/delete_confirm/{id}', function ($id) use ($usuarioController) {
+    $usuarioController->delete($id);
+}, ['admin']);

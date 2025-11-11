@@ -14,29 +14,45 @@ class PedidoController extends BaseController
 {
     private PedidoRepository $pedidoRepository;
     private PersonaRepository $personaRepository;
-    private AuthService $authService; // Add this property
 
     public function __construct(Smarty $smarty, PedidoRepository $pedidoRepository, PersonaRepository $personaRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService);
         $this->pedidoRepository = $pedidoRepository;
         $this->personaRepository = $personaRepository;
-        $this->authService = $authService; // Assign the service
     }
 
     public function index(): void
     {
         // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
-        $pedidos = [];
-        if ($this->authService->isAdmin() || $this->authService->isSupervisor()) {
-            $pedidos = $this->pedidoRepository->obtenerTodos();
-        } elseif ($this->authService->isUser()) {
-            $pedidos = $this->pedidoRepository->obtenerPedidosPorUsuarioId($this->authService->getUserId());
+        $perPage = 10; // Número de pedidos por página
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
         }
+
+        $pedidos = [];
+        $totalPedidos = 0;
+        $baseURL = BASE_URL . 'pedidos';
+
+        if ($this->authService->isAdmin() || $this->authService->isSupervisor()) {
+            $pedidos = $this->pedidoRepository->obtenerPaginado($currentPage, $perPage);
+            $totalPedidos = $this->pedidoRepository->contarTodos();
+        } elseif ($this->authService->isUser()) {
+            $userId = $this->authService->getUserId();
+            $pedidos = $this->pedidoRepository->obtenerPedidosPorUsuarioIdPaginado($userId, $currentPage, $perPage);
+            $totalPedidos = $this->pedidoRepository->contarPedidosPorUsuarioId($userId);
+        }
+
+        $totalPages = ceil($totalPedidos / $perPage);
 
         $this->smarty->assign('pedidos', $pedidos);
         $this->smarty->assign('page_title', 'Gestión de Pedidos');
+        $this->smarty->assign('currentPage', $currentPage);
+        $this->smarty->assign('totalPages', $totalPages);
+        $this->smarty->assign('perPage', $perPage);
+        $this->smarty->assign('baseURL', $baseURL); // Base URL for pagination links
         $this->smarty->display('pedidos.tpl');
     }
 
@@ -84,6 +100,7 @@ class PedidoController extends BaseController
         }
 
         $this->smarty->assign('pedido', $pedido);
+        $this->smarty->assign('form_action', BASE_URL . 'pedidos/update');
         $this->smarty->assign('page_title', 'Editar Pedido');
         $this->smarty->display('form_pedido.tpl');
     }
@@ -124,7 +141,7 @@ class PedidoController extends BaseController
                     $this->redirect(BASE_URL . 'pedidos');
                     return;
                 }
-            } elseif (!in_array($estado, ['pendiente', 'procesado', 'enviado', 'entregado', 'cancelado'])) {
+            } elseif (!in_array($estado, ['pendiente', 'completado', 'cancelado'])) {
                 $_SESSION['error_message'] = 'Estado de pedido inválido.';
                 $this->redirect(BASE_URL . 'pedidos');
                 return;

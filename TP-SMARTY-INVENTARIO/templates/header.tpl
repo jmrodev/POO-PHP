@@ -15,7 +15,7 @@
                     <li>Bienvenido, {$authService->getUsername()}</li>
                     {if $authService->isAdmin()}
                         <li><a href="{$BASE_URL}usuarios">Gestionar Usuarios</a></li>
-                    {else}
+                    {elseif !$authService->isSupervisor()}
                         <li><a href="{$BASE_URL}cart">Ver Carrito</a></li>
                         <li><a href="{$BASE_URL}pedidos">Mis Pedidos</a></li>
                     {/if}

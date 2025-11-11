@@ -1,355 +1,59 @@
 <?php
 
-// Let the built-in PHP server serve existing static files (css, js, images)
-// so requests for resources under the document root are not routed through this script.
-if (php_sapi_name() === 'cli-server') {
-    $urlPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $file = __DIR__ . $urlPath;
-    if (is_file($file)) {
-        // Return false to let the built-in web server serve the requested resource
-        return false;
-    }
-}
-
 $container = require_once 'bootstrap.php';
 
 $smarty = $container['smarty'];
-$authService = $container['authService']; // Extract AuthService
+$authService = $container['authService'];
 $loginController = $container['loginController'];
 $registerController = $container['registerController'];
 $usuarioController = $container['usuarioController'];
-$repuestoController = $container['repuestoController']; // Inject RepuestoController
-$ventaController = $container['ventaController']; // Inject VentaController
-$cartController = $container['cartController']; // Inject CartController
-$pedidoController = $container['pedidoController']; // Inject PedidoController
+$repuestoController = $container['repuestoController'];
+$ventaController = $container['ventaController'];
+$cartController = $container['cartController'];
+$pedidoController = $container['pedidoController'];
+$personaRepository = $container['personaRepository']; // Needed for home route
+$router = $container['router']; // Get the router instance
 
-$request_uri = $_SERVER['REQUEST_URI'];
-$script_name = $_SERVER['SCRIPT_NAME'];
-$base_path = str_replace(basename($script_name), '', $script_name);
-
-// Correctly extract the route path
-$path = parse_url($request_uri, PHP_URL_PATH);
-$route = substr($path, strlen($base_path));
-$route = strtok($route, '?'); // Remove query string
-
-// Ensure the route starts with a '/' if it's not empty
-if (!empty($route) && $route[0] !== '/') {
-    $route = '/' . $route;
-}
-
-if (empty($route)) {
-    $route = '/';
-}
-
-// Debugging output
-error_log("REQUEST_URI: " . $request_uri);
-error_log("SCRIPT_NAME: " . $script_name);
-error_log("BASE_PATH: " . $base_path);
-error_log("Calculated Route: " . $route);
-
-$http_method = $_SERVER['REQUEST_METHOD'];
-
-// Define routes with HTTP methods and optional middleware
-$routes = [
-    '/' => ['GET' => ['handler' => function () use ($smarty, $loginController, $personaRepository, $authService) {
-        if (!$authService->isLoggedIn()) {
-            $loginController->showLoginForm(); // Redirect to login if not logged in
-            return;
-        }
-
-        if ($authService->isUser()) {
-            header('Location: ' . BASE_URL . 'catalog'); // Redirect to catalog for users
-            exit();
-        } else {
-            $userSummary = [];
-            if ($authService->isAdmin()) {
-                $allPersonas = $personaRepository->getAllPersonas();
-                $userSummary['total_users'] = count($allPersonas);
-                $userSummary['admin_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'admin'));
-                $userSummary['supervisor_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'supervisor'));
-                $userSummary['client_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'user' || $p->getRole() === 'client'));
-            }
-            $smarty->assign('user_summary', $userSummary);
-            $smarty->display('home.tpl'); // Show home for admin/supervisor
-        }
-    }]],
-    '/home' => ['GET' => ['handler' => function () use ($smarty, $personaRepository, $authService) {
-        $userSummary = [];
-        if ($authService->isAdmin()) {
-            $allPersonas = $personaRepository->getAllPersonas();
-            $userSummary['total_users'] = count($allPersonas);
-            $userSummary['admin_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'admin'));
-            $userSummary['supervisor_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'supervisor'));
-            $userSummary['client_count'] = count(array_filter($allPersonas, fn($p) => $p->getRole() === 'user' || $p->getRole() === 'client'));
-        }
-        $smarty->assign('user_summary', $userSummary);
-        $smarty->display('home.tpl');
-    }]],
-    '/login' => [
-        'GET' => ['handler' => function () use ($loginController) {
-            $loginController->showLoginForm();
-        }],
-        'POST' => ['handler' => function () use ($loginController) {
-            $loginController->login();
-        }]
-    ],
-    '/logout' => ['GET' => ['handler' => function () use ($loginController) {
-        $loginController->logout();
-    }]],
-    '/register' => [
-        'GET' => ['handler' => function () use ($registerController) {
-            $registerController->showRegisterForm();
-        }],
-        'POST' => ['handler' => function () use ($registerController) {
-            $registerController->register();
-        }]
-    ],
-    '/usuarios' => [ // Changed from /clientes
-        'GET' => ['handler' => function () use ($usuarioController) {
-            $usuarioController->index();
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/usuarios/add' => [ // Changed from /clientes/add
-        'GET' => ['handler' => function () use ($usuarioController) {
-            $usuarioController->showFormCreate();
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/usuarios/create' => [ // Changed from /clientes/create
-        'POST' => ['handler' => function () use ($usuarioController) {
-            $usuarioController->create();
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/usuarios/edit/{id}' => [ // Changed from /clientes/edit/{id}
-        'GET' => ['handler' => function ($id) use ($usuarioController) {
-            $usuarioController->showFormEdit($id);
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/usuarios/update' => [ // Changed from /clientes/update
-        'POST' => ['handler' => function () use ($usuarioController) {
-            $usuarioController->update();
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/usuarios/delete/{id}' => [ // Changed from /clientes/delete/{id}
-        'GET' => ['handler' => function ($id) use ($usuarioController) {
-            $usuarioController->showConfirmDelete($id);
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/usuarios/delete_confirm/{id}' => [ // Changed from /clientes/delete_confirm/{id}
-        'POST' => ['handler' => function ($id) use ($usuarioController) {
-            $usuarioController->delete($id);
-        }, 'middleware' => ['admin']], // Apply 'admin' middleware
-    ],
-    '/repuestos' => [
-        'GET' => ['handler' => function () use ($repuestoController) {
-            $repuestoController->index();
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/add' => [
-        'GET' => ['handler' => function () use ($repuestoController) {
-            $repuestoController->showFormCreate();
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/create' => [
-        'POST' => ['handler' => function () use ($repuestoController) {
-            $repuestoController->create();
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/edit/{id}' => [
-        'GET' => ['handler' => function ($id) use ($repuestoController) {
-            $repuestoController->showFormEdit($id);
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/update' => [
-        'POST' => ['handler' => function () use ($repuestoController) {
-            $repuestoController->update();
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/delete/{id}' => [
-        'GET' => ['handler' => function ($id) use ($repuestoController) {
-            $repuestoController->showConfirmDelete($id);
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/delete_confirm/{id}' => [
-        'POST' => ['handler' => function ($id) use ($repuestoController) {
-            $repuestoController->delete($id);
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/repuestos/detail/{id}' => [
-        'GET' => ['handler' => function ($id) use ($repuestoController) {
-            $repuestoController->showDetail($id);
-        }, 'middleware' => ['supervisor']],
-    ],
-    '/ventas' => [
-        'GET' => ['handler' => function () use ($ventaController) {
-            $ventaController->index();
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can see legacy sales
-    ],
-    '/ventas/add' => [
-        'GET' => ['handler' => function () use ($ventaController) {
-            $ventaController->showFormCreate();
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can create legacy sales
-    ],
-    '/ventas/create' => [
-        'POST' => ['handler' => function () use ($ventaController) {
-            $ventaController->create();
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can create legacy sales
-    ],
-    '/ventas/edit/{id}' => [
-        'GET' => ['handler' => function ($id) use ($ventaController) {
-            $ventaController->showFormEdit($id);
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can edit legacy sales
-    ],
-    '/ventas/update' => [
-        'POST' => ['handler' => function () use ($ventaController) {
-            $ventaController->update();
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can update legacy sales
-    ],
-    '/ventas/delete/{id}' => [
-        'GET' => ['handler' => function ($id) use ($ventaController) {
-            $ventaController->showConfirmDelete($id);
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can delete legacy sales
-    ],
-    '/ventas/delete_confirm/{id}' => [
-        'POST' => ['handler' => function ($id) use ($ventaController) {
-            $ventaController->delete($id);
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can delete legacy sales
-    ],
-    '/ventas/detail/{id}' => [
-        'GET' => ['handler' => function ($id) use ($ventaController) {
-            $ventaController->showDetail($id);
-        }, 'middleware' => ['onlysupervisor']], // Only supervisors can view legacy sales
-    ],
-    '/catalog' => [
-        'GET' => ['handler' => function () use ($cartController) {
-            $cartController->showCatalog();
-        }, 'middleware' => ['login']],
-    ],
-    '/cart/add' => [
-        'POST' => ['handler' => function () use ($cartController) {
-            $cartController->addToCart();
-        }, 'middleware' => ['login']],
-    ],
-    '/cart' => [
-        'GET' => ['handler' => function () use ($cartController) {
-            $cartController->showCart();
-        }, 'middleware' => ['login']],
-    ],
-    '/cart/update' => [
-        'POST' => ['handler' => function () use ($cartController) {
-            $cartController->updateCartItem();
-        }, 'middleware' => ['login']],
-    ],
-    '/cart/remove/{id}' => [
-        'GET' => ['handler' => function ($id) use ($cartController) {
-            $cartController->removeFromCart((int)$id);
-        }, 'middleware' => ['login']],
-    ],
-    '/cart/checkout' => [
-        'GET' => ['handler' => function () use ($cartController) {
-            $cartController->checkout();
-        }, 'middleware' => ['login']],
-    ],
-    '/pedidos' => [
-        'GET' => ['handler' => function () use ($pedidoController) {
-            $pedidoController->index();
-        }, 'middleware' => ['login']],
-    ],
-    '/pedidos/detail/{id}' => [
-        'GET' => ['handler' => function ($id) use ($pedidoController) {
-            $pedidoController->showDetail((int)$id);
-        }, 'middleware' => ['login']],
-    ],
-    '/pedidos/edit/{id}' => [
-        'GET' => ['handler' => function ($id) use ($pedidoController) {
-            $pedidoController->showFormEdit((int)$id);
-        }, 'middleware' => ['login']],
-    ],
-    '/pedidos/update' => [
-        'POST' => ['handler' => function () use ($pedidoController) {
-            $pedidoController->update();
-        }, 'middleware' => ['login']],
-    ],
-    '/pedidos/delete/{id}' => [
-        'GET' => ['handler' => function ($id) use ($pedidoController) {
-            $pedidoController->showConfirmDelete((int)$id);
-        }, 'middleware' => ['login']],
-    ],
-    '/pedidos/delete_confirm/{id}' => [
-        'POST' => ['handler' => function ($id) use ($pedidoController) {
-            $pedidoController->delete((int)$id);
-        }, 'middleware' => ['login']],
-    ],
-];
-
-// Middleware definitions
-$middleware = [
-    'admin' => function () use ($authService) {
-        if (!$authService->isAdmin()) {
-            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not admin
-            exit();
-        }
-    },
-    'login' => function () use ($authService) {
-        if (!$authService->isLoggedIn()) {
-            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not logged in
-            exit();
-        }
-    },
-    'supervisor' => function () use ($authService) {
-        if (!$authService->isSupervisor()) {
-            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not supervisor
-            exit();
-        }
-    },
-    'onlysupervisor' => function () use ($authService) {
-        if (!$authService->isSupervisor()) { // Assuming 'onlysupervisor' means supervisor role
-            header('Location: ' . BASE_URL . 'login'); // Redirect to login if not supervisor
-            exit();
-        }
-    },
-];
-
-// ... existing code ...
-
-$matched = false;
-foreach ($routes as $pattern => $methods) {
-    // Convert route pattern to regex
-    $regex = '#^' . preg_replace('#/{([a-zA-Z0-9_]+)}#', '/(?P<$1>[^/]+)', $pattern) . '$#';
-    error_log("Matching route: Pattern='{$pattern}', Regex='{$regex}', Route='{$route}'");
-    if (preg_match($regex, $route, $matches)) {
-        error_log("Route matched: Pattern='{$pattern}', Matches=" . print_r($matches, true));
-        if (isset($methods[$http_method])) {
-            // ... execute middleware and handler ...
-            $route_config = $methods[$http_method];
-            $handler = $route_config['handler'];
-            $route_middleware = $route_config['middleware'] ?? [];
-
-            // Execute middleware
-            foreach ($route_middleware as $mw_key) {
-                if (isset($middleware[$mw_key])) {
-                    $middleware[$mw_key]();
-                } else {
-                    error_log("Middleware '{$mw_key}' not found.");
-                    // Handle missing middleware error
-                    header("HTTP/1.0 500 Internal Server Error");
-                    $smarty->assign('title', '500 Internal Server Error');
-                    $smarty->display('404.tpl'); // Or a specific error template
-                    exit();
-                }
-            }
-
-            // Extract named parameters
-            $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-            // Call the handler with parameters
-            call_user_func_array($handler, $params);
-            $matched = true;
-            break;
-        }
+// Define middleware
+$router->addMiddleware('admin', function () use ($authService, $smarty) {
+    if (!$authService->isAdmin()) {
+        header('Location: ' . BASE_URL . 'login');
+        exit();
     }
-}
+});
 
-if (!$matched) {
-    header("HTTP/1.0 404 Not Found");
-    $smarty->assign('title', '404 Not Found');
-    $smarty->display('404.tpl');
-}
+$router->addMiddleware('login', function () use ($authService, $smarty) {
+    if (!$authService->isLoggedIn()) {
+        header('Location: ' . BASE_URL . 'login');
+        exit();
+    }
+});
+
+$router->addMiddleware('supervisor', function () use ($authService, $smarty) {
+    if (!$authService->isSupervisor()) {
+        header('Location: ' . BASE_URL . 'login');
+        exit();
+    }
+});
+
+$router->addMiddleware('onlysupervisor', function () use ($authService, $smarty) {
+    if (!$authService->isSupervisor()) {
+        header('Location: ' . BASE_URL . 'login');
+        exit();
+    }
+});
+
+// Define routes
+require_once __DIR__ . '/routes/home.php';
+require_once __DIR__ . '/routes/auth.php';
+require_once __DIR__ . '/routes/usuarios.php';
+require_once __DIR__ . '/routes/repuestos.php';
+require_once __DIR__ . '/routes/ventas.php';
+require_once __DIR__ . '/routes/cart.php';
+require_once __DIR__ . '/routes/pedidos.php';
+
+// Dispatch the request
+$router->dispatch($smarty);
+
+// If dispatch doesn't find a route, it will handle the 404.
+// No need for the old 404 handling here.

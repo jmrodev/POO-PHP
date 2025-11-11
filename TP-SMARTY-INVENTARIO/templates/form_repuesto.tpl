@@ -12,13 +12,13 @@
             <input type="hidden" name="id" value="{$repuesto->getId()}">
         {/if}
         <label>Nombre:
-            <input type="text" name="nombre" value="{if $repuesto}{$repuesto->getNombre()}{/if}" required>
+            <input type="text" name="nombre" value="{if $repuesto}{$repuesto->getNombre()}{/if}" required maxlength="255">
         </label>
         <label>Precio:
-            <input type="number" name="precio" value="{if $repuesto}{$repuesto->getPrecio()}{/if}" step="0.01" required>
+            <input type="number" name="precio" value="{if $repuesto}{$repuesto->getPrecio()}{/if}" step="0.01" required min="0.01">
         </label>
         <label>Cantidad:
-            <input type="number" name="cantidad" value="{if $repuesto}{$repuesto->getCantidad()}{/if}" required>
+            <input type="number" name="cantidad" value="{if $repuesto}{$repuesto->getCantidad()}{/if}" required min="0">
         </label>
         <label>Imagen:
             <input type="file" name="imagen">

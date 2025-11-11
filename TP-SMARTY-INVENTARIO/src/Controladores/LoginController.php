@@ -10,11 +10,10 @@ use App\Services\AuthService; // Add this use statement
 class LoginController extends BaseController
 {
     private PersonaRepository $personaRepository;
-    private AuthService $authService; // Add this property
-
+    protected AuthService $authService; // Changed to protected
     public function __construct(Smarty $smarty, PersonaRepository $personaRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService); // Pass AuthService to parent constructor
         $this->personaRepository = $personaRepository;
         $this->authService = $authService; // Assign the service
     }

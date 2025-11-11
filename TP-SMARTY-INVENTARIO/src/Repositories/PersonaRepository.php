@@ -171,4 +171,26 @@ class PersonaRepository
         }
         return $users;
     }
+
+    public function obtenerPaginado(int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+        $stmt = $this->pdo->prepare("SELECT * FROM personas LIMIT :perPage OFFSET :offset");
+        $stmt->bindValue(':perPage', $perPage, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        $personasData = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $personas = [];
+        foreach ($personasData as $data) {
+            $personas[] = $this->createPersonaFromData($data);
+        }
+        return $personas;
+    }
+
+    public function contarTodos(): int
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM personas");
+        return (int) $stmt->fetchColumn();
+    }
 }

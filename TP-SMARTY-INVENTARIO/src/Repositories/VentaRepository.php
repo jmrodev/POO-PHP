@@ -100,4 +100,27 @@ class VentaRepository
         }
         return $ventas;
     }
+
+    public function obtenerPaginado(int $page, int $perPage): array
+    {
+        $offset = ($page - 1) * $perPage;
+        $stmt = $this->db->prepare("SELECT v.id, v.repuesto_id, v.cliente_id, v.cantidad, v.fecha, r.nombre as repuesto_nombre, r.precio, r.cantidad as repuesto_cantidad, c.nombre as cliente_nombre, c.dni FROM ventas v JOIN repuestos r ON v.repuesto_id = r.id JOIN personas c ON v.cliente_id = c.id ORDER BY v.fecha DESC LIMIT :perPage OFFSET :offset");
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $ventasData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $ventas = [];
+        foreach ($ventasData as $data) {
+            $repuesto = new Repuesto($data['repuesto_id'], $data['repuesto_nombre'], $data['precio'], $data['repuesto_cantidad']);
+            $usuario = new Usuario($data['cliente_id'], $data['cliente_nombre'], null, null, $data['dni']);
+            $ventas[] = new Venta($data['id'], $repuesto, $usuario, $data['cantidad'], $data['fecha']);
+        }
+        return $ventas;
+    }
+
+    public function contarTodos(): int
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM ventas");
+        return (int) $stmt->fetchColumn();
+    }
 }

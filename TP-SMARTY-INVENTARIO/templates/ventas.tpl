@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Listado de Ventas</h1>
 
-    {if $smarty.session.user_id} {* All logged-in users can register new sales *}
+    {if $smarty.session.user_id && !$authService->isSupervisor()}
         <div class="menu-options">
             <a href="{$BASE_URL}ventas/add" class="menu-button">Registrar Nueva Venta</a>
         </div>
@@ -46,10 +46,15 @@
                     <td colspan="6">No hay ventas registradas.</td>
                 </tr>
             {/foreach}
-        </tbody>
-    </table>
-    <div class="back-link">
-        <a href="{$BASE_URL}home">Volver al Inicio</a>
-    </div>
-</div>
-{/block}
+                    </tbody>
+                </table>
+        
+            {if $totalPages > 1}
+                {include 'pagination.tpl' baseURL=$baseURL currentPage=$currentPage totalPages=$totalPages}
+            {/if}
+        
+            <div class="back-link">
+                <a href="{$BASE_URL}home">Volver al Inicio</a>
+            </div>
+        </div>
+        {/block}

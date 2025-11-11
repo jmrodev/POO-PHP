@@ -14,7 +14,7 @@
 
         <div class="form-group">
             <label for="usuario">Usuario:</label>
-            <input type="text" id="usuario" value="{$pedido->getUsuario()->getNombre()}" disabled class="form-control">
+            <input type="text" id="usuario" value="{if $pedido->getUsuario()}{$pedido->getUsuario()->getNombre()}{else}{''}{/if}" disabled class="form-control">
         </div>
 
         <div class="form-group">

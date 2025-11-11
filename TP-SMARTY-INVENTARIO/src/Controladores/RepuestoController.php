@@ -5,15 +5,16 @@ namespace App\Controladores;
 use App\Modelos\Repuesto;
 use App\Repositories\RepuestoRepository;
 use App\Validators\RepuestoValidator;
+use App\Services\AuthService;
 use Smarty;
 
 class RepuestoController extends BaseController
 {
     private RepuestoRepository $repuestoRepository;
 
-    public function __construct(\Smarty $smarty, RepuestoRepository $repuestoRepository)
+    public function __construct(\Smarty $smarty, RepuestoRepository $repuestoRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService);
         $this->repuestoRepository = $repuestoRepository;
     }
 
@@ -31,17 +32,30 @@ class RepuestoController extends BaseController
 
     public function index(): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
-        $repuestos = $this->repuestoRepository->obtenerTodos();
+        $perPage = 10; // Número de repuestos por página
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $totalRepuestos = $this->repuestoRepository->contarTodos();
+        $totalPages = ceil($totalRepuestos / $perPage);
+
+        $repuestos = $this->repuestoRepository->obtenerPaginado($currentPage, $perPage);
+        
         $this->smarty->assign('repuestos', $repuestos);
         $this->smarty->assign('page_title', 'Gestión de Repuestos');
+        $this->smarty->assign('currentPage', $currentPage);
+        $this->smarty->assign('totalPages', $totalPages);
+        $this->smarty->assign('perPage', $perPage);
         $this->smarty->display('repuestos.tpl');
     }
 
     public function showFormCreate(): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $this->smarty->assign('page_title', 'Añadir Repuesto');
         $this->smarty->assign('form_action', BASE_URL . 'repuestos/create');
@@ -53,7 +67,7 @@ class RepuestoController extends BaseController
 
     public function create(): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new RepuestoValidator();
@@ -96,7 +110,7 @@ class RepuestoController extends BaseController
 
     public function showFormEdit(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $repuesto = $this->repuestoRepository->obtenerPorId($id);
         if (!$repuesto || !($repuesto instanceof Repuesto)) {
@@ -114,7 +128,7 @@ class RepuestoController extends BaseController
 
     public function update(): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $validator = new RepuestoValidator();
@@ -172,7 +186,7 @@ class RepuestoController extends BaseController
 
     public function showConfirmDelete(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $repuesto = $this->repuestoRepository->obtenerPorId($id);
         if (!$repuesto || !($repuesto instanceof Repuesto)) {
@@ -188,7 +202,7 @@ class RepuestoController extends BaseController
 
     public function delete(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         if ($this->repuestoRepository->eliminar($id)) {
             $this->redirect(BASE_URL . 'repuestos');
@@ -199,7 +213,7 @@ class RepuestoController extends BaseController
 
     public function showDetail(int $id): void
     {
-        AuthMiddleware::requireOnlySupervisor(); // Require supervisor or admin role
+        // AuthMiddleware::requireOnlySupervisor(); // Replaced by router middleware
 
         $repuesto = $this->repuestoRepository->obtenerPorId($id);
         if (!$repuesto || !($repuesto instanceof Repuesto)) {

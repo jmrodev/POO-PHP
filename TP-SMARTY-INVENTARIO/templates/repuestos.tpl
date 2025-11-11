@@ -54,6 +54,11 @@
             {/foreach}
         </tbody>
     </table>
+
+    {if $totalPages > 1}
+        {include 'pagination.tpl' baseURL="{$BASE_URL}repuestos" currentPage=$currentPage totalPages=$totalPages}
+    {/if}
+
     <div class="back-link">
         <a href="{$BASE_URL}home">Volver al Inicio</a>
     </div>

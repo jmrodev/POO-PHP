@@ -2,6 +2,11 @@
 
 namespace App\Modelos;
 
+/**
+ * Pedido Model
+ * 
+ * Valid estados: 'pendiente', 'completado', 'cancelado'
+ */
 class Pedido
 {
     private ?int $id;

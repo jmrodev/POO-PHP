@@ -21,11 +21,13 @@ use App\Controladores\RepuestoController;
 use App\Controladores\VentaController;
 use App\Controladores\CartController;
 use App\Controladores\PedidoController;
+use App\Controladores\HomeController;
 use App\Repositories\RepuestoRepository;
 use App\Repositories\VentaRepository;
 use App\Repositories\PedidoRepository;
 use App\Repositories\DetallePedidoRepository;
 use App\Services\AuthService;
+use App\Services\Router;
 use App\Validators\VentaValidator;
 
 try {
@@ -67,10 +69,43 @@ try {
     $loginController = new LoginController($smarty, $personaRepository, $authService);
     $registerController = new RegisterController($smarty, $personaRepository, $authService);
     $usuarioController = new UsuarioController($smarty, $personaRepository, $authService);
-    $repuestoController = new RepuestoController($smarty, $repuestoRepository); // AuthService not directly needed here yet
+    $repuestoController = new RepuestoController($smarty, $repuestoRepository, $authService);
     $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository, $authService);
     $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository, $authService);
     $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository, $authService);
+    $homeController = new HomeController($smarty, $personaRepository, $authService, $loginController); // Instantiate HomeController
+
+    // Instantiate Router
+    $router = new Router($authService, $base_path); // Pass authService to Router constructor
+
+    // Register middleware handlers
+    $router->addMiddleware('login', function (AuthService $authService) {
+        if (!$authService->isLoggedIn()) {
+            header('Location: ' . BASE_URL . 'login');
+            exit();
+        }
+    });
+
+    $router->addMiddleware('admin', function (AuthService $authService) {
+        if (!$authService->isAdmin()) {
+            header('Location: ' . BASE_URL . 'home'); // Redirect to home or show unauthorized
+            exit();
+        }
+    });
+
+    $router->addMiddleware('supervisor', function (AuthService $authService) {
+        if (!$authService->isSupervisor() && !$authService->isAdmin()) {
+            header('Location: ' . BASE_URL . 'home'); // Redirect to home or show unauthorized
+            exit();
+        }
+    });
+
+    $router->addMiddleware('user', function (AuthService $authService) {
+        if (!$authService->isUser()) { // Assuming isUser means not admin/supervisor
+            header('Location: ' . BASE_URL . 'home'); // Redirect to home or show unauthorized
+            exit();
+        }
+    });
 
     $smarty->assign('BASE_URL', BASE_URL);
     $smarty->assign('SERVER_PATH', SERVER_PATH);
@@ -94,6 +129,8 @@ try {
         'ventaController' => $ventaController,
         'cartController' => $cartController,
         'pedidoController' => $pedidoController,
+        'homeController' => $homeController, // Add HomeController to the container
+        'router' => $router, // Add Router to the container
     ];
 } catch (Exception $e) {
     error_log("Bootstrap Error: " . $e->getMessage());

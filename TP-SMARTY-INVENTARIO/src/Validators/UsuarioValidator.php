@@ -16,6 +16,8 @@ class UsuarioValidator
         }
         if (!isset($data['dni']) || empty($data['dni'])) {
             $this->errors[] = "El DNI es obligatorio.";
+        } elseif (!preg_match('/^\d{8}$/', $data['dni'])) { // Assuming 8 numeric digits for DNI
+            $this->errors[] = "El DNI debe contener 8 dígitos numéricos.";
         }
         // Add more validation rules as needed
 

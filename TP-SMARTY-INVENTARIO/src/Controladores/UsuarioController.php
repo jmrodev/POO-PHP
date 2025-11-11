@@ -12,21 +12,34 @@ use App\Services\AuthService; // Add this use statement
 class UsuarioController extends BaseController
 {
     private PersonaRepository $personaRepository;
-    private AuthService $authService; // Add this property
 
     public function __construct(Smarty $smarty, PersonaRepository $personaRepository, AuthService $authService)
     {
-        parent::__construct($smarty);
+        parent::__construct($smarty, $authService);
         $this->personaRepository = $personaRepository;
-        $this->authService = $authService; // Assign the service
     }
 
     public function index(): void
     {
         // AuthMiddleware::requireAdmin(); // Replaced by router middleware
-        $usuarios = $this->personaRepository->getAllPersonas(); // Changed to getAllPersonas
+
+        $perPage = 10; // Número de usuarios por página
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $totalUsuarios = $this->personaRepository->contarTodos();
+        $totalPages = ceil($totalUsuarios / $perPage);
+
+        $usuarios = $this->personaRepository->obtenerPaginado($currentPage, $perPage);
+        
         $this->smarty->assign('usuarios', $usuarios);
         $this->smarty->assign('page_title', 'Gestión de Usuarios');
+        $this->smarty->assign('currentPage', $currentPage);
+        $this->smarty->assign('totalPages', $totalPages);
+        $this->smarty->assign('perPage', $perPage);
+        $this->smarty->assign('baseURL', BASE_URL . 'usuarios'); // Base URL for pagination links
         $this->smarty->display('usuarios.tpl');
     }
 
@@ -35,8 +48,9 @@ class UsuarioController extends BaseController
         // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         $this->smarty->assign('usuario', new Usuario(null, '', '', '', '', 'user')); // Assign an empty Usuario object with default role
         $this->smarty->assign('page_title', 'Crear Usuario');
+        $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
+        $this->smarty->assign('form_data', []);
         $this->smarty->assign('is_edit', false);
-        $this->smarty->assign('is_admin', $this->authService->isAdmin());
         $this->smarty->display('form_usuario.tpl');
     }
 
@@ -44,6 +58,7 @@ class UsuarioController extends BaseController
     {
         // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $validator = new UsuarioValidator(); // Instantiate the validator
             $data = [
                 'nombre' => $_POST['nombre'] ?? '',
                 'username' => $_POST['username'] ?? '',
@@ -64,7 +79,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -76,7 +90,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -89,7 +102,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -100,7 +112,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -117,7 +128,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/create');
                 $this->smarty->assign('is_edit', false);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
             }
         }
@@ -134,8 +144,9 @@ class UsuarioController extends BaseController
         }
         $this->smarty->assign('usuario', $usuario);
         $this->smarty->assign('page_title', 'Editar Usuario');
+        $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
+        $this->smarty->assign('form_data', []);
         $this->smarty->assign('is_edit', true);
-        $this->smarty->assign('is_admin', $this->authService->isAdmin());
         $this->smarty->display('form_usuario.tpl');
     }
 
@@ -143,6 +154,7 @@ class UsuarioController extends BaseController
     {
         // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $validator = new UsuarioValidator(); // Instantiate the validator
             $id = $_POST['id'] ?? null;
             if (!$id) {
                 $_SESSION['error_message'] = 'ID de usuario no proporcionado.';
@@ -178,7 +190,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -190,7 +201,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -204,18 +214,12 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
             if ($existingUsuario->getDni() !== $data['dni'] && $this->personaRepository->dniExists($data['dni'])) {
-                $this->smarty->assign('error_message', 'El DNI ya está registrado.');
-                $this->smarty->assign('form_data', $data);
-                $this->smarty->assign('page_title', 'Editar Usuario');
-                $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -228,7 +232,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
                 return;
             }
@@ -251,7 +254,6 @@ class UsuarioController extends BaseController
                 $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
-                $this->smarty->assign('is_admin', $this->authService->isAdmin());
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
             }
         }

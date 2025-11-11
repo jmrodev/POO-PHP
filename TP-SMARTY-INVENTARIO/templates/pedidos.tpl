@@ -32,11 +32,32 @@
                         <td>{$pedido->getUsuario()->getNombre()}</td>
                         <td>{$pedido->getFechaPedido()}</td>
                         <td>${$pedido->getTotal()|number_format:2}</td>
-                        <td>{$pedido->getEstado()}</td>
+                        <td>
+                            {if $authService->isAdmin() || $authService->isSupervisor()}
+                                <form action="{$BASE_URL}pedidos/update" method="post" class="status-form">
+                                    <input type="hidden" name="id" value="{$pedido->getId()}">
+                                    <select name="estado" onchange="this.form.submit()">
+                                        <option value="pendiente" {if $pedido->getEstado() == 'pendiente'}selected{/if}>Pendiente</option>
+                                        <option value="completado" {if $pedido->getEstado() == 'completado'}selected{/if}>Completado</option>
+                                        <option value="cancelado" {if $pedido->getEstado() == 'cancelado'}selected{/if}>Cancelado</option>
+                                    </select>
+                                </form>
+                            {elseif $authService->isUser() && $pedido->getUsuarioId() == $smarty.session.user_id && $pedido->getEstado() == 'pendiente'}
+                                <form action="{$BASE_URL}pedidos/update" method="post" class="status-form">
+                                    <input type="hidden" name="id" value="{$pedido->getId()}">
+                                    <select name="estado" onchange="this.form.submit()">
+                                        <option value="pendiente" {if $pedido->getEstado() == 'pendiente'}selected{/if}>Pendiente</option>
+                                        <option value="cancelado" {if $pedido->getEstado() == 'cancelado'}selected{/if}>Cancelado</option>
+                                    </select>
+                                </form>
+                            {else}
+                                {$pedido->getEstado()}
+                            {/if}
+                        </td>
                         <td>
                             <div class="action-buttons">
                                 <a href="{$BASE_URL}pedidos/detail/{$pedido->getId()}" class="detail-button">Ver Detalle</a>
-                                {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor' || ($smarty.session.role == 'user' && $pedido->getUsuarioId() == $smarty.session.user_id && $pedido->getEstado() == 'pendiente')}
+                                {if $smarty.session.role == 'admin' || ($smarty.session.role == 'user' && $pedido->getUsuarioId() == $smarty.session.user_id && $pedido->getEstado() == 'pendiente')}
                                     <a href="{$BASE_URL}pedidos/edit/{$pedido->getId()}" class="edit-button">Editar</a>
                                     <a href="{$BASE_URL}pedidos/delete/{$pedido->getId()}" class="delete-button">Cancelar</a>
                                 {/if}
@@ -46,6 +67,10 @@
                 {/foreach}
             </tbody>
         </table>
+
+        {if $totalPages > 1}
+            {include 'pagination.tpl' baseURL=$baseURL currentPage=$currentPage totalPages=$totalPages}
+        {/if}
     {else}
         <p>No hay pedidos registrados.</p>
     {/if}

@@ -10,7 +10,7 @@
         </div>
     {/if}
 
-    {if !empty($personas)}
+    {if !empty($usuarios)}
         <table>
             <thead>
                 <tr>
@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                {foreach $personas as $persona}
+                {foreach $usuarios as $persona}
                     <tr>
                         <td>{$persona->getId()}</td>
                         <td>{$persona->getNombre()}</td>
@@ -44,6 +44,10 @@
                 {/foreach}
             </tbody>
         </table>
+
+        {if $totalPages > 1}
+            {include 'pagination.tpl' baseURL=$baseURL currentPage=$currentPage totalPages=$totalPages}
+        {/if}
     {else}
         <p>No hay usuarios registrados.</p>
     {/if}
