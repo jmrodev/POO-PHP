@@ -24,4 +24,4 @@ $router->post('/repuestos/delete_confirm/{id}', function ($id) use ($repuestoCon
 }, ['supervisor']);
 $router->get('/repuestos/detail/{id}', function ($id) use ($repuestoController) {
     $repuestoController->showDetail($id);
-}, ['supervisor']);
+}, ['user', 'supervisor']);
