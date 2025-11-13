@@ -76,7 +76,7 @@ try {
     $repuestoController = new RepuestoController($smarty, $repuestoRepository, $authService);
     $ventaController = new VentaController($smarty, $ventaRepository, $repuestoRepository, $personaRepository, $authService);
     $cartController = new CartController($smarty, $repuestoRepository, $pedidoRepository, $personaRepository, $authService);
-    $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository, $authService);
+    $pedidoController = new PedidoController($smarty, $pedidoRepository, $personaRepository, $ventaRepository, $authService);
     $homeController = new HomeController($smarty, $personaRepository, $authService, $loginController); // Instantiate HomeController
 
     // Instantiate Router

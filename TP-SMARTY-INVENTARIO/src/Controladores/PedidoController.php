@@ -4,8 +4,10 @@ namespace App\Controladores;
 
 use App\Modelos\Pedido;
 use App\Modelos\Usuario;
+use App\Modelos\Venta;
 use App\Repositories\PedidoRepository;
 use App\Repositories\PersonaRepository;
+use App\Repositories\VentaRepository;
 use Smarty;
 
 use App\Services\AuthService; // Add this use statement
@@ -14,12 +16,14 @@ class PedidoController extends BaseController
 {
     private PedidoRepository $pedidoRepository;
     private PersonaRepository $personaRepository;
+    private VentaRepository $ventaRepository;
 
-    public function __construct(Smarty $smarty, PedidoRepository $pedidoRepository, PersonaRepository $personaRepository, AuthService $authService)
+    public function __construct(Smarty $smarty, PedidoRepository $pedidoRepository, PersonaRepository $personaRepository, VentaRepository $ventaRepository, AuthService $authService)
     {
         parent::__construct($smarty, $authService);
         $this->pedidoRepository = $pedidoRepository;
         $this->personaRepository = $personaRepository;
+        $this->ventaRepository = $ventaRepository;
     }
 
     public function index(): void
@@ -147,8 +151,14 @@ class PedidoController extends BaseController
                 return;
             }
 
+            $estadoAnterior = $pedido->getEstado();
             $pedido->setEstado($estado);
+            
             if ($this->pedidoRepository->guardar($pedido)) {
+                // Si el pedido pasa a completado, registrar ventas
+                if ($estado === 'completado' && $estadoAnterior !== 'completado') {
+                    $this->registrarVentasDesdePedido($pedido);
+                }
                 $_SESSION['success_message'] = 'Pedido actualizado con éxito.';
             } else {
                 $_SESSION['error_message'] = 'Error al actualizar el pedido.';
@@ -218,6 +228,20 @@ class PedidoController extends BaseController
         } else {
             $_SESSION['error_message'] = 'Error al cancelar el pedido.';
             $this->redirect(BASE_URL . 'pedidos');
+        }
+    }
+
+    private function registrarVentasDesdePedido(Pedido $pedido): void
+    {
+        foreach ($pedido->getDetalles() as $detalle) {
+            $venta = new Venta(
+                null,
+                $detalle->getRepuesto(),
+                $pedido->getUsuario(),
+                $detalle->getCantidad(),
+                date('Y-m-d H:i:s')
+            );
+            $this->ventaRepository->guardar($venta);
         }
     }
 }
