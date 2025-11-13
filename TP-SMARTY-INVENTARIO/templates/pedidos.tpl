@@ -33,26 +33,7 @@
                         <td>{$pedido->getFechaPedido()}</td>
                         <td>${$pedido->getTotal()|number_format:2}</td>
                         <td>
-                            {if $authService->isAdmin() || $authService->isSupervisor()}
-                                <form action="{$BASE_URL}pedidos/update" method="post" class="status-form">
-                                    <input type="hidden" name="id" value="{$pedido->getId()}">
-                                    <select name="estado" onchange="this.form.submit()">
-                                        <option value="pendiente" {if $pedido->getEstado() == 'pendiente'}selected{/if}>Pendiente</option>
-                                        <option value="completado" {if $pedido->getEstado() == 'completado'}selected{/if}>Completado</option>
-                                        <option value="cancelado" {if $pedido->getEstado() == 'cancelado'}selected{/if}>Cancelado</option>
-                                    </select>
-                                </form>
-                            {elseif $authService->isUser() && $pedido->getUsuarioId() == $smarty.session.user_id && $pedido->getEstado() == 'pendiente'}
-                                <form action="{$BASE_URL}pedidos/update" method="post" class="status-form">
-                                    <input type="hidden" name="id" value="{$pedido->getId()}">
-                                    <select name="estado" onchange="this.form.submit()">
-                                        <option value="pendiente" {if $pedido->getEstado() == 'pendiente'}selected{/if}>Pendiente</option>
-                                        <option value="cancelado" {if $pedido->getEstado() == 'cancelado'}selected{/if}>Cancelado</option>
-                                    </select>
-                                </form>
-                            {else}
-                                {$pedido->getEstado()}
-                            {/if}
+                            {$pedido->getEstado()}
                         </td>
                         <td>
                             <div class="action-buttons">
