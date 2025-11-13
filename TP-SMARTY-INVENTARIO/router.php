@@ -43,8 +43,8 @@ $router->addMiddleware('supervisor', function () use ($authService, $smarty) {
     }
 });
 
-$router->addMiddleware('onlysupervisor', function () use ($authService, $smarty) {
-    if (!$authService->isSupervisor()) {
+$router->addMiddleware('user_or_supervisor', function () use ($authService, $smarty) {
+    if (!$authService->isUser() && !$authService->isSupervisor()) {
         header('Location: ' . BASE_URL . 'login');
         exit();
     }
