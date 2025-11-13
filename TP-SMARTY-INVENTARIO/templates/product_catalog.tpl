@@ -49,11 +49,11 @@
                         {if $oferta->getImagen()}
                             <img src="data:image/jpeg;base64,{$oferta->getImagen()}" alt="{$oferta->getNombre()}" class="offer-image">
                         {else}
-                            <img src="{$BASE_URL}img/placeholder.png" alt="No Image" class="offer-image"> {* Placeholder image *}
+                            <img src="{$BASE_URL}img/placeholder.png" alt="No Image" class="offer-image">
                         {/if}
                         <h4 class="offer-name">{$oferta->getNombre()}</h4>
                         <p class="offer-price">Precio: ${$oferta->getPrecio()|number_format:2}</p>
-                        <a href="{$BASE_URL}catalog" class="view-offer-button">Ver Oferta</a> {* Link back to catalog or detail page *}
+                        <a href="{$BASE_URL}repuestos/detail/{$oferta->getId()}" class="view-offer-button">Ver Detalle</a>
                     </div>
                 {/foreach}
             </aside>
