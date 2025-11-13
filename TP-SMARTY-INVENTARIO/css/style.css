@@ -146,6 +146,152 @@ header nav ul li a {
     box-shadow: var(--shadow-lg);
 }
 
+/* ========================================
+   HOME PAGE
+   ======================================== */
+.home-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.home-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+}
+
+.home-subtitle {
+    font-size: 1.25rem;
+    color: var(--gray-600);
+    margin: 0;
+}
+
+.home-layout {
+    display: flex;
+    gap: var(--space-xl);
+    align-items: flex-start;
+}
+
+.menu-cards {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+}
+
+.menu-card {
+    background: var(--white);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary);
+}
+
+.menu-card-icon {
+    font-size: 3.5rem;
+    margin-bottom: var(--space-md);
+}
+
+.menu-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-sm);
+}
+
+.menu-card-description {
+    font-size: 0.9375rem;
+    color: var(--gray-600);
+    margin: 0;
+}
+
+/* Card Color Variants */
+.admin-card::before { background: var(--secondary); }
+.admin-card { border-color: var(--secondary); }
+
+.primary-card::before { background: var(--primary); }
+.primary-card { border-color: var(--primary); }
+
+.secondary-card::before { background: var(--gray-600); }
+.secondary-card { border-color: var(--gray-600); }
+
+.success-card::before { background: var(--success); }
+.success-card { border-color: var(--success); }
+
+.info-card::before { background: var(--info); }
+.info-card { border-color: var(--info); }
+
+/* Home Summary Sidebar */
+.home-summary-aside {
+    flex: 0 0 320px;
+    background: linear-gradient(135deg, var(--primary), #1d4ed8);
+    color: var(--white);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.home-summary-aside h2 {
+    color: var(--white);
+    margin: 0 0 var(--space-lg);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: var(--space-md);
+}
+
+.summary-stats {
+    display: grid;
+    gap: var(--space-md);
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.15);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 .menu-options {
     display: flex;
     justify-content: center;
@@ -715,6 +861,32 @@ table tbody tr:last-child td {
 
     h1 {
         font-size: 1.875rem;
+    }
+
+    .home-title {
+        font-size: 2rem;
+    }
+
+    .home-subtitle {
+        font-size: 1rem;
+    }
+
+    /* Home layout stacks on mobile */
+    .home-layout {
+        flex-direction: column;
+    }
+
+    .home-summary-aside {
+        width: 100%;
+        order: -1; /* Show summary above cards on mobile */
+    }
+
+    .menu-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-card-icon {
+        font-size: 3rem;
     }
 
     header nav ul {
