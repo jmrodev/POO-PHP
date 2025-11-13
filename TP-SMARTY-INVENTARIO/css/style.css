@@ -665,6 +665,10 @@ table tbody tr:last-child td {
     flex-direction: column;
     gap: var(--space-xs);
     margin-top: auto;
+    padding: 0;
+    margin-bottom: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
 .add-to-cart-form .quantity-input {
