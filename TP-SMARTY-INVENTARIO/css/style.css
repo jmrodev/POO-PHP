@@ -316,6 +316,14 @@ header nav ul li a {
    ======================================== */
 button,
 .btn,
+a.btn,
+a.menu-button,
+a.confirm-button,
+a.cancel-button,
+a.back-button,
+a.edit-button,
+a.detail-button,
+a.delete-button,
 .menu-button,
 .confirm-button,
 .btn-danger,
@@ -341,6 +349,7 @@ input[type="submit"] {
     box-shadow: var(--shadow-sm);
     line-height: 1.5;
     color: var(--white);
+    text-align: center;
 }
 
 /* Button Color Variants */
@@ -854,6 +863,17 @@ table tbody tr:last-child td {
     display: block;
     text-align: center;
     margin-top: var(--space-xl);
+}
+
+.back-link a {
+    background: var(--secondary);
+    color: var(--white);
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
 }
 
 .no-image {
