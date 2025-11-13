@@ -39,8 +39,17 @@ class CartController extends BaseController
         $this->smarty->assign('page_title', 'Catálogo de Repuestos');
         $this->smarty->assign('cart_items', $_SESSION['cart']); // Pass cart items to display count
 
-        // Fetch offer products
-        $ofertaRepuestos = $this->repuestoRepository->getOfertaRepuestos(3); // Get top 3 cheapest
+        // Fetch 2 random products for offers
+        $ofertaRepuestos = [];
+        if (count($repuestos) > 0) {
+            $randomKeys = array_rand($repuestos, min(2, count($repuestos)));
+            if (!is_array($randomKeys)) {
+                $randomKeys = [$randomKeys];
+            }
+            foreach ($randomKeys as $key) {
+                $ofertaRepuestos[] = $repuestos[$key];
+            }
+        }
         $this->smarty->assign('oferta_repuestos', $ofertaRepuestos);
 
         $this->smarty->display('product_catalog.tpl');
