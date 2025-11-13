@@ -32,11 +32,18 @@ try {
     $nombre = 'Administrador Principal';
 
     if (!$personaRepository->findByUsername($username)) {
+        error_log("Attempting to save admin user: " . $username);
         $admin = new Administrador(null, $nombre, $username, $password);
-        $personaRepository->save($admin);
-        echo "Default admin user added.\n";
+        if ($personaRepository->save($admin)) {
+            echo "Default admin user added.\n";
+            error_log("Admin user saved successfully. ID: " . $admin->getId());
+        } else {
+            echo "Failed to add default admin user.\n";
+            error_log("Failed to save admin user.");
+        }
     } else {
         echo "Default admin user already exists.\n";
+        error_log("Default admin user already exists.");
     }
 
 } catch (PDOException $e) {

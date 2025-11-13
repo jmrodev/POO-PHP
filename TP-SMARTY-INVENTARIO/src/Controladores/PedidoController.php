@@ -84,6 +84,13 @@ class PedidoController extends BaseController
     {
         // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
+        // Prevent client users from accessing the edit form
+        if ($this->authService->isUser()) {
+            $_SESSION['error_message'] = 'No tienes permiso para editar pedidos.';
+            $this->redirect(BASE_URL . 'pedidos');
+            return;
+        }
+
         $pedido = $this->pedidoRepository->obtenerPorId($id);
 
         if (!$pedido) {
@@ -126,22 +133,15 @@ class PedidoController extends BaseController
                 return;
             }
 
-            // Users can only update their own orders
-            if ($this->authService->isUser() && $pedido->getUsuarioId() !== $this->authService->getUserId()) {
-                $_SESSION['error_message'] = 'No tienes permiso para actualizar este pedido.';
+            // Prevent client users from updating any part of the order
+            if ($this->authService->isUser()) {
+                $_SESSION['error_message'] = 'No tienes permiso para actualizar pedidos.';
                 $this->redirect(BASE_URL . 'pedidos');
                 return;
             }
 
-            // Validate new state based on role
-            if ($this->authService->isUser()) {
-                // Users can only cancel their own orders
-                if ($estado !== 'cancelado' || $pedido->getEstado() !== 'pendiente') {
-                    $_SESSION['error_message'] = 'Solo puedes cancelar pedidos pendientes.';
-                    $this->redirect(BASE_URL . 'pedidos');
-                    return;
-                }
-            } elseif (!in_array($estado, ['pendiente', 'completado', 'cancelado'])) {
+            // Validate new state based on role (only for admin/supervisor)
+            if (!in_array($estado, ['pendiente', 'completado', 'cancelado'])) {
                 $_SESSION['error_message'] = 'Estado de pedido inválido.';
                 $this->redirect(BASE_URL . 'pedidos');
                 return;

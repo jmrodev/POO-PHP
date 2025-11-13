@@ -57,9 +57,13 @@
                         <td>
                             <div class="action-buttons">
                                 <a href="{$BASE_URL}pedidos/detail/{$pedido->getId()}" class="detail-button">Ver Detalle</a>
-                                {if $smarty.session.role == 'admin' || ($smarty.session.role == 'user' && $pedido->getUsuarioId() == $smarty.session.user_id && $pedido->getEstado() == 'pendiente')}
+                                {if $authService->isAdmin() || $authService->isSupervisor()}
                                     <a href="{$BASE_URL}pedidos/edit/{$pedido->getId()}" class="edit-button">Editar</a>
+                                {/if}
+                                {if $authService->isUser() && $pedido->getUsuarioId() == $smarty.session.user_id && $pedido->getEstado() == 'pendiente'}
                                     <a href="{$BASE_URL}pedidos/delete/{$pedido->getId()}" class="delete-button">Cancelar</a>
+                                {elseif $authService->isAdmin() || $authService->isSupervisor()}
+                                    <a href="{$BASE_URL}pedidos/delete/{$pedido->getId()}" class="delete-button">Eliminar</a> {* Admins/Supervisors can delete any order *}
                                 {/if}
                             </div>
                         </td>

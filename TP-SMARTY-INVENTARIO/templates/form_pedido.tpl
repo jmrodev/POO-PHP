@@ -29,18 +29,17 @@
 
         <div class="form-group">
             <label for="estado">Estado:</label>
-            <select name="estado" id="estado" class="form-control" {if $smarty.session.role == 'user' && $pedido->getEstado() != 'pendiente'}disabled{/if}>
-                <option value="pendiente" {if $pedido->getEstado() == 'pendiente'}selected{/if}>Pendiente</option>
-                {if $smarty.session.role == 'admin' || $smarty.session.role == 'supervisor'}
+            DEBUG: Current Role is {$smarty.session.role} <br> {* DEBUG LINE *}
+            {if $smarty.session.role == 'user'}
+                <p class="form-control-static">{$pedido->getEstado()|capitalize}</p>
+                <input type="hidden" name="estado" value="{$pedido->getEstado()}"> {* Keep hidden input for form submission, though backend prevents change *}
+            {else}
+                <select name="estado" id="estado" class="form-control">
+                    <option value="pendiente" {if $pedido->getEstado() == 'pendiente'}selected{/if}>Pendiente</option>
                     <option value="completado" {if $pedido->getEstado() == 'completado'}selected{/if}>Completado</option>
                     <option value="cancelado" {if $pedido->getEstado() == 'cancelado'}selected{/if}>Cancelado</option>
-                {else}
-                    {* User can only change to 'cancelado' if pending *}
-                    {if $pedido->getEstado() == 'pendiente'}
-                        <option value="cancelado" {if $pedido->getEstado() == 'cancelado'}selected{/if}>Cancelar Pedido</option>
-                    {/if}
-                {/if}
-            </select>
+                </select>
+            {/if}
         </div>
         
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>

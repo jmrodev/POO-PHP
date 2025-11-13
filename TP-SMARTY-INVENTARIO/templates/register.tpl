@@ -17,7 +17,8 @@
         </div>
         <div class="form-group">
             <label for="dni">DNI:</label>
-            <input type="text" class="form-control" id="dni" name="dni" required value="{$form_data.dni|default:''}" pattern="^\d{8}$" maxlength="8" minlength="8" title="El DNI debe contener 8 dígitos numéricos.">
+            <input type="text" class="form-control" id="dni" name="dni" required value="{$form_data.dni|default:''}" 
+           
         </div>
         <div class="form-group">
             <label for="username">Nombre de Usuario:</label>

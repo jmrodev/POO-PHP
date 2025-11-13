@@ -41,12 +41,16 @@ class PersonaRepository
         $stmt->bindValue(':dni', $dni);
 
         try {
+            error_log("Executing SQL insert for persona: " . $persona->getUsername());
             if ($stmt->execute()) {
                 $persona->setId((int)$this->pdo->lastInsertId());
+                error_log("Persona inserted successfully with ID: " . $persona->getId());
                 return true;
+            } else {
+                error_log("SQL insert failed for persona: " . $persona->getUsername() . ". ErrorInfo: " . json_encode($stmt->errorInfo()));
             }
         } catch (\PDOException $e) {
-            // Log the exception or handle it appropriately
+            error_log("PDOException during persona insert: " . $e->getMessage());
             // For now, we'll just return false
         }
         return false;

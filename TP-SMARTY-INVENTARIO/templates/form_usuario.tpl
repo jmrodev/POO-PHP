@@ -10,6 +10,13 @@
         </div>
     {/if}
 
+    {if isset($smarty.session.warning_message)}
+        <div class="alert alert-warning">
+            <p>{$smarty.session.warning_message}</p>
+        </div>
+        {$smarty.session.warning_message = null} {* Clear the message after displaying *}
+    {/if}
+
     <form action="{$form_action}" method="post">
         {if $is_edit}
             <input type="hidden" name="id" value="{$usuario->getId()}">
@@ -30,15 +37,15 @@
 
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" value="{$form_data.nombre|default:$usuario_nombre}" required>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{$form_data.nombre|default:$usuario_nombre}" required {if $authService->isAdmin() && $is_edit}disabled{/if}>
         </div>
         <div class="form-group">
             <label for="dni">DNI:</label>
-            <input type="text" class="form-control" id="dni" name="dni" value="{$form_data.dni|default:$usuario_dni}" required pattern="^\d{8}$" maxlength="8" minlength="8" title="El DNI debe contener 8 dígitos numéricos.">
-        </div>
+            <input type="text" class="form-control" id="dni" name="dni" value="{$form_data.dni|default:$usuario_dni}" {if $authService->isAdmin() && $is_edit}disabled{/if}>
+                   </div>
         <div class="form-group">
             <label for="username">Nombre de Usuario:</label>
-                <input type="text" class="form-control" id="username" name="username" value="{$form_data.username|default:$usuario_username}" required>
+                <input type="text" class="form-control" id="username" name="username" value="{$form_data.username|default:$usuario_username}" required {if $authService->isAdmin() && $is_edit}disabled{/if}>
         </div>
         {if !$is_edit}
             <div class="form-group">

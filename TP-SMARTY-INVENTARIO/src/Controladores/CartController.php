@@ -76,6 +76,8 @@ class CartController extends BaseController
                 return;
             }
 
+            error_log("CartController::addToCart - Before adding/updating, SESSION_ID: " . session_id() . ", Cart: " . json_encode($_SESSION['cart']));
+
             // Add to cart or update quantity if already in cart
             if (isset($_SESSION['cart'][$repuestoId])) {
                 $_SESSION['cart'][$repuestoId]['cantidad'] += $cantidad;
@@ -88,6 +90,7 @@ class CartController extends BaseController
                     'imagen' => $repuesto->getImagen() // Include image for display in cart
                 ];
             }
+            error_log("CartController::addToCart - After adding/updating, SESSION_ID: " . session_id() . ", Cart: " . json_encode($_SESSION['cart']));
             $_SESSION['success_message'] = $cantidad . ' unidades de ' . $repuesto->getNombre() . ' añadidas al carrito.';
         }
         $this->redirect(BASE_URL . 'catalog');
@@ -95,6 +98,7 @@ class CartController extends BaseController
 
     public function showCart(): void
     {
+        error_log("CartController::showCart - Entry, SESSION_ID: " . session_id() . ", Cart: " . json_encode($_SESSION['cart']));
         // AuthMiddleware::requireLogin(); // Replaced by router middleware
 
         $cartItems = $_SESSION['cart'];

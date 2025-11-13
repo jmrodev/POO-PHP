@@ -154,6 +154,7 @@ class UsuarioController extends BaseController
     {
         // AuthMiddleware::requireAdmin(); // Replaced by router middleware
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            unset($_SESSION['warning_message']); // Clear any previous warning messages
             $validator = new UsuarioValidator(); // Instantiate the validator
             $id = $_POST['id'] ?? null;
             if (!$id) {
@@ -171,6 +172,7 @@ class UsuarioController extends BaseController
                 'role' => $_POST['role'] ?? 'user',
             ];
 
+            $warningMessages = []; // Initialize array for warning messages
 
             // Fetch existing usuario to get password if not updated
             $existingUsuario = $this->personaRepository->findById($data['id']);
@@ -178,9 +180,24 @@ class UsuarioController extends BaseController
                 $this->redirect(BASE_URL . 'usuarios');
                 return;
             }
+
+            // If admin, and fields are disabled, they won't be in $_POST.
+            // In this case, use the existing user's data for these fields
+            // so the validator doesn't complain about emptiness.
+            if ($this->authService->isAdmin()) {
+                if (!isset($_POST['nombre'])) {
+                    $data['nombre'] = $existingUsuario->getNombre();
+                }
+                if (!isset($_POST['dni'])) {
+                    $data['dni'] = $existingUsuario->getDni();
+                }
+                if (!isset($_POST['username'])) {
+                    $data['username'] = $existingUsuario->getUsername();
+                }
+            }
+
             // Create a Usuario object with submitted data for re-populating the form
             $usuarioWithSubmittedData = new Usuario($data['id'], $data['nombre'], $data['username'], $existingUsuario->getPassword(), $data['dni'], $data['role']);
-
 
             // Validate role
             if (!in_array($data['role'], ['user', 'supervisor'])) {
@@ -207,6 +224,8 @@ class UsuarioController extends BaseController
 
 
             // Check for unique username and DNI if changed
+            // These checks should only happen if the fields are actually submitted/editable
+            // If the field was disabled, $data will contain the existing value, so this check won't trigger unnecessarily
             if ($existingUsuario->getUsername() !== $data['username'] && $this->personaRepository->usernameExists($data['username'])) {
                 $this->smarty->assign('error_message', 'El nombre de usuario ya existe.');
                 $this->smarty->assign('form_data', $data);
@@ -218,6 +237,10 @@ class UsuarioController extends BaseController
                 return;
             }
             if ($existingUsuario->getDni() !== $data['dni'] && $this->personaRepository->dniExists($data['dni'])) {
+                $this->smarty->assign('error_message', 'El DNI ya está registrado.'); // Added error message for DNI
+                $this->smarty->assign('form_data', $data);
+                $this->smarty->assign('page_title', 'Editar Usuario');
+                $this->smarty->assign('form_action', BASE_URL . 'usuarios/update');
                 $this->smarty->assign('is_edit', true);
                 $this->smarty->assign('usuario', $usuarioWithSubmittedData);
                 $this->smarty->display('form_usuario.tpl'); // Changed from form_cliente.tpl
@@ -236,6 +259,22 @@ class UsuarioController extends BaseController
                 return;
             }
 
+            // Prevent admin from changing nombre, dni, and username of other users
+            if ($this->authService->isAdmin()) {
+                if ($existingUsuario->getNombre() !== ($_POST['nombre'] ?? $existingUsuario->getNombre())) {
+                    $data['nombre'] = $existingUsuario->getNombre();
+                    $warningMessages[] = 'Como administrador, no puedes cambiar el nombre completo del usuario.';
+                }
+                if ($existingUsuario->getDni() !== ($_POST['dni'] ?? $existingUsuario->getDni())) {
+                    $data['dni'] = $existingUsuario->getDni();
+                    $warningMessages[] = 'Como administrador, no puedes cambiar el DNI del usuario.';
+                }
+                if ($existingUsuario->getUsername() !== ($_POST['username'] ?? $existingUsuario->getUsername())) {
+                    $data['username'] = $existingUsuario->getUsername();
+                    $warningMessages[] = 'Como administrador, no puedes cambiar el nombre de usuario.';
+                }
+            }
+
             $usuarioToUpdate = new Usuario(
                 $data['id'],
                 $data['nombre'],
@@ -246,6 +285,9 @@ class UsuarioController extends BaseController
             );
 
             if ($this->personaRepository->save($usuarioToUpdate)) {
+                if (!empty($warningMessages)) {
+                    $_SESSION['warning_message'] = implode(' ', $warningMessages);
+                }
                 $this->redirect(BASE_URL . 'usuarios');
             } else {
                 $this->smarty->assign('error_message', 'Error al actualizar el usuario.');

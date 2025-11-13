@@ -45,6 +45,10 @@ try {
     define('SERVER_PATH', $_SERVER['DOCUMENT_ROOT'] . $base_path);
 
     if ($_ENV['APP_DEBUG'] === 'true') {
+        error_log("SCRIPT_NAME: " . $_SERVER['SCRIPT_NAME']);
+        error_log("REQUEST_URI: " . $_SERVER['REQUEST_URI']);
+        error_log("Calculated script_name: " . $script_name);
+        error_log("Calculated base_path: " . $base_path);
         error_log("BASE_URL: " . BASE_URL);
     }
 
