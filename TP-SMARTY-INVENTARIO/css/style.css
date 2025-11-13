@@ -373,6 +373,7 @@ input[type="submit"] {
 }
 
 .edit-button,
+.btn-primary,
 .update-quantity-button,
 input[type="submit"] {
     background: var(--primary);
@@ -428,11 +429,27 @@ form textarea:focus {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+/* Form buttons container */
+form .btn,
+form button {
+    width: auto;
+    margin-right: var(--space-sm);
+}
+
+form .btn:last-child,
+form button:last-child {
+    margin-right: 0;
+}
+
+form button[type="submit"]:only-of-type,
+form input[type="submit"]:only-of-type {
+    width: 100%;
+}
+
 form button[type="submit"],
 form input[type="submit"] {
     background: var(--primary);
     color: var(--white);
-    width: 100%;
 }
 
 /* ========================================
@@ -874,6 +891,22 @@ table tbody tr:last-child td {
     display: inline-block;
     font-weight: 600;
     box-shadow: var(--shadow-sm);
+}
+
+/* Form button group */
+.form-buttons,
+form > .btn,
+form > button,
+form > a.btn {
+    display: inline-block;
+    margin-right: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.form-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
 }
 
 .no-image {
