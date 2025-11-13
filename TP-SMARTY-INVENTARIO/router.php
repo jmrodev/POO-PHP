@@ -29,6 +29,13 @@ $router->addMiddleware('login', function () use ($authService, $smarty) {
     }
 });
 
+$router->addMiddleware('user', function () use ($authService, $smarty) {
+    if (!$authService->isUser()) {
+        header('Location: ' . BASE_URL . 'login');
+        exit();
+    }
+});
+
 $router->addMiddleware('supervisor', function () use ($authService, $smarty) {
     if (!$authService->isSupervisor()) {
         header('Location: ' . BASE_URL . 'login');
