@@ -627,7 +627,6 @@ table tbody tr:last-child td {
     box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
-    max-height: 350px;
 }
 
 .product-image {
@@ -637,6 +636,7 @@ table tbody tr:last-child td {
     border-radius: var(--radius-md);
     margin-bottom: var(--space-sm);
     border: 1px solid var(--gray-200);
+    flex-shrink: 0;
 }
 
 .product-name {
@@ -658,6 +658,22 @@ table tbody tr:last-child td {
     font-size: 0.875rem;
     color: var(--gray-600);
     margin-bottom: var(--space-sm);
+}
+
+.add-to-cart-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: auto;
+}
+
+.add-to-cart-form .quantity-input {
+    margin-right: 0;
+    margin-bottom: var(--space-xs);
+}
+
+.add-to-cart-form button {
+    width: 100%;
 }
 
 .quantity-input {
