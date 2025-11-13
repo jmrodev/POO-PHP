@@ -209,8 +209,14 @@ header nav ul li a {
 }
 
 .menu-card-icon {
-    font-size: 3.5rem;
+    font-size: 4rem;
     margin-bottom: var(--space-md);
+    color: inherit;
+}
+
+.menu-card-icon.material-icons {
+    font-size: 4rem;
+    line-height: 1;
 }
 
 .menu-card-title {
@@ -229,18 +235,23 @@ header nav ul li a {
 /* Card Color Variants */
 .admin-card::before { background: var(--secondary); }
 .admin-card { border-color: var(--secondary); }
+.admin-card .menu-card-icon { color: var(--secondary); }
 
 .primary-card::before { background: var(--primary); }
 .primary-card { border-color: var(--primary); }
+.primary-card .menu-card-icon { color: var(--primary); }
 
 .secondary-card::before { background: var(--gray-600); }
 .secondary-card { border-color: var(--gray-600); }
+.secondary-card .menu-card-icon { color: var(--gray-600); }
 
 .success-card::before { background: var(--success); }
 .success-card { border-color: var(--success); }
+.success-card .menu-card-icon { color: var(--success); }
 
 .info-card::before { background: var(--info); }
 .info-card { border-color: var(--info); }
+.info-card .menu-card-icon { color: var(--info); }
 
 /* Home Summary Sidebar */
 .home-summary-aside {
