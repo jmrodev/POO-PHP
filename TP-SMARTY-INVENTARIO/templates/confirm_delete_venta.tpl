@@ -15,8 +15,8 @@
             <p><strong>Fecha:</strong> {$venta->getFecha()}</p>
         </div>
         <div class="card-footer">
-            <form method="POST" action="{$BASE_URL}ventas/delete_confirm/{$venta->getId()}" style="display: inline;">
-                <button type="submit" class="confirm-button" style="border: none; cursor: pointer;">Confirmar Eliminación</button>
+            <form method="POST" action="{$BASE_URL}ventas/delete_confirm/{$venta->getId()}">
+                <button type="submit" class="confirm-button">Confirmar Eliminación</button>
             </form>
             <a href="{$BASE_URL}ventas" class="cancel-button">Cancelar</a>
         </div>

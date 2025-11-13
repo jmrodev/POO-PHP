@@ -14,8 +14,8 @@
             <p><strong>Cantidad:</strong> {$repuesto->getCantidad()}</p>
         </div>
         <div class="card-footer">
-            <form method="POST" action="{$BASE_URL}repuestos/delete_confirm/{$repuesto->getId()}" style="display: inline;">
-                <button type="submit" class="confirm-button" style="border: none; cursor: pointer;">Confirmar Eliminación</button>
+            <form method="POST" action="{$BASE_URL}repuestos/delete_confirm/{$repuesto->getId()}">
+                <button type="submit" class="confirm-button">Confirmar Eliminación</button>
             </form>
             <a href="{$BASE_URL}repuestos" class="cancel-button">Cancelar</a>
         </div>

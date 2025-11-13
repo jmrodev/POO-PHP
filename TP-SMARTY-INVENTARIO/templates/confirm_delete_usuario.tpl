@@ -14,8 +14,8 @@
             <p class="no-image">Esta acción no se puede deshacer.</p>
         </div>
         <div class="card-footer">
-            <form action="{$BASE_URL}usuarios/delete_confirm/{$usuario->getId()}" method="post" style="display: inline;">
-                <button type="submit" class="confirm-button" style="border: none; cursor: pointer;">Sí, Eliminar</button>
+            <form action="{$BASE_URL}usuarios/delete_confirm/{$usuario->getId()}" method="post">
+                <button type="submit" class="confirm-button">Sí, Eliminar</button>
             </form>
             <a href="{$BASE_URL}usuarios" class="cancel-button">Cancelar</a>
         </div>
