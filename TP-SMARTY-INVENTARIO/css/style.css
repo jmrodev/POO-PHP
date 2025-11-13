@@ -139,11 +139,24 @@ header nav ul li a {
 }
 
 /* ========================================
-   BUTTONS
+   BUTTONS - Base Style
    ======================================== */
 button,
 .btn,
-.menu-button {
+.menu-button,
+.confirm-button,
+.btn-danger,
+.cancel-button,
+.btn-secondary,
+.back-button,
+.edit-button,
+.detail-button,
+.delete-button,
+.add-to-cart-button,
+.update-quantity-button,
+.remove-from-cart-button,
+.checkout-button,
+input[type="submit"] {
     padding: 0.75rem 1.75rem;
     border: none;
     border-radius: var(--radius-md);
@@ -154,39 +167,37 @@ button,
     display: inline-block;
     box-shadow: var(--shadow-sm);
     line-height: 1.5;
+    color: var(--white);
 }
 
-.menu-button {
+/* Button Color Variants */
+.menu-button,
+.add-to-cart-button,
+.checkout-button {
     background: var(--success);
-    color: var(--white);
 }
 
 .confirm-button,
-.btn-danger {
+.btn-danger,
+.delete-button,
+.remove-from-cart-button {
     background: var(--danger);
-    color: var(--white);
 }
 
 .cancel-button,
 .btn-secondary,
 .back-button {
     background: var(--secondary);
-    color: var(--white);
 }
 
-.edit-button {
+.edit-button,
+.update-quantity-button,
+input[type="submit"] {
     background: var(--primary);
-    color: var(--white);
 }
 
 .detail-button {
     background: var(--info);
-    color: var(--white);
-}
-
-.delete-button {
-    background: var(--danger);
-    color: var(--white);
 }
 
 /* ========================================
@@ -453,12 +464,6 @@ table tbody tr:last-child td {
     font-weight: 600;
 }
 
-.add-to-cart-button {
-    background: var(--success);
-    color: var(--white);
-    padding: 0.75rem 1.25rem;
-}
-
 .out-of-stock {
     color: var(--danger);
     font-weight: 700;
@@ -516,16 +521,9 @@ table tbody tr:last-child td {
     gap: var(--space-xs);
 }
 
-.update-quantity-button {
-    background: var(--primary);
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
+/* Smaller buttons for cart actions */
+.update-quantity-button,
 .remove-from-cart-button {
-    background: var(--danger);
-    color: var(--white);
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
 }
@@ -547,13 +545,10 @@ table tbody tr:last-child td {
     font-weight: 700;
 }
 
+/* Larger checkout button */
 .checkout-button {
-    background: var(--success);
-    color: var(--white);
     padding: var(--space-md) 2.5rem;
-    border-radius: var(--radius-lg);
     font-size: 1.125rem;
-    font-weight: 700;
 }
 
 .empty-cart-message {
