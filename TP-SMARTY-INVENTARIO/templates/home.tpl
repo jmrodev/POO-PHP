@@ -2,6 +2,15 @@
 
 {block name="content"}
 <div class="container">
+    {if isset($smarty.session.success_message)}
+        <div class="alert alert-success">{$smarty.session.success_message}</div>
+        {$smarty.session.success_message = null}
+    {/if}
+    {if isset($smarty.session.error_message)}
+        <div class="alert alert-danger">{$smarty.session.error_message}</div>
+        {$smarty.session.error_message = null}
+    {/if}
+
     <div class="home-header">
         <h1 class="home-title">Bienvenido al Sistema de Inventario</h1>
         <p class="home-subtitle">Seleccione una opción para comenzar</p>
